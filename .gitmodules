@@ -1,0 +1,6 @@
+[submodule "services/restaurant-service"]
+	path = services/restaurant-service
+	url = https://github.com/hxshan/restaurant-service.git
+[submodule "services/order-service"]
+	path = services/order-service
+	url = https://github.com/hxshan/order-service.git
