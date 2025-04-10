@@ -10,3 +10,6 @@
 [submodule "services/auth-service"]
 	path = services/auth-service
 	url = https://github.com/hxshan/auth-service.git
+[submodule "services/api-gateway"]
+	path = services/api-gateway
+	url = https://github.com/hxshan/api-gateway-food-delivery.git
