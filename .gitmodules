@@ -4,3 +4,9 @@
 [submodule "services/order-service"]
 	path = services/order-service
 	url = https://github.com/hxshan/order-service.git
+[submodule "services/user-service"]
+	path = services/user-service
+	url = https://github.com/hxshan/user-service.git
+[submodule "services/auth-service"]
+	path = services/auth-service
+	url = https://github.com/hxshan/auth-service.git
