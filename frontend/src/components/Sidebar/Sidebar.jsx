@@ -18,7 +18,7 @@ function Sidebar() {
         </NavLink>
         
         <NavLink 
-          to='/' 
+          to='/restaurant-details' 
           className={({isActive}) => 
             `flex items-center gap-3 border border-r-0 border-gray-400 p-2 rounded-tl rounded-bl cursor-pointer
             ${isActive ? "bg-[#fff0ed] border-[#FA5F55]" : ""}`
@@ -40,7 +40,7 @@ function Sidebar() {
         </NavLink>
 
         <NavLink 
-          to='/' 
+          to='/menus' 
           className={({isActive}) => 
             `flex items-center gap-3 border border-r-0 border-gray-400 p-2 rounded-tl rounded-bl cursor-pointer
             ${isActive ? "bg-[#fff0ed] border-[#FA5F55]" : ""}`
