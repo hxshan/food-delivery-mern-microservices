@@ -1,25 +1,23 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-import Home from './pages/home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import OtpVerification from './pages/OtpVerification';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminOverview from './pages/admin/AdminOverview';
-import ManageCustomers from './pages/admin/ManageCustomers';
-import ManageDrivers from './pages/admin/ManageDrivers';
-import ManageRestaurants from './pages/admin/ManageRestaurants';
-import AddRestaurant from './pages/RestaurantAdmin/AddRestaurant'
-import Sidebar from './components/SideBar/Sidebar';
-import AddMenuItem from './pages/RestaurantAdmin/AddMenuItem'
-import MenuListByRestaurant from './pages/RestaurantAdmin/MenuListByRestaurant';
-import Navbar from './pages/RestaurantAdmin/Navbar';
-import { ToastContainer } from 'react-toastify';
+import Home from "./pages/home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import OtpVerification from "./pages/OtpVerification";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminOverview from "./pages/admin/AdminOverview";
+import ManageCustomers from "./pages/admin/ManageCustomers";
+import ManageDrivers from "./pages/admin/ManageDrivers";
+import ManageRestaurants from "./pages/admin/ManageRestaurants";
+import AddRestaurant from "./pages/RestaurantAdmin/AddRestaurant";
+import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
+import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
+import Navbar from "./pages/RestaurantAdmin/Navbar";
+import { ToastContainer } from "react-toastify";
 
-// Layouts / Common components
-import Navbar from './components/Navbar'; // If you have a Navbar component
+
 
 // Auth wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
@@ -30,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
 const App = () => {
   return (
     <>
-      <ToastContainer/>
+      <ToastContainer />
       <Navbar />
       <Routes>
         {/* Public Routes */}
@@ -40,12 +38,11 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
-            <Route path="/add-menu" element={<AddMenuItem />} />
-            <Route path="/restaurants-info" element={<RestaurantsInfo/>} />
-            <Route path="/restaurant-details" element={<RestaurantDetails />} />
-            <Route path="/menus" element={<MenuListByRestaurant />} />
-            <Route path="/update-menu-item" element={<UpdateMenuItem />} />
-            
+        <Route path="/add-menu" element={<AddMenuItem />} />
+        <Route path="/restaurants-info" element={<RestaurantsInfo />} />
+        <Route path="/restaurant-details" element={<RestaurantDetails />} />
+        <Route path="/menus" element={<MenuListByRestaurant />} />
+        <Route path="/update-menu-item" element={<UpdateMenuItem />} />
 
         {/* Admin Routes with nested structure */}
         <Route
