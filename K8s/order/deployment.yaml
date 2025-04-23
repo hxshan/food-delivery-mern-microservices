@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: auth
+          image: hxshxn/order-service:latest
+          ports:
+            - containerPort:5004
+          env: 
+            - name: MONGO_URI
+              value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/"
