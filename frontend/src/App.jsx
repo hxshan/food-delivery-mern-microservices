@@ -14,6 +14,8 @@ import ManageRestaurants from "./pages/admin/ManageRestaurants";
 import AddRestaurant from "./pages/RestaurantAdmin/AddRestaurant";
 import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
 import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
+import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails"; 
+import UpdateMenuItem from "./pages/RestaurantAdmin/UpdateMenuItem";
 import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
 
@@ -39,10 +41,9 @@ const App = () => {
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu" element={<AddMenuItem />} />
-        <Route path="/restaurants-info" element={<RestaurantsInfo />} />
         <Route path="/restaurant-details" element={<RestaurantDetails />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
-        <Route path="/update-menu-item" element={<UpdateMenuItem />} />
+        <Route path="/update-menu-item/:menuItemId" element={<UpdateMenuItem />} />
 
         {/* Admin Routes with nested structure */}
         <Route

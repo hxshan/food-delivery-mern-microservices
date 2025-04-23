@@ -3,6 +3,8 @@ import { assets } from "../../assets/assets";
 //import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { api } from "../../services/api";
+import Sidebar from "../../components/Sidebar/Sidebar";
+
 
 const AddRestaurant = () => {
   //const navigate = useNavigate();
@@ -49,7 +51,8 @@ const AddRestaurant = () => {
 
   }
   return (
-   
+    <>
+    <Sidebar/>
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md mx-4 p-6 md:p-8 bg-white rounded-lg md:ml-36">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center text-[#FA5F55]">
@@ -133,6 +136,7 @@ const AddRestaurant = () => {
         </form>
       </div>
     </div>
+    </>
   );
   };
 

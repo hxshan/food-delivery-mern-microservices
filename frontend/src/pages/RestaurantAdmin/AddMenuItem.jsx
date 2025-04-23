@@ -113,6 +113,7 @@ const AddMenuItem = () => {
               <option value="Cake">Cake</option>
               <option value="Drink">Drink</option>
               <option value="Rolls">Rolls</option>
+              <option value="Sandwich">Sandwich</option>
             </select>
           </div>
           

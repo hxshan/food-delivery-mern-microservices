@@ -13,6 +13,11 @@ const RestaurantDetails = () => {
 
 
    const toggleAvailability = async (id, isOpen) => {
+    
+    setRestaurant(prev => ({
+      ...prev,
+      isOpen: !isOpen
+    }));
       const updated = await api.put(`/${hardcodeId}/availability`, { isOpen: !isOpen });
       setRestaurant(restaurant.map(r => (r._id === id ? updated.data.restaurant : r)));
     };
@@ -21,14 +26,31 @@ const RestaurantDetails = () => {
       navigate(`/update-menu-item/${menuItemId}`);
     };
 
+    const handleDeleteMenuItem = async (menuItemId) => {
+      try {
+        const confirmDelete = window.confirm("Are you sure you want to delete this menu item?");
+        if (!confirmDelete) return;
     
+        const response = await api.delete(`delete-menu/${menuItemId}`);
+        console.log(response);
+        
+        if (response.data.message) {
+          toast.success(response.data.message);
+        
+          const res = await api.get(`/get/${hardcodeId}`);
+          setRestaurant(res.data.restaurant || res.data);
+        }
+      } catch (error) {
+        console.error("Failed to delete menu item", error);
+        toast.error(error.response?.data?.error || "Failed to delete menu item");
+      }
+    };
   
 
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
         const res = await api.get(`/get/${hardcodeId}`);
-        // Handle both response structures:
         setRestaurant(res.data.restaurant || res.data);
         console.log("Restaurant data:", res.data);
         console.log("Menu items:", res.data.restaurant?.menuItems || res.data.menuItems);
@@ -55,6 +77,15 @@ const RestaurantDetails = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white p-6 rounded flex gap-5">
+      <div>
+        {restaurant.image && (
+          <img
+            src={`http://localhost:5003/uploads/${restaurant.image}`}
+            alt="Restaurant"
+            className="mt-4 w-full max-h-40 object-cover rounded"
+          />
+        )}
+      </div>
         <div>
         <h2 className="text-2xl font-bold mb-2">{restaurant.name}</h2>
         <p className="text-gray-600">{restaurant.address}</p>
@@ -65,21 +96,13 @@ const RestaurantDetails = () => {
           </span>
         </p>
         <button
-            className="mt-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
+            className="mt-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 cursor-pointer text-white rounded"
             onClick={() => toggleAvailability(restaurant.hardcodeId, restaurant.isOpen)}
           >
             Set {restaurant.isOpen ? 'Closed' : 'Open'}
           </button>
         </div>
-        <div>
-        {restaurant.image && (
-          <img
-            src={`http://localhost:3001/uploads/${restaurant.image}`}
-            alt="Restaurant"
-            className="mt-4 w-full max-h-40 object-cover rounded"
-          />
-        )}
-      </div>
+        
       </div>
 
       <div className="mt-6">
@@ -90,8 +113,9 @@ const RestaurantDetails = () => {
               <li key={item._id || `menu-item-${index}`} className="p-4 rounded bg-white shadow flex justify-between items-center">
                 <div>
                   <h4 className="font-bold">{item.name}</h4>
-                  <p className="text-sm text-gray-600">{item.category}</p>
-                  <p className="text-sm">$. {item.price}</p>
+                  <p className="text-md text-gray-600">{item.description}</p>
+                  <p className="text-md text-gray-600">{item.category}</p>
+                  <p className="text-md">$ {item.price}</p>
                   <div className="mt-2 flex space-x-2">
                     <button
                       onClick={() => handleUpdateMenuItem(item._id)}
@@ -99,12 +123,19 @@ const RestaurantDetails = () => {
                     >
                       Update
                     </button>
+                    <button
+                   onClick={() => handleDeleteMenuItem(item._id)}
+
+                      className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
 
                 {item.image && (
                   <img
-                    src={`http://localhost:3001/uploads/${item.image}`}
+                    src={`http://localhost:5003/uploads/${item.image}`}
                     alt={item.name}
                     className="w-20 h-20 object-cover rounded"
                   />
