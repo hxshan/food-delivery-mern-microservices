@@ -5,6 +5,7 @@ import Navbar from "../../components/Navbar";
 
 import { Search, ChevronDown, X } from "lucide-react";
 import Footer from "../../components/Footer";
+import { Link } from "react-router-dom";
 
 // Restaurant data
 const restaurants = [
@@ -354,7 +355,9 @@ const ResturantListing = () => {
               key={restaurant.id}
               className="transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
-              <RestaurantCard restaurant={restaurant} />
+              <Link to={"/ResturentPage"}>
+                <RestaurantCard restaurant={restaurant} />
+              </Link>
             </div>
           ))}
         </div>
