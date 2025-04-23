@@ -16,6 +16,8 @@ import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
 import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
 import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
+import ResturentPage from "./pages/Customer/ResturentPage";
+import ResturantListing from "./pages/Customer/ResturentListPage";
 
 
 
@@ -39,10 +41,10 @@ const App = () => {
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu" element={<AddMenuItem />} />
-        <Route path="/restaurants-info" element={<RestaurantsInfo />} />
-        <Route path="/restaurant-details" element={<RestaurantDetails />} />
+        {/* <Route path="/restaurants-info" element={<RestaurantsInfo />} />
+        <Route path="/restaurant-details" element={<RestaurantDetails />} /> */}
         <Route path="/menus" element={<MenuListByRestaurant />} />
-        <Route path="/update-menu-item" element={<UpdateMenuItem />} />
+        {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
 
         {/* Admin Routes with nested structure */}
         <Route
@@ -62,6 +64,9 @@ const App = () => {
 
         {/* Fallback - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
+        <Route path="/ResturentPage" element={<ResturentPage />} />
+        <Route path="/ResturentList" element={<ResturantListing />} />
       </Routes>
     </>
   );
