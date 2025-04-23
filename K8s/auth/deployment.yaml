@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service
+  name: auth-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-service
+      app: auth-service
   template:
     metadata:
       labels:
-        app: user-service
+        app: auth-service
     spec:
       containers:
         - name: user
-          image: hxshxn/user-service:latest
+          image: hxshxn/auth-service:latest
           ports:
-            - containerPort:5001
+            - containerPort:5002
           env: 
             - name: MONGO_URI
               value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/"
