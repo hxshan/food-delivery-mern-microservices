@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart, getCart } from "../../redux/slices/cartSlice"
+
 import Navbar from "../../components/Navbar";
 import MenuItemCard from "../../components/MenuItemCard";
 import Cart from "../../components/Cart";
@@ -143,6 +147,9 @@ const menuItems = [
 ];
 
 const ResturentPage = () => {
+  const dispatch = useDispatch();
+  const cart =  useSelector(getCart)
+
   //Dish Custtomization
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -191,6 +198,33 @@ const ResturentPage = () => {
       size: selectedSize,
       addOns,
     });
+
+    const sizeObj = selectedItem.sizes.find((s) => s.name === selectedSize);
+    const addOnsArray = selectedItem.addOns.filter((a) =>
+      addOns.includes(a.name)
+    );
+
+    const cartItem = {
+      id: Date.now(), // temporary id
+      name: selectedItem.name,
+      price: selectedItem.price,
+      image: selectedItem.image,
+      quantity: quantity,
+      size: selectedSize,
+      sizePrice: sizeObj ? sizeObj.price : 0,
+      addOns: addOns,
+      addOnsPrices: addOnsArray.map((a) => a.price),
+    };
+
+    dispatch(
+      addToCart({
+        item: cartItem,
+        restaurantId: "hilton-colombo", // You should get this from your restaurant data
+        restaurantName: "Hilton Colombo",
+      })
+    );
+
+    console.log("Cart" , cart)
 
     setIsOpen(!isOpen);
   };
