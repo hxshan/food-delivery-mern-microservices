@@ -6,7 +6,7 @@ import {
   clearCart,
   selectCart,
   selectCartCount,
-  selectCartTotal
+  
 } from "../redux/slices/cartSlice";
 import { Trash2, Minus, Plus, ShoppingCart, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +18,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector(selectCart);
   const cartCount = useSelector(selectCartCount);
-  const cartTotal = useSelector(selectCartTotal);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  // const cartTotal = useSelector(selectCartTotal);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -72,7 +71,6 @@ const Cart = () => {
   };
 
   const handleOrder = () => {
-    console.log("Order placed with payment method:", paymentMethod);
     console.log("Cart items:", cart.items);
     
     navigator('/checkout')
