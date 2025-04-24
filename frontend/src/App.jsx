@@ -18,6 +18,12 @@ import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails";
 import UpdateMenuItem from "./pages/RestaurantAdmin/UpdateMenuItem";
 import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
+import ResturentPage from "./pages/Customer/ResturentPage";
+import ResturantListing from "./pages/Customer/ResturentListPage";
+import CustomerDetails from "./pages/Customer/CustomerDetails";
+import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
+import CustomerProfile from "./pages/Customer/CustomerProfile";
+import DriverProfilePage from "./pages/Driver/DriverProfile";
 
 
 
@@ -41,10 +47,15 @@ const App = () => {
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu" element={<AddMenuItem />} />
-        <Route path="/restaurant-details" element={<RestaurantDetails />} />
+        {/* <Route path="/restaurants-info" element={<RestaurantsInfo />} />
+        <Route path="/restaurant-details" element={<RestaurantDetails />} /> */}
         <Route path="/menus" element={<MenuListByRestaurant />} />
-        <Route path="/update-menu-item/:menuItemId" element={<UpdateMenuItem />} />
+        {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
 
+        <Route path="customer" element={<CustomerDetails />} />
+        <Route path="driver" element={<DeliveryDriverDetails />} />
+        <Route path="customer/profile" element={<CustomerProfile/>} />
+        <Route path="driver/profile" element={<DriverProfilePage/>} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"
@@ -59,10 +70,14 @@ const App = () => {
           <Route path="customers" element={<ManageCustomers />} />
           <Route path="drivers" element={<ManageDrivers />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
+
         </Route>
 
         {/* Fallback - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
+        <Route path="/ResturentPage" element={<ResturentPage />} />
+        <Route path="/ResturentList" element={<ResturantListing />} />
       </Routes>
     </>
   );

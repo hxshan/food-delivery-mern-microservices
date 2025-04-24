@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-service
+  template:
+    metadata:
+      labels:
+        app: restaurant-service
+    spec:
+      containers:
+        - name: user
+          image: hxshxn/restaurant-service:latest
+          ports:
+            - containerPort:5003
+          env: 
+            - name: MONGO_URI
+              value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/"
