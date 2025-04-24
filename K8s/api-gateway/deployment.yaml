@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: auth
+          image: hxshxn/api-gateway:latest
+          ports:
+            - containerPort:5001
+          env: 
+            - name: PORT 
+              value: "8000"
+            - name: USER_SERVICE
+              value: http://localhost:5001
+            - name: AUTH_SERVICE
+              value: http://localhost:5002
+            - name: RESTAURANT_SERVICE
+              value: http://localhost:5003
+            - name: ORDER_SERVICE
+              value: http://localhost:5004

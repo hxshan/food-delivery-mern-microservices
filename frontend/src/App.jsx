@@ -18,6 +18,10 @@ import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
 import ResturentPage from "./pages/Customer/ResturentPage";
 import ResturantListing from "./pages/Customer/ResturentListPage";
+import CustomerDetails from "./pages/Customer/CustomerDetails";
+import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
+import CustomerProfile from "./pages/Customer/CustomerProfile";
+import DriverProfilePage from "./pages/Driver/DriverProfile";
 
 
 
@@ -46,6 +50,10 @@ const App = () => {
         <Route path="/menus" element={<MenuListByRestaurant />} />
         {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
 
+        <Route path="customer" element={<CustomerDetails />} />
+        <Route path="driver" element={<DeliveryDriverDetails />} />
+        <Route path="customer/profile" element={<CustomerProfile/>} />
+        <Route path="driver/profile" element={<DriverProfilePage/>} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"
@@ -60,6 +68,7 @@ const App = () => {
           <Route path="customers" element={<ManageCustomers />} />
           <Route path="drivers" element={<ManageDrivers />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
+
         </Route>
 
         {/* Fallback - 404 */}
