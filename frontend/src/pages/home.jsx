@@ -8,6 +8,9 @@ import TempImage from "../assets/Images/temp_restaurant_image.jpg";
 import Slider from "../components/Slider";
 import Footer from "../components/Footer";
 
+import deliveyRiderImg from '../assets/Images/delivey rider image.jpg'
+import restuarentOwnerImage from "../assets/Images/restuarent owner image.jpg"
+
 const Home = () => {
   // Sample data for categories
   const categories = [
@@ -139,6 +142,54 @@ const Home = () => {
           ))}
         </div>
       </div>
+
+      <section className="bg-white py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12">
+            Want to Join Partnership?
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Courier Card */}
+            <div className="rounded-lg overflow-hidden border-2 border-amber-500 relative">
+              <div className="h-80 relative">
+                <img
+                  src={deliveyRiderImg}
+                  alt="Delivery courier on motorcycle"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 p-6 w-full">
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    Join As Rider
+                  </h3>
+                  <button className="bg-[#EB4C40] hover:bg-[#FF6A5E] text-white px-6 py-3 rounded font-medium transition-colors">
+                    LEARN MORE
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Merchant Card */}
+            <div className="rounded-lg overflow-hidden border-2 border-amber-500 relative">
+              <div className="h-80 relative">
+                <img
+                  src={restuarentOwnerImage}
+                  alt="Restaurant merchant team"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 p-6 w-full">
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    Join As Merchant
+                  </h3>
+                  <button className="bg-[#EB4C40] hover:bg-[#FF6A5E] text-white px-6 py-3 rounded font-medium transition-colors">
+                    LEARN MORE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <Footer />
