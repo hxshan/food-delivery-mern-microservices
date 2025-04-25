@@ -19,4 +19,4 @@ spec:
             - containerPort:5004
           env: 
             - name: MONGO_URI
-              value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/"
+              value: "mongodb+srv://it22316318:3FAvelOxgg8KmsNz@ordercomponent.aquovjx.mongodb.net/"
