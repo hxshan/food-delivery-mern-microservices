@@ -1,26 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useVerifyOtp } from '../hooks/useVerifyOTP';
+import { useOTPDriver } from '../hooks/useOTPDriver';
 import axios from '../api/axios';
 
-const OtpVerification = () => {
+const DriverOtpVerification = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [notification, setNotification] = useState({
     show: false,
     type: '',
     message: ''
   });
+  const [userEmail, setUserEmail] = useState('');
 
-  const { verifyOtp, isLoading, error } = useVerifyOtp();
+  const { verifyOtp, isLoading, error } = useOTPDriver();
   const { userId } = useParams();
+  const navigate = useNavigate();
 
-  console.log(userId)
   const [resendLoading, setResendLoading] = useState(false);
 
   const inputRefs = useRef([]);
   const formRef = useRef(null);
 
+  // Focus first input and setup paste event
   useEffect(() => {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
@@ -100,7 +102,21 @@ const OtpVerification = () => {
       
       if (result.success) {
         showNotification('success', result.message);
-        // Navigation is handled in the hook
+        
+        // For driver, we just show success and let the hook handle redirect
+        // No need to store token or user data in local storage for drivers
+        // The hook will redirect to login with a pending approval message
+        
+        setTimeout(() => {
+          navigate('/login', { 
+            state: { 
+              notification: {
+                type: 'success',
+                message: 'Your email has been verified! Your driver account is now pending approval. We will notify you once approved.'
+              }
+            }
+          });
+        }, 3000);
       } else {
         showNotification('error', result.message);
       }
@@ -117,7 +133,7 @@ const OtpVerification = () => {
     
     try {
       setResendLoading(true);
-      await axios.post('/auth/customer/resend-otp', { 
+      await axios.post('/auth/driver/resend-otp', { 
         userId: userId,
       }, {
         headers: {
@@ -166,14 +182,18 @@ const OtpVerification = () => {
       
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <div className="mb-6">
-          <Link to="/signup" className="flex items-center text-gray-600 hover:text-red-500 transition duration-200">
+          <Link to="/driver/signup" className="flex items-center text-gray-600 hover:text-red-500 transition duration-200">
             <ArrowLeft size={20} className="mr-2" />
-            <span>Back to Sign Up</span>
+            <span>Back to Driver Sign Up</span>
           </Link>
         </div>
         
         <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Verify Your Email</h1>
-        <p className="text-gray-600 mb-6 text-center">Enter the 6-digit code we sent to your email</p>
+        <p className="text-gray-600 mb-2 text-center">Enter the 6-digit code we sent to your email</p>
+        
+        {userEmail && (
+          <p className="text-gray-700 font-medium mb-6 text-center">{userEmail}</p>
+        )}
         
         <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded">
           <p className="text-sm">You can paste your 6-digit code directly into the form</p>
@@ -220,8 +240,22 @@ const OtpVerification = () => {
               onClick={handleResendOtp}
               disabled={isLoading || resendLoading}
             >
-              {resendLoading ? 'Sending...' : 'Resend'}
+              {resendLoading ? (
+                <>
+                  <span className="inline-block w-3 h-3 border-2 border-red-500 border-t-transparent rounded-full animate-spin mr-1"></span>
+                  <span>Sending...</span>
+                </>
+              ) : (
+                'Resend'
+              )}
             </button>
+          </p>
+        </div>
+        
+        {/* Driver-specific information */}
+        <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded">
+          <p className="text-sm font-medium">
+            After verification, your driver account will need to be approved by an administrator before you can login.
           </p>
         </div>
       </div>
@@ -229,4 +263,4 @@ const OtpVerification = () => {
   );
 };
 
-export default OtpVerification;
+export default DriverOtpVerification;

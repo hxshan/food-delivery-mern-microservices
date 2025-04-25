@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Phone, Upload, ArrowLeft } from "lucide-react";
+import { User, Phone, Upload, ArrowLeft, AlertCircle, Check } from "lucide-react";
+import axios from "../../api/axios";
 
 const CustomerDetails = () => {
   const [firstName, setFirstName] = useState("");
@@ -8,11 +9,40 @@ const CustomerDetails = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
+  
   const navigate = useNavigate();
+  
+  // Get user data from localStorage
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (!userData || !userData.userId) {
+      // If no user data is found, redirect to login
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification({ show: false, type: "", message: "" });
+    }, 5000);
+  };
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        showNotification("error", "File size exceeds 2MB limit");
+        return;
+      }
+      
       setProfilePicture(file);
       const fileReader = new FileReader();
       fileReader.onload = () => {
@@ -22,14 +52,82 @@ const CustomerDetails = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically handle API call to save customer details
-    navigate("/dashboard"); // Navigate to dashboard or another appropriate page
+    setLoading(true);
+    
+    try {
+      // Get user data from localStorage
+      const userData = JSON.parse(localStorage.getItem("user"));
+      
+      if (!userData || !userData.userId) {
+        showNotification("error", "User information is missing. Please log in again.");
+        navigate("/login", { replace: true });
+        return;
+      }
+      
+      // Create profile data object
+      const profileData = {
+        userId: userData.userId,
+        firstName,
+        lastName,
+        phone: phoneNumber,
+      };
+      
+      // Make API call to save customer profile
+      const response = await axios.post("/user/customer/profile", profileData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userData.token}`
+        },
+        withCredentials: true
+      });
+      
+      
+      // Update user data in localStorage to mark profile as completed
+      userData.profileCompleted = true;
+      localStorage.setItem("user", JSON.stringify(userData));
+      
+      showNotification("success", "Profile saved successfully!");
+      
+      // Redirect to customer dashboard after a brief delay
+      setTimeout(() => {
+        navigate("/customer/profile", { replace: true });
+      }, 2000);
+      
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      const errorMessage = error?.response?.data?.message || "Failed to save profile. Please try again.";
+      showNotification("error", errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Notification popup */}
+      {notification.show && (
+        <div 
+          className={`fixed top-4 right-4 left-4 md:left-auto md:w-96 p-4 rounded-lg shadow-lg transition-all duration-300 z-50 flex items-center ${
+            notification.type === "success" ? "bg-green-50 border-l-4 border-green-500" : "bg-red-50 border-l-4 border-red-500"
+          }`}
+        >
+          <div className={`p-2 rounded-full mr-3 ${notification.type === "success" ? "bg-green-100" : "bg-red-100"}`}>
+            {notification.type === "success" ? (
+              <Check size={20} className="text-green-500" />
+            ) : (
+              <AlertCircle size={20} className="text-red-500" />
+            )}
+          </div>
+          <div className="flex-1">
+            <p className={`font-medium ${notification.type === "success" ? "text-green-800" : "text-red-800"}`}>
+              {notification.message}
+            </p>
+          </div>
+        </div>
+      )}
+      
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
           <div className="mb-6">
@@ -84,6 +182,7 @@ const CustomerDetails = () => {
                       accept="image/*"
                       className="hidden"
                       onChange={handleProfilePictureChange}
+                      disabled={loading}
                     />
                   </label>
                   <p className="text-xs text-gray-500 mt-1">
@@ -111,6 +210,7 @@ const CustomerDetails = () => {
                   className="pl-10 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter your first name"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -134,6 +234,7 @@ const CustomerDetails = () => {
                   className="pl-10 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter your last name"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -157,15 +258,24 @@ const CustomerDetails = () => {
                   className="pl-10 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter your phone number"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-200"
+              className="w-full bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition duration-200 flex items-center justify-center"
+              disabled={loading}
             >
-              Save Profile
+              {loading ? (
+                <>
+                  <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                  <span>Saving...</span>
+                </>
+              ) : (
+                "Save Profile"
+              )}
             </button>
           </form>
 
