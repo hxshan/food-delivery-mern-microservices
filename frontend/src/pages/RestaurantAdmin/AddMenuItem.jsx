@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { assets } from "../../assets/assets";
 import { toast } from 'react-toastify';
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 
 const AddMenuItem = () => {
    const [image, setImage] = useState(false);
@@ -28,7 +28,7 @@ const AddMenuItem = () => {
         console.log("Submitting:", { name: data.name, description: data.description, category: data.category,price : data.price });
     
     const hardcodeId ="6807a1957197e3db9f0ec50b";
-        const response = await api.post(`/${hardcodeId}/menu`, formData);
+        const response = await restaurantApi.post(`/${hardcodeId}/menu`, formData);
         console.log(response);
         if (response.data.success) {
           setData({
