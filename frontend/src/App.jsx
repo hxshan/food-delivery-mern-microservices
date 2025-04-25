@@ -22,6 +22,7 @@ import CustomerDetails from "./pages/Customer/CustomerDetails";
 import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
 import CustomerProfile from "./pages/Customer/CustomerProfile";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
+import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 
 
 
@@ -35,7 +36,6 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <Navbar />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
@@ -76,6 +76,7 @@ const App = () => {
 
         <Route path="/ResturentPage" element={<ResturentPage />} />
         <Route path="/ResturentList" element={<ResturantListing />} />
+        <Route path="/checkout" element={<OrderConfirmation />} />
       </Routes>
     </>
   );

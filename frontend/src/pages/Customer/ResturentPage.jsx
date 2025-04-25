@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, getCart } from "../../redux/slices/cartSlice"
@@ -10,6 +10,7 @@ import Cart from "../../components/Cart";
 import { X, Minus, Plus } from "lucide-react";
 
 import TempImage from "../../assets/Images/temp_restaurant_image.jpg";
+import { useCartOperations } from "../../utils/cartUtils";
 
 const menuItems = [
   {
@@ -150,12 +151,42 @@ const ResturentPage = () => {
   const dispatch = useDispatch();
   const cart =  useSelector(getCart)
 
+//   useEffect(() => {
+//   const testApi = async () => {
+//     try {
+//       const response = await fetch('http://localhost:8000/api/order/cart/', {
+//         method: 'GET',
+//         credentials: 'include',
+//         headers: {
+//           'Accept': 'application/json'
+//         }
+//       });
+      
+//       if (!response.ok) {
+//         console.error('Server responded with error:', response.status);
+//         const errorText = await response.text();
+//         console.error('Error details:', errorText);
+//         return;
+//       }
+      
+//       const data = await response.json();
+//       console.log('Success!', data);
+//     } catch (error) {
+//       console.error('Fetch error:', error);
+//     }
+//   };
+  
+//   testApi();
+// }, []);
+
   //Dish Custtomization
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("Regular");
   const [addOns, setAddOns] = useState([]);
+
+  const { addItemToCart, isAddingToCart } = useCartOperations();
 
   const handleSelectedItem = (item) => {
     setSelectedItem(item);
@@ -191,7 +222,7 @@ const ResturentPage = () => {
     console.log(isOpen);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     console.log("Added to cart:", {
       item: selectedItem.name,
       quantity,
@@ -205,7 +236,7 @@ const ResturentPage = () => {
     );
 
     const cartItem = {
-      id: Date.now(), // temporary id
+      id: Date.now(),
       name: selectedItem.name,
       price: selectedItem.price,
       image: selectedItem.image,
@@ -216,16 +247,18 @@ const ResturentPage = () => {
       addOnsPrices: addOnsArray.map((a) => a.price),
     };
 
-    dispatch(
-      addToCart({
-        item: cartItem,
-        restaurantId: "hilton-colombo", // You should get this from your restaurant data
-        restaurantName: "Hilton Colombo",
-      })
-    );
+    const result = await addItemToCart(cartItem, "hilton-colombo", "Hilton Colombo");
 
-    console.log("Cart" , cart)
 
+    if (result.success) {
+      console.log("result: ", result)
+      console.log("Cart" , cart)
+
+    } else {
+      console.log("result: error", )
+    }
+
+    setAddOns([]);
     setIsOpen(!isOpen);
   };
   return (
