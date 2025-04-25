@@ -12,13 +12,6 @@ import deliveyRiderImg from '../assets/Images/delivey rider image.jpg'
 import restuarentOwnerImage from "../assets/Images/restuarent owner image.jpg"
 
 const Home = () => {
-  // Sample data for categories
-  const categories = [
-    { id: 1, name: "Pizza", image: "/images/pizza.jpg" },
-    { id: 2, name: "Pizza", image: "/images/pizza.jpg" },
-    { id: 3, name: "Pizza", image: "/images/pizza.jpg" },
-    { id: 4, name: "Pizza", image: "/images/pizza.jpg" },
-  ];
 
   // Sample data for restaurants
   const restaurants = [
