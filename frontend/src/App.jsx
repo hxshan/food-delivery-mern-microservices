@@ -23,6 +23,7 @@ import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
 import CustomerProfile from "./pages/Customer/CustomerProfile";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import MapScreen from "./pages/Customer/MapScreen";
 
 
 
@@ -77,6 +78,7 @@ const App = () => {
         <Route path="/ResturentPage" element={<ResturentPage />} />
         <Route path="/ResturentList" element={<ResturantListing />} />
         <Route path="/checkout" element={<OrderConfirmation />} />
+        <Route path="/map" element={<MapScreen />} />
       </Routes>
     </>
   );

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCart, selectCart } from "../../redux/slices/cartSlice";
 import Navbar from "../../components/Navbar";
 import {
   CreditCard,
@@ -12,13 +10,29 @@ import {
   CheckCircle,
 } from "lucide-react";
 import Swal from "sweetalert2";
+import {
+  useGetCartQuery,
+  useClearCartMutation,
+} from "../../redux/slices/cartApi";
 
-import orderProcessImg from "../../assets/Images/order_process.png"
+import orderProcessImg from "../../assets/Images/order_process.png";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const cart = useSelector(selectCart);
+
+  // RTK Query hooks
+  const {
+    data: cart = {
+      items: [],
+      total: 0,
+      subtotal: 0,
+      tax: 0,
+      deliveryFee: 0,
+      restaurantName: "",
+    },
+  } = useGetCartQuery();
+  const [clearCart] = useClearCartMutation();
+
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -101,25 +115,27 @@ const OrderConfirmation = () => {
     }
 
     const confirm = await Swal.fire({
-        title: 'Do you confirm the order?',
-        text: 'Your delicious meal will be on its way soon!',
-        imageUrl: orderProcessImg,
-        imageWidth: 300,
-        imageHeight: 200,
-        imageAlt: 'Food delivery animation',
-        showCancelButton: true,
-        confirmButtonText: 'Confirm Order',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#ffffff',
-        cancelButtonColor: '#d33',
-        confirmButtonTextColor: '#000000',
-        customClass: {
-          confirmButton: 'swal2-confirm-white'
-        },
-      })
-      
-      // Add custom CSS for white confirm button with black text
-      document.head.insertAdjacentHTML('beforeend', `
+      title: "Do you confirm the order?",
+      text: "Your delicious meal will be on its way soon!",
+      imageUrl: orderProcessImg,
+      imageWidth: 300,
+      imageHeight: 200,
+      imageAlt: "Food delivery animation",
+      showCancelButton: true,
+      confirmButtonText: "Confirm Order",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ffffff",
+      cancelButtonColor: "#d33",
+      confirmButtonTextColor: "#000000",
+      customClass: {
+        confirmButton: "swal2-confirm-white",
+      },
+    });
+
+    // Add custom CSS for white confirm button with black text
+    document.head.insertAdjacentHTML(
+      "beforeend",
+      `
         <style>
           .swal2-confirm-white {
             color: black !important;
@@ -127,7 +143,8 @@ const OrderConfirmation = () => {
             border: 1px solid #d4d4d4 !important;
           }
         </style>
-      `);
+      `
+    );
 
     if (confirm.isConfirmed) {
       console.log("Order submitted:", {
@@ -137,12 +154,13 @@ const OrderConfirmation = () => {
       });
 
       setOrderPlaced(true);
-
-      setTimeout(() => {
-        dispatch(clearCart());
-      }, 10000);
     }
   };
+
+  const handleNavigate = () => {
+    clearCart();
+    navigate("/map");
+  }
 
   if (orderPlaced) {
     return (
@@ -168,9 +186,9 @@ const OrderConfirmation = () => {
             </p>
             <button
               className="bg-red-500 text-white px-8 py-3 rounded-md font-medium hover:bg-red-600 transition"
-              onClick={() => navigate("/")}
+              onClick={handleNavigate}
             >
-              Return to Home
+              Track Order
             </button>
           </div>
         </div>
