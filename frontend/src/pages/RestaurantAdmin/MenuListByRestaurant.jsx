@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 //import { useParams } from 'react-router-dom';
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 
 const MenuListByRestaurant = () => {
   //const { id } = useParams(); 
@@ -10,7 +10,7 @@ const MenuListByRestaurant = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await api.get(`/${hardcodeId}`);
+        const res = await restaurantApi.get(`/${hardcodeId}`);
         setRestaurant(res.data);
       } catch (err) {
         console.error('Error fetching menu list', err);
