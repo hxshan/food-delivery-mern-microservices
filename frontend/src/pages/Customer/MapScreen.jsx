@@ -29,19 +29,7 @@ const MapScreen = () => {
 
   if (!isLoaded) return <div>Loading map...</div>;
 
-    // const [currentTime, setCurrentTime] = useState(new Date());
-    // const [deliveryProgress, setDeliveryProgress] = useState(35);
-    
-    // Simulate updating the time
-    // useEffect(() => {
-    //   const timer = setInterval(() => {
-    //     setCurrentTime(new Date());
-    //     // Simulate delivery progress
-    //     setDeliveryProgress(prev => Math.min(prev + 1, 100));
-    //   }, 10000);
-      
-    //   return () => clearInterval(timer);
-    // }, []);
+  
     
     return (
       <div className="flex flex-col h-screen bg-gray-50">

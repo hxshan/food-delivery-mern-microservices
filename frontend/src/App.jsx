@@ -35,7 +35,7 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
