@@ -1,21 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { Map, Truck, Clock, Phone, Navigation } from 'lucide-react';
 import Navbar from '../../components/Navbar';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import socket from '../../services/socketService';
+
+const containerStyle = {
+  width: '100%',
+  height: '100%',
+};
 
 const MapScreen = () => {
-    // const [currentTime, setCurrentTime] = useState(new Date());
-    // const [deliveryProgress, setDeliveryProgress] = useState(35);
-    
-    // Simulate updating the time
-    // useEffect(() => {
-    //   const timer = setInterval(() => {
-    //     setCurrentTime(new Date());
-    //     // Simulate delivery progress
-    //     setDeliveryProgress(prev => Math.min(prev + 1, 100));
-    //   }, 10000);
-      
-    //   return () => clearInterval(timer);
-    // }, []);
+  const [driverLocation, setDriverLocation] = useState(null);
+  const [userLocation, setUserLocation] = useState({ lat: 40.741, lng: -73.935 });
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
+  useEffect(() => {
+    socket.emit('join-order-room', { orderId: '1234' }); // Subscribe to driver updates for this order
+
+    socket.on('driver-location-update', (location) => {
+      setDriverLocation(location);
+    });
+
+    return () => {
+      socket.off('driver-location-update');
+    };
+  }, []);
+
+  if (!isLoaded) return <div>Loading map...</div>;
+
+  
     
     return (
       <div className="flex flex-col h-screen bg-gray-50">
@@ -23,34 +37,18 @@ const MapScreen = () => {
         
         {/* Map Section */}
         <div className="relative flex-grow bg-gray-200">
-          {/* Map Placeholder */}
-          <div className="absolute inset-0 bg-blue-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-lg p-4 flex items-center">
-              <Map className="text-[#EB4C40] mr-2" />
-            </div>
-          </div>
-          
-          {/* Floating ETA Card */}
-          {/* <div className="absolute top-4 left-4 right-4 bg-white rounded-lg shadow-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center">
-                <Clock className="text-[#EB4C40] mr-2" />
-                <span className="font-medium">Estimated Arrival</span>
-              </div>
-              <div className="text-lg font-bold">{currentTime.getHours() % 12 || 12}:{String(currentTime.getMinutes()).padStart(2, '0')} {currentTime.getHours() >= 12 ? 'PM' : 'AM'}</div>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-[#EB4C40] h-2 rounded-full" 
-                style={{ width: `${deliveryProgress}%` }}
-              ></div>
-            </div>
-            <div className="flex justify-between mt-1 text-xs text-gray-500">
-              <span>Order Confirmed</span>
-              <span>On the way</span>
-              <span>Arrived</span>
-            </div>
-          </div> */}
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={driverLocation || userLocation}
+          zoom={14}
+        >
+          {driverLocation && (
+            <Marker position={driverLocation} icon={{ url: '/driver-icon.png' }} />
+          )}
+          {userLocation && (
+            <Marker position={userLocation} icon={{ url: '/user-icon.png' }} />
+          )}
+        </GoogleMap>
         </div>
         
         {/* Rider Information */}
