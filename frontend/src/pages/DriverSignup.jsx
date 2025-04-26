@@ -193,7 +193,7 @@ const DriverSignup = () => {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-red-500 hover:underline font-medium">
+            <Link to="/driverLogin" className="text-red-500 hover:underline font-medium">
               Sign In
             </Link>
           </p>
