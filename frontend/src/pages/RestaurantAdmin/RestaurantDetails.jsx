@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { api } from "../../services/api";
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const RestaurantDetails = () => {
+  const { id } = useParams();
   const [restaurant, setRestaurant] = useState([]);
-  const hardcodeId = "6807a1957197e3db9f0ec50b";
+  //const hardcodeId = "6807a1957197e3db9f0ec50b";
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ const RestaurantDetails = () => {
       ...prev,
       isOpen: !isOpen
     }));
-    const updated = await api.put(`/${hardcodeId}/availability`, { isOpen: !isOpen });
+    const updated = await api.put(`/${id}/availability`, { isOpen: !isOpen });
     setRestaurant(restaurant.map(r => (r._id === id ? updated.data.restaurant : r)));
   };
 
@@ -33,7 +34,7 @@ const RestaurantDetails = () => {
       if (response.data.message) {
         toast.success(response.data.message);
 
-        const res = await api.get(`/get/${hardcodeId}`);
+        const res = await api.get(`/get/${id}`);
         setRestaurant(res.data.restaurant || res.data);
       }
     } catch (error) {
@@ -49,7 +50,7 @@ const RestaurantDetails = () => {
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        const res = await api.get(`/get/${hardcodeId}`);
+        const res = await api.get(`/get/${id}`);
         setRestaurant(res.data.restaurant || res.data);
         console.log("Restaurant data:", res.data);
         console.log("Menu items:", res.data.restaurant?.menuItems || res.data.menuItems);
@@ -61,7 +62,7 @@ const RestaurantDetails = () => {
       }
     };
     fetchRestaurant();
-  }, [hardcodeId]);
+  }, [id]);
 
   if (loading) {
     return <div className="p-6 text-center">Loading restaurant...</div>;

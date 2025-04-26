@@ -26,6 +26,7 @@ import CustomerProfile from "./pages/Customer/CustomerProfile";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
 import RestaurantsInfo from "./pages/Admin/RestaurantsInfo";
 import RestaurantMenus from "./pages/Admin/RestaurantMenus";
+import RestaurantAdminDashboard from "./pages/RestaurantAdmin/RestaurantAdminDashboard";
 
 
 
@@ -54,6 +55,7 @@ const App = () => {
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
         <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 
+        <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
 
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />

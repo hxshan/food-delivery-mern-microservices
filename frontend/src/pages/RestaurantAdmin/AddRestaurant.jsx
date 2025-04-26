@@ -13,6 +13,7 @@ const AddRestaurant = () => {
     name: '', 
     address: '', 
     isOpen: false,
+    
    
   });
 
