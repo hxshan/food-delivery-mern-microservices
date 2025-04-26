@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { assets } from "../../assets/assets";
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 
 const AddMenuItem = () => {
   const { id } = useParams();

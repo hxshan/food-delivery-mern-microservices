@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { api } from "../../services/api";
-import Sidebar from "../../components/Sidebar/Sidebar";
+import { restaurantApi } from "../../services/restaurantApi";
 
 const AddRestaurant = () => {
   const navigate = useNavigate();
@@ -35,9 +34,10 @@ const AddRestaurant = () => {
     formData.append("isOpen", data.isOpen);
     formData.append("image", image);
 
-    console.log("Submitting:", { ...data });
+    
 
-    const response = await api.post('/add', formData);
+
+    const response = await restaurantApi.post('/add', formData);
     console.log(response);
     
     if (response.data.success) {

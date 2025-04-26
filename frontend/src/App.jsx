@@ -27,7 +27,12 @@ import DriverProfilePage from "./pages/Driver/DriverProfile";
 import RestaurantsInfo from "./pages/Admin/RestaurantsInfo";
 import RestaurantMenus from "./pages/Admin/RestaurantMenus";
 import RestaurantAdminDashboard from "./pages/RestaurantAdmin/RestaurantAdminDashboard";
-
+import DriverSignup from "./pages/DriverSignup";
+import DriverOtpVerification from "./pages/DriverOtpVerification"
+import DriverLogin from "./pages/DriverLogin"
+import RestaurantLogin from "./pages/RestaurantLogin"
+import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
+import RestaurantSignup from "./pages/RestaurantSignup"
 
 
 // Auth wrapper for protected routes
@@ -40,14 +45,24 @@ const App = () => {
   return (
     <>
       <ToastContainer />
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         {/* Public Routes */}
-        
+        <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
-        <Route path="/signin" element={<Login />} />
+        <Route path="/driverLogin" element={<DriverLogin />} />
+        <Route path="/restaurantLogin" element={<RestaurantLogin />} />
+
         <Route path="/signup" element={<Signup />} />
-        <Route path="/verify-otp" element={<OtpVerification />} />
+        <Route path="/driverSignup" element={<DriverSignup />} />
+        <Route path="/restaurantSignup" element={<RestaurantSignup />} />
+
+        <Route path="/verify-otp/:userId" element={<OtpVerification />} />
+        <Route path="/driver-otp/:userId" element={<DriverOtpVerification />} />
+        <Route path="/restaurant-otp/:userId" element={<RestaurantOtpVerification />} />
+
+        
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu/:id" element={<AddMenuItem />} />
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />

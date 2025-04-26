@@ -16,7 +16,7 @@ spec:
         - name: user
           image: hxshxn/auth-service:latest
           ports:
-            - containerPort:5002
+            - containerPort: 5002
           env: 
             - name: MONGO_URI
-              value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/"
+              value: "mongodb+srv://wajeenpc:Aa1234aA@cluster0.j6vablp.mongodb.net/"
