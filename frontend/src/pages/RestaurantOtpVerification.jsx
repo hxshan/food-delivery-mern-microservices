@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useOTPDriver } from '../hooks/useOTPDriver';
+import { useOTPRestaurant } from '../hooks/useOTPRestaurant';
 import axios from '../api/axios';
 
-const DriverOtpVerification = () => {
+const RestaurantOtpVerification = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [notification, setNotification] = useState({
     show: false,
@@ -13,7 +13,7 @@ const DriverOtpVerification = () => {
   });
   const [userEmail, setUserEmail] = useState('');
 
-  const { verifyOtp, isLoading, error } = useOTPDriver();
+  const { verifyOtp, isLoading, error } = useOTPRestaurant();
   const { userId } = useParams();
   const navigate = useNavigate();
 
@@ -103,16 +103,15 @@ const DriverOtpVerification = () => {
       if (result.success) {
         showNotification('success', result.message);
         
-        // For driver, we just show success and let the hook handle redirect
-        // No need to store token or user data in local storage for drivers
-        // The hook will redirect to login with a pending approval message
+        // For restaurant, we just show success and let the hook handle redirect
+        // No need to store token or user data in local storage at this stage
         
         setTimeout(() => {
-          navigate('/driverLogin', { 
+          navigate('/restaurantLogin', { 
             state: { 
               notification: {
                 type: 'success',
-                message: 'Your email has been verified! Your driver account is now pending approval. We will notify you once approved.'
+                message: 'Your email has been verified! Your restaurant account is now pending approval. We will notify you once approved.'
               }
             }
           });
@@ -133,7 +132,7 @@ const DriverOtpVerification = () => {
     
     try {
       setResendLoading(true);
-      await axios.post('/auth/driver/resend-otp', { 
+      await axios.post('/auth/restaurant/resend-otp', { 
         userId: userId,
       }, {
         headers: {
@@ -182,9 +181,9 @@ const DriverOtpVerification = () => {
       
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <div className="mb-6">
-          <Link to="/driver/signup" className="flex items-center text-gray-600 hover:text-red-500 transition duration-200">
+          <Link to="/restaurantSignup" className="flex items-center text-gray-600 hover:text-red-500 transition duration-200">
             <ArrowLeft size={20} className="mr-2" />
-            <span>Back to Driver Sign Up</span>
+            <span>Back to Restaurant Sign Up</span>
           </Link>
         </div>
         
@@ -252,10 +251,10 @@ const DriverOtpVerification = () => {
           </p>
         </div>
         
-        {/* Driver-specific information */}
+        {/* Restaurant-specific information */}
         <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded">
           <p className="text-sm font-medium">
-            After verification, your driver account will need to be approved by an administrator before you can login.
+            After verification, your restaurant account will need to be approved by an administrator before you can login.
           </p>
         </div>
       </div>
@@ -263,4 +262,4 @@ const DriverOtpVerification = () => {
   );
 };
 
-export default DriverOtpVerification;
+export default RestaurantOtpVerification;

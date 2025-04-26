@@ -4,7 +4,7 @@ import { Mail, Lock, ArrowLeft, Check, AlertTriangle } from "lucide-react";
 import axios from "../api/axios";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-const DriverLogin = () => {
+const RestaurantLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { dispatch } = useAuthContext();
@@ -62,7 +62,7 @@ const DriverLogin = () => {
     setError("");
 
     try {
-      const res = await axios.post("/auth/driver/login", credentials, {
+      const res = await axios.post("/auth/restaurant/login", credentials, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -71,9 +71,9 @@ const DriverLogin = () => {
 
       const userData = res.data;
       
-      // Specifically check for pending driver status
-      if (userData.roleStatus && userData.roleStatus.driver === "pending") {
-        showNotification("warning", "Your driver account is pending approval. We'll notify you once approved.");
+      // Specifically check for pending restaurant status
+      if (userData.roleStatus && userData.roleStatus.restaurant === "pending") {
+        showNotification("warning", "Your restaurant account is pending approval. We'll notify you once approved.");
         setLoading(false);
         return;
       }
@@ -94,9 +94,9 @@ const DriverLogin = () => {
       // Show success notification
       showNotification("success", "Login successful! Redirecting to dashboard...");
       
-      // Redirect to driver dashboard
+      // Redirect to restaurant dashboard
       setTimeout(() => {
-        navigate("/driver", { replace: true });
+        navigate("/restaurant", { replace: true });
       }, 1500);
       
     } catch (err) {
@@ -106,9 +106,9 @@ const DriverLogin = () => {
       
       // Handle specific error cases
       if (errorMessage.includes("pending approval")) {
-        showNotification("warning", "Your driver account is pending approval. We'll notify you once approved.");
-      } else if (errorMessage.includes("not registered as a driver")) {
-        showNotification("error", "You are not registered as a driver. Please sign up first.");
+        showNotification("warning", "Your restaurant account is pending approval. We'll notify you once approved.");
+      } else if (errorMessage.includes("not registered as a restaurant")) {
+        showNotification("error", "You are not registered as a restaurant. Please sign up first.");
       } else if (errorMessage.includes("Email not verified")) {
         showNotification("warning", "Please verify your email before logging in.");
         
@@ -176,7 +176,7 @@ const DriverLogin = () => {
         </div>
 
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          Driver Login
+          Restaurant Login
         </h1>
 
         {error && !notification.show && (
@@ -245,7 +245,7 @@ const DriverLogin = () => {
                 <span>Logging In...</span>
               </>
             ) : (
-              "Log In as Driver"
+              "Log In to Restaurant"
             )}
           </button>
         </form>
@@ -253,8 +253,8 @@ const DriverLogin = () => {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don't have an account?{" "}
-            <Link to="/driverSignup" className="text-red-500 hover:underline font-medium">
-              Sign Up as Driver
+            <Link to="/restaurantSignup" className="text-red-500 hover:underline font-medium">
+              Register Restaurant
             </Link>
           </p>
         </div>
@@ -269,4 +269,4 @@ const DriverLogin = () => {
   );
 };
 
-export default DriverLogin;
+export default RestaurantLogin;
