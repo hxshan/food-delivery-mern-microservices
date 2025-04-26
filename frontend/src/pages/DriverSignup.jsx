@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowLeft, Check } from "lucide-react";
 import axios from "../api/axios";
 
-const Signup = () => {
+const DriverSignup = () => {
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
@@ -40,7 +40,7 @@ const Signup = () => {
     setError("");
   
     try {
-      const res = await axios.post("/auth/customer/signup", userData, {
+      const res = await axios.post("/auth/driver/signup", userData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,45 +49,27 @@ const Signup = () => {
   
       const { message, userId } = res.data;
       
-      // Handle all possible successful responses
-      if (message?.toLowerCase().includes("user registered successfully") || 
-          message?.toLowerCase().includes("verification code has been resent")) {
-        
-        // Show appropriate notification message
-        const notificationMsg = message?.toLowerCase().includes("resent") 
-          ? "Verification code has been resent to your email!" 
-          : "OTP has been sent to your email!";
-        
-        showNotification("success", notificationMsg);
-  
-        // Navigate to OTP verification page
-        setTimeout(() => {
-          navigate(`/verify-otp/${userId}`, {
-            replace: true,
-          });
-        }, 2000);
+      // Handle successful response with a single notification based on message content
+      if (message?.toLowerCase().includes("verification code has been resent")) {
+        showNotification("success", "Verification code has been resent to your email!");
       } else if (message?.toLowerCase().includes("role added to your account")) {
-        // Handle case where user added a new role to existing account
         showNotification("success", message);
-        
-        // Redirect to login or dashboard depending on your flow
-        setTimeout(() => {
-          navigate("/login", { replace: true });
-        }, 2000);
       } else {
-        // Handle any other success responses
-        showNotification("success", message || "Account action completed successfully!");
-        
-        if (userId) {
-          setTimeout(() => {
-            navigate(`/verify-otp/${userId}`, { replace: true });
-          }, 2000);
-        } else {
-          setTimeout(() => {
-            navigate("/login", { replace: true });
-          }, 2000);
-        }
+        // Default success message for new registration
+        showNotification("success", "OTP has been sent to your email!");
       }
+      
+      // Navigate based on response type
+      setTimeout(() => {
+        if (message?.toLowerCase().includes("role added to your account")) {
+          navigate("/driverLogin", { replace: true });
+        } else if (userId) {
+          navigate(`/driver-otp/${userId}`, { replace: true });
+        } else {
+          navigate("/driverLogin", { replace: true });
+        }
+      }, 2000);
+      
     } catch (err) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || err?.response?.data?.error || "Signup failed";
@@ -134,7 +116,7 @@ const Signup = () => {
         </div>
 
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          Create an Account
+          Become a Driver
         </h1>
 
         {error && (
@@ -203,7 +185,7 @@ const Signup = () => {
                 <span>Signing Up...</span>
               </>
             ) : (
-              "Sign Up"
+              "Sign Up as Driver"
             )}
           </button>
         </form>
@@ -221,4 +203,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default DriverSignup;
