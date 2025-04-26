@@ -95,6 +95,7 @@ const RestaurantDetails = () => {
             {restaurant.isOpen ? 'Open' : 'Closed'}
           </span>
         </p>
+        <p>⭐ Rating: {restaurant.rating}</p>
         <button
             className="mt-2 px-3 py-1 bg-blue-500 hover:bg-blue-600 cursor-pointer text-white rounded"
             onClick={() => toggleAvailability(restaurant.hardcodeId, restaurant.isOpen)}

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-import Home from "./pages/home";
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
@@ -18,12 +18,14 @@ import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails";
 import UpdateMenuItem from "./pages/RestaurantAdmin/UpdateMenuItem";
 import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
-import ResturentPage from "./pages/Customer/ResturentPage";
+
 import ResturantListing from "./pages/Customer/ResturentListPage";
 import CustomerDetails from "./pages/Customer/CustomerDetails";
 import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
 import CustomerProfile from "./pages/Customer/CustomerProfile";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
+import RestaurantsInfo from "./pages/Admin/RestaurantsInfo";
+import RestaurantMenus from "./pages/Admin/RestaurantMenus";
 
 
 
@@ -40,17 +42,18 @@ const App = () => {
       <Navbar />
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu" element={<AddMenuItem />} />
-        {/* <Route path="/restaurants-info" element={<RestaurantsInfo />} />
-        <Route path="/restaurant-details" element={<RestaurantDetails />} /> */}
+        <Route path="/restaurants-info" element={<RestaurantsInfo />} />
+        <Route path="/restaurant-details" element={<RestaurantDetails />} /> 
+        <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
-        {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
+        <Route path="/update-menu-item" element={<UpdateMenuItem />} /> 
 
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />
@@ -76,7 +79,7 @@ const App = () => {
         {/* Fallback - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
-        <Route path="/ResturentPage" element={<ResturentPage />} />
+        
         <Route path="/ResturentList" element={<ResturantListing />} />
       </Routes>
     </>
