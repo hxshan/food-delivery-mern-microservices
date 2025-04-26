@@ -37,7 +37,7 @@ const RestaurantInfo = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold text-center">All Restaurants</h2>
+      <h2 className="text-4xl font-bold text-center  text-[#FA5F55]">Restaurants</h2>
 
      
       <div className="my-6 flex justify-end">

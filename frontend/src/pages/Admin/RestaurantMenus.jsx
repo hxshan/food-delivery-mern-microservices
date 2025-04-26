@@ -28,7 +28,7 @@ const RestaurantMenus = () => {
     <div className="p-6 max-w-6xl mx-auto">
     
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <h2 className="text-2xl font-bold text-center sm:text-left mb-4 sm:mb-0">
+        <h2 className="text-2xl font-bold text-center text-[#FA5F55] sm:text-left mb-4 sm:mb-0">
           Menus for {restaurant.name}
         </h2>
 

@@ -48,12 +48,12 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-otp" element={<OtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
-        <Route path="/add-menu" element={<AddMenuItem />} />
+        <Route path="/add-menu/:id" element={<AddMenuItem />} />
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />
         <Route path="/restaurant-details" element={<RestaurantDetails />} /> 
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
-        <Route path="/update-menu-item" element={<UpdateMenuItem />} /> 
+        <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 
 
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />

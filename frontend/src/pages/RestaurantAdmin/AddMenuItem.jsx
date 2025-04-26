@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { assets } from "../../assets/assets";
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { api } from "../../services/api";
 
 const AddMenuItem = () => {
+  const { id } = useParams();
    const [image, setImage] = useState(false);
     const [data, setData] = useState({
       name: '',
@@ -16,6 +18,12 @@ const AddMenuItem = () => {
       const value = event.target.value;
       setData((data) => ({ ...data, [name]: value }));
     };
+    const onPriceChangeHandler = (event) => {
+      const value = event.target.value;
+      if (!isNaN(value)) {
+        setData((data) => ({ ...data, price: value }));
+      }
+    };
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         const formData = new FormData();
@@ -27,8 +35,8 @@ const AddMenuItem = () => {
     
         console.log("Submitting:", { name: data.name, description: data.description, category: data.category,price : data.price });
     
-    const hardcodeId ="6807a1957197e3db9f0ec50b";
-        const response = await api.post(`/${hardcodeId}/menu`, formData);
+    //const hardcodeId ="6807a1957197e3db9f0ec50b";
+        const response = await api.post(`/${id}/menu`, formData);
         console.log(response);
         if (response.data.success) {
           setData({
@@ -122,7 +130,7 @@ const AddMenuItem = () => {
             <div className="relative">
               <span className="absolute left-3 top-2">$</span>
               <input
-              onChange={onChangeHandler}
+              onChange={onPriceChangeHandler}
               value={data.price}
                 name="price"
                 type="number"

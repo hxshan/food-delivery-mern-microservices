@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { api } from "../../services/api";
 
 function UpdateMenuItem() {
+
   const { menuItemId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ function UpdateMenuItem() {
   });
 
   useEffect(() => {
-    // Fetch the menu item data
+    
     const fetchMenuItem = async () => {
       try {
         const response = await api.get(`/menu-item/${menuItemId}`);
@@ -31,7 +32,7 @@ function UpdateMenuItem() {
           category: item.category
         });
         
-        // Set image preview if it exists
+       
         if (item.image) {
           setImagePreview(`http://localhost:5003/uploads/${item.image}`);
         }
@@ -50,10 +51,19 @@ function UpdateMenuItem() {
   }, [menuItemId]);
 
   const onChangeHandler = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData((data) => ({ ...data, [name]: value }));
+    const { name, value } = event.target;
+  
+    if (name === "price") {
+      // Allow only numbers and optional decimal
+      const regex = /^\d*\.?\d*$/;
+      if (value === '' || regex.test(value)) {
+        setData((data) => ({ ...data, [name]: value }));
+      }
+    } else {
+      setData((data) => ({ ...data, [name]: value }));
+    }
   };
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -100,7 +110,9 @@ function UpdateMenuItem() {
   };
 
   if (loading) {
-    return <div className="p-6 text-center">Loading menu item...</div>;
+    return <div className="p-6 text-center">
+      <div className="spinner">Loading menu item...</div>
+      </div>;
   }
 
   return (
@@ -194,7 +206,7 @@ function UpdateMenuItem() {
           
           <div className="flex space-x-4">
             <button
-            onClick={onSubmitHandler}
+           
               type="submit"
               className="flex-1 bg-[#FA5F55] hover:bg-[#e04b42] text-white font-bold py-2 px-4 rounded-lg transition duration-200 mt-4"
             >
