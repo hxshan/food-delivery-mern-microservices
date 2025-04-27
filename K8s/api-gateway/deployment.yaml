@@ -16,7 +16,7 @@ spec:
         - name: auth
           image: hxshxn/api-gateway:latest
           ports:
-            - containerPort:5001
+            - containerPort: 5001
           env: 
             - name: PORT 
               value: "8000"
