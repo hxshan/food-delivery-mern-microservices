@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
 import Home from "./pages/home"
+import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
@@ -37,6 +38,9 @@ import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
 
+import RegistrationSelection from "./pages/RegistrationSelection";
+import LoginSelection from "./pages/LoginSelection";
+
 
 
 import ResturentPage from "./pages/Customer/ResturentPage";
@@ -62,7 +66,7 @@ const App = () => {
         <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
-        <Route path="/driverLogin" element={<DriverLogin />} />
+        <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
 
         <Route path="/signup" element={<Signup />} />
@@ -72,6 +76,9 @@ const App = () => {
         <Route path="/verify-otp/:userId" element={<OtpVerification />} />
         <Route path="/driver-otp/:userId" element={<DriverOtpVerification />} />
         <Route path="/restaurant-otp/:userId" element={<RestaurantOtpVerification />} />
+
+        <Route path="/registrationSelection" element={<RegistrationSelection />} />
+        <Route path="/loginSelection" element={<LoginSelection />} />
 
         
         <Route path="/add-restaurant" element={<AddRestaurant />} />
@@ -92,10 +99,10 @@ const App = () => {
         <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
 
 
-        <Route path="customer" element={<CustomerDetails />} />
-        <Route path="driver" element={<DeliveryDriverDetails />} />
-        <Route path="customer/profile" element={<CustomerProfile />} />
-        <Route path="driver/profile" element={<DriverProfilePage />} />
+        <Route path="/customer-details" element={<CustomerDetails />} />
+        <Route path="/driver-details" element={<DeliveryDriverDetails />} />
+        <Route path="/customer/profile" element={<CustomerProfile />} />
+        <Route path="/driver/profile" element={<DriverProfilePage />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"

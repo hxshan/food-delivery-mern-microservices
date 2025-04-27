@@ -25,37 +25,24 @@ export const useOTPDriver = () => {
         throw new Error('Invalid verification response');
       }
 
-      // Check role status for driver
-      const driverStatus = data?.roleStatus?.driver || "pending";
-      
-      // For drivers, we don't store the token or log them in automatically
-      // We just show a message that their account is pending approval
-      if (driverStatus === "pending") {
-        // Navigate to a waiting page or login page with a message
-        navigate('/driverLogin', { 
-          state: { 
-            notification: {
-              type: 'success',
-              message: 'Your email has been verified! Your driver account is now pending approval. We will notify you once approved.'
-            }
+      // Save user to local storage
+      localStorage.setItem('user', JSON.stringify(data));
+
+      // Update auth context
+      dispatch({ type: 'LOGIN', payload: data });
+
+      navigate('/driver-details', { 
+        state: { 
+          notification: {
+            type: 'success',
+            message: 'Your email has been verified!'
           }
-        });
-      } else {
-        // This case is unlikely to happen for new drivers, but handling it just in case
-        navigate('/driverLogin', { 
-          state: { 
-            notification: {
-              type: 'success',
-              message: 'Your email has been verified! You can now log in to your driver account.'
-            }
-          }
-        });
-      }
+        }
+      });
 
       return { 
         success: true, 
-        message: 'Email verification successful!', 
-        status: driverStatus 
+        message: 'Email verification successful!'
       };
 
     } catch (error) {

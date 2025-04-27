@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreVertical, Plus, Edit, Trash2, Check, X, AlertCircle, RefreshCw, Clock } from 'lucide-react';
+import { Search, RefreshCw , X} from 'lucide-react';
 import axios from 'axios';
 
 // Define API_URL without using process.env
@@ -103,38 +103,6 @@ const Select = ({ value, onChange, options, placeholder = 'Select option' }) => 
   );
 };
 
-const Modal = ({ isOpen, onClose, title, children, icon }) => {
-  if (!isOpen) return null;
-  
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
-        
-        <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
-        
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-          <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-            <div className="sm:flex sm:items-start">
-              {icon && (
-                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                  {icon}
-                </div>
-              )}
-              <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">{title}</h3>
-                <div className="mt-2">
-                  {children}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const ManageDrivers = () => {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -142,16 +110,11 @@ const ManageDrivers = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedDriver, setSelectedDriver] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
-  const [actionType, setActionType] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
   useEffect(() => {
     fetchDrivers();
-  }, [currentPage, statusFilter]);
+  }, [currentPage, statusFilter, searchTerm]);
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -168,22 +131,20 @@ const ManageDrivers = () => {
       if (statusFilter !== 'all') {
         queryParams += `&status=${statusFilter}`;
       }
-      if (searchTerm) {
-        queryParams += `&search=${searchTerm}`;
+      if (searchTerm.trim()) {
+        queryParams += `&search=${encodeURIComponent(searchTerm.trim())}`;
       }
       
       // Include role=driver to only get drivers
       queryParams += `&role=driver`;
-
+  
       const token = localStorage.getItem('token');
-      
-      // Make API request with correct endpoint
       const response = await axios.get(`${API_URL}/admin/users?${queryParams}`, {
         headers: { 
           Authorization: `Bearer ${token}`
         }
       });
-
+  
       setDrivers(response.data.users || []);
       setTotalPages(response.data.pagination?.pages || 1);
     } catch (error) {
@@ -192,7 +153,6 @@ const ManageDrivers = () => {
         error.response?.data?.message || "Failed to load drivers", 
         'error'
       );
-      
     } finally {
       setLoading(false);
     }
@@ -213,46 +173,29 @@ const ManageDrivers = () => {
     setCurrentPage(page);
   };
 
-  const openActionModal = (driver, action) => {
-    setSelectedDriver(driver);
-    setActionType(action);
-    setIsActionModalOpen(true);
-  };
-
-  const openDeleteModal = (driver) => {
-    setSelectedDriver(driver);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDriverAction = async () => {
-    if (!selectedDriver) return;
-    
-    setIsSubmitting(true);
+  const handleDriverStatusChange = async (driverId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      let endpoint, method, data, successMessage;
+      let endpoint, method, data;
       
-      switch (actionType) {
-        case 'activate':
-          endpoint = `${API_URL}/admin/users/${selectedDriver.userId}/reinstate`;
+      switch (newStatus) {
+        case 'active':
+          endpoint = `${API_URL}/admin/users/${driverId}/approve`;
           method = 'post';
           data = { role: 'driver' };
-          successMessage = "Driver activated successfully";
           break;
-        case 'deactivate':
-          endpoint = `${API_URL}/admin/users/${selectedDriver.userId}/suspend`;
+        case 'suspended':
+          endpoint = `${API_URL}/admin/users/${driverId}/suspend`;
           method = 'post';
           data = { role: 'driver', reason: 'Admin action' };
-          successMessage = "Driver deactivated successfully";
           break;
-        case 'ban':
-          endpoint = `${API_URL}/admin/users/${selectedDriver.userId}/ban`;
+        case 'banned':
+          endpoint = `${API_URL}/admin/users/${driverId}/ban`;
           method = 'post';
           data = { reason: 'Admin action' };
-          successMessage = "Driver banned successfully";
           break;
         default:
-          throw new Error('Invalid action type');
+          throw new Error('Invalid status');
       }
       
       await axios({
@@ -262,41 +205,14 @@ const ManageDrivers = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      showToast(successMessage);
-      setIsActionModalOpen(false);
+      showToast(`Driver status updated to ${newStatus}`);
       fetchDrivers();
     } catch (error) {
-      console.error(`Error ${actionType} driver:`, error);
+      console.error('Error updating driver status:', error);
       showToast(
-        error.response?.data?.message || `Failed to ${actionType} driver`, 
+        error.response?.data?.message || `Failed to update driver status`, 
         'error'
       );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteDriver = async () => {
-    setIsSubmitting(true);
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `${API_URL}/admin/users/${selectedDriver.userId}/ban`,
-        { reason: 'Account deleted by admin' },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      showToast("Driver has been permanently removed");
-      setIsDeleteModalOpen(false);
-      fetchDrivers();
-    } catch (error) {
-      console.error('Error deleting driver:', error);
-      showToast(
-        error.response?.data?.message || "Failed to delete driver", 
-        'error'
-      );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -326,37 +242,6 @@ const ManageDrivers = () => {
     }).format(date);
   };
 
-  const getActionTitle = () => {
-    switch (actionType) {
-      case 'activate': return 'Activate Driver Account';
-      case 'deactivate': return 'Deactivate Driver Account';
-      case 'ban': return 'Ban Driver Account';
-      default: return 'Confirm Action';
-    }
-  };
-
-  const getActionDescription = () => {
-    switch (actionType) {
-      case 'activate': 
-        return 'This will reactivate the driver account, allowing them to sign in and accept deliveries.';
-      case 'deactivate': 
-        return 'This will temporarily suspend the driver account. They will not be able to sign in or accept deliveries until reactivated.';
-      case 'ban': 
-        return 'This will permanently ban the driver account. This action cannot be undone.';
-      default: 
-        return 'Are you sure you want to proceed with this action?';
-    }
-  };
-
-  const getActionIcon = () => {
-    switch (actionType) {
-      case 'activate': return <Check className="h-6 w-6 text-green-500" />;
-      case 'deactivate': return <Clock className="h-6 w-6 text-amber-500" />;
-      case 'ban': return <AlertCircle className="h-6 w-6 text-red-500" />;
-      default: return <AlertCircle className="h-6 w-6 text-gray-500" />;
-    }
-  };
-
   const statusOptions = [
     { value: 'all', label: 'All Statuses' },
     { value: 'active', label: 'Active' },
@@ -366,17 +251,17 @@ const ManageDrivers = () => {
     { value: 'banned', label: 'Banned' }
   ];
 
+  const driverStatusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'suspended', label: 'Suspend' },
+    { value: 'banned', label: 'Ban' }
+  ];
+
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6">
           <h1 className="text-2xl font-bold">Manage Drivers</h1>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={() => {}} variant="secondary">
-              <Plus size={18} className="mr-2" />
-              <span>Add Driver</span>
-            </Button>
-          </div>
         </div>
         <div className="p-6">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -403,7 +288,12 @@ const ManageDrivers = () => {
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={() => fetchDrivers()}
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                  setCurrentPage(1);
+                  fetchDrivers();
+                }}
                 className="text-gray-500"
               >
                 <RefreshCw size={18} />
@@ -445,46 +335,12 @@ const ManageDrivers = () => {
                             {getStatusBadge(driver.roleStatus?.driver || driver.status)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right">
-                            <div className="flex justify-end items-center space-x-2">
-                              {(driver.status === 'inactive' || driver.status === 'suspended' || driver.roleStatus?.driver === 'inactive' || driver.roleStatus?.driver === 'suspended') && (
-                                <Button 
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-green-600 hover:bg-green-100 rounded"
-                                  onClick={() => openActionModal(driver, 'activate')}
-                                >
-                                  <Check size={18} />
-                                </Button>
-                              )}
-                              
-                              {(driver.status === 'active' || driver.roleStatus?.driver === 'active') && (
-                                <Button 
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-amber-600 hover:bg-amber-100 rounded"
-                                  onClick={() => openActionModal(driver, 'deactivate')}
-                                >
-                                  <Clock size={18} />
-                                </Button>
-                              )}
-                              
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                className="text-red-600 hover:bg-red-100 rounded"
-                                onClick={() => openDeleteModal(driver)}
-                              >
-                                <Trash2 size={18} />
-                              </Button>
-                              
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                className="text-blue-600 hover:bg-blue-100 rounded"
-                              >
-                                <MoreVertical size={18} />
-                              </Button>
-                            </div>
+                            <Select
+                              value={driver.roleStatus?.driver || driver.status}
+                              onChange={(newStatus) => handleDriverStatusChange(driver.userId, newStatus)}
+                              options={driverStatusOptions}
+                              className="w-32"
+                            />
                           </td>
                         </tr>
                       ))
@@ -528,93 +384,6 @@ const ManageDrivers = () => {
           )}
         </div>
       </div>
-      
-      {/* Driver Action Confirmation Modal */}
-      <Modal 
-        isOpen={isActionModalOpen} 
-        onClose={() => setIsActionModalOpen(false)}
-        title={getActionTitle()}
-        icon={getActionIcon()}
-      >
-        <div className="mt-2">
-          {selectedDriver && (
-            <p className="mb-2">
-              <span className="font-medium">{selectedDriver.name || selectedDriver.email}</span>
-            </p>
-          )}
-          <p className="text-sm text-gray-500">{getActionDescription()}</p>
-        </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <Button 
-            onClick={handleDriverAction} 
-            disabled={isSubmitting} 
-            className={`ml-3 ${
-              actionType === 'activate' ? 'bg-green-600 hover:bg-green-700' :
-              actionType === 'deactivate' ? 'bg-amber-600 hover:bg-amber-700' :
-              actionType === 'ban' ? 'bg-red-600 hover:bg-red-700' : ''
-            }`}
-          >
-            {isSubmitting ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Processing...
-              </div>
-            ) : (
-              `Confirm ${actionType === 'activate' ? 'Activation' : actionType === 'deactivate' ? 'Deactivation' : 'Ban'}`
-            )}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsActionModalOpen(false)}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
-      
-      {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Driver Account"
-        icon={<AlertCircle className="h-6 w-6 text-red-500" />}
-      >
-        <div className="mt-2">
-          {selectedDriver && (
-            <p className="mb-2">
-              Are you sure you want to delete <span className="font-medium">{selectedDriver.name || selectedDriver.email}</span>?
-            </p>
-          )}
-          <p className="text-sm text-gray-500">
-            This action cannot be undone. The driver will be permanently banned from the platform.
-          </p>
-        </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <Button 
-            variant="destructive" 
-            onClick={handleDeleteDriver}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Deleting...
-              </div>
-            ) : (
-              'Delete Driver'
-            )}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsDeleteModalOpen(false)}
-            disabled={isSubmitting}
-            className="mr-3"
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
       
       {/* Toast Notification */}
       {toast.show && (

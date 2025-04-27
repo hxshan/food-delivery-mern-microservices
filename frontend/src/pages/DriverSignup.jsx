@@ -43,8 +43,7 @@ const DriverSignup = () => {
       const res = await axios.post("/auth/driver/signup", userData, {
         headers: {
           "Content-Type": "application/json",
-        },
-        withCredentials: true,
+        }
       });
   
       const { message, userId } = res.data;
@@ -62,11 +61,11 @@ const DriverSignup = () => {
       // Navigate based on response type
       setTimeout(() => {
         if (message?.toLowerCase().includes("role added to your account")) {
-          navigate("/driverLogin", { replace: true });
+          navigate("/driver", { replace: true });
         } else if (userId) {
           navigate(`/driver-otp/${userId}`, { replace: true });
         } else {
-          navigate("/driverLogin", { replace: true });
+          navigate("/driver", { replace: true });
         }
       }, 2000);
       
