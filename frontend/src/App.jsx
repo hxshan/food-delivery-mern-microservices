@@ -30,9 +30,14 @@ import RestaurantAdminDashboard from "./pages/RestaurantAdmin/RestaurantAdminDas
 import DriverSignup from "./pages/DriverSignup";
 import DriverOtpVerification from "./pages/DriverOtpVerification";
 import DriverLogin from "./pages/DriverLogin";
-import UserProfile from "./pages/Customer/UserProfile";import RestaurantLogin from "./pages/RestaurantLogin"
+import UserProfile from "./pages/Customer/UserProfile";import MapScreen from "./pages/Customer/MapScreen"
+import DriverDashboard from "./pages/Driver/DriverDashboard";
+import DriverMapScreen from "./pages/Driver/DriverMapscreen";
+import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
+
+
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
@@ -76,8 +81,16 @@ const App = () => {
         <Route path="/restaurant-details/:id" element={<RestaurantDetails />} /> 
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
+
+        <Route path="/map" element={<MapScreen/>} />
+        <Route path="/driver/dashboard" element={<DriverDashboard/>} />
+        <Route path="/driver/map" element={<DriverMapScreen/>} />
+        {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
+
+
         <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 
         <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
+
 
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />
