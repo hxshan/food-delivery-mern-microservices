@@ -108,7 +108,7 @@ const DriverOtpVerification = () => {
         // The hook will redirect to login with a pending approval message
         
         setTimeout(() => {
-          navigate('/driverLogin', { 
+          navigate('/driver-details', { 
             state: { 
               notification: {
                 type: 'success',

@@ -19,4 +19,4 @@ spec:
             - containerPort: 5002
           env: 
             - name: MONGO_URI
-              value: "mongodb+srv://wajeenpc:Aa1234aA@cluster0.j6vablp.mongodb.net/"
+              value: "mongodb+srv://wajeenpc:Aa1234aA@cluster0.j6vablp.mongodb.net/test"
