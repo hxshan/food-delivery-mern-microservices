@@ -21,9 +21,9 @@ import DeliveryDriverDetails from "./pages/Driver/DeliveryDriverDetails";
 import CustomerProfile from "./pages/Customer/CustomerProfile";
 import DriverProfilePage from "./pages/Driver/DriverProfile";
 import DriverSignup from "./pages/DriverSignup";
-import DriverOtpVerification from "./pages/DriverOtpVerification"
-import DriverLogin from "./pages/DriverLogin"
-
+import DriverOtpVerification from "./pages/DriverOtpVerification";
+import DriverLogin from "./pages/DriverLogin";
+import UserProfile from "./pages/Customer/UserProfile";
 
 // Auth wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
@@ -47,16 +47,15 @@ const App = () => {
         <Route path="/driver-otp/:userId" element={<DriverOtpVerification />} />
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu" element={<AddMenuItem />} />
+        <Route path="/profile" element={<UserProfile />} />/
         {/* <Route path="/restaurants-info" element={<RestaurantsInfo />} /> */}
         {/* <Route path="/restaurant-details" element={<RestaurantDetails />} /> */}
         <Route path="/menus" element={<MenuListByRestaurant />} />
         {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
-
-
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />
-        <Route path="customer/profile" element={<CustomerProfile/>} />
-        <Route path="driver/profile" element={<DriverProfilePage/>} />
+        <Route path="customer/profile" element={<CustomerProfile />} />
+        <Route path="driver/profile" element={<DriverProfilePage />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"
@@ -71,9 +70,7 @@ const App = () => {
           <Route path="customers" element={<ManageCustomers />} />
           <Route path="drivers" element={<ManageDrivers />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
-
         </Route>
-
         {/* Fallback - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

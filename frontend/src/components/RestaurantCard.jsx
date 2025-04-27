@@ -11,7 +11,7 @@ const RestaurantCard = ({ restaurant }) => {
           className="w-full h-full object-cover"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = 'https://via.placeholder.com/150x150?text=Restaurant';
+            e.target.src = '';
           }}
         />
       </div>
