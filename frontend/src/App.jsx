@@ -44,6 +44,7 @@ import LoginSelection from "./pages/LoginSelection";
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import NotFound from "./pages/notFound";
 
 
 // Auth wrapper for protected routes
@@ -118,7 +119,7 @@ const App = () => {
           <Route path="restaurants" element={<ManageRestaurants />} />
         </Route>
         {/* Fallback - 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/a" element={<NotFound />} />
 
         
         <Route path="/ResturentList" element={<ResturantListing />} />
