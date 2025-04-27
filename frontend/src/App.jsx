@@ -37,6 +37,9 @@ import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
 
+import RegistrationSelection from "./pages/RegistrationSelection";
+import LoginSelection from "./pages/LoginSelection";
+
 
 
 import ResturentPage from "./pages/Customer/ResturentPage";
@@ -72,6 +75,9 @@ const App = () => {
         <Route path="/verify-otp/:userId" element={<OtpVerification />} />
         <Route path="/driver-otp/:userId" element={<DriverOtpVerification />} />
         <Route path="/restaurant-otp/:userId" element={<RestaurantOtpVerification />} />
+
+        <Route path="/registrationSelection" element={<RegistrationSelection />} />
+        <Route path="/loginSelection" element={<LoginSelection />} />
 
         
         <Route path="/add-restaurant" element={<AddRestaurant />} />
