@@ -126,7 +126,7 @@ const Home = () => {
           <h2 className="text-2xl font-semibold text-gray-800">
             Top Rated Restaurants
           </h2>
-          <a href="/ResturentList" className="text-[#EB4C40] text-sm">
+          <a href="/resturentlist" className="text-[#EB4C40] text-sm">
             View All
           </a>
         </div>

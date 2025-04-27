@@ -68,6 +68,7 @@ const RestaurantInfo = () => {
               <div>
                 <h3 className="text-xl font-semibold">{restaurant.name}</h3>
                 <p className="text-gray-600">{restaurant.address}</p>
+                
                 <p>
                   Status:{" "}
                   <span

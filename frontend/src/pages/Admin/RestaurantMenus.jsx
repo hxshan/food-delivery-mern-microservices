@@ -57,7 +57,7 @@ const RestaurantMenus = () => {
               )}
               <div>
                 <h3 className="font-semibold">{item.name}</h3>
-                <h3 className="font-sm  text-gray-600">{item.description}</h3>
+                <h3 className="font-sm  text-gray-600 ">{item.description}</h3>
                 <p className="text-sm  text-gray-600 ">{item.category}</p>
                 <p className="text-sm font-semibold">$ {item.price}</p>
               </div>

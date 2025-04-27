@@ -10,7 +10,7 @@ const CategoryCard = ({ category }) => {
           className="w-full h-24 object-cover"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = 'https://via.placeholder.com/128x96?text=Food';
+            e.target.src = '';
           }}
         />
         <div className="p-2 bg-white bg-opacity-80 text-center">

@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-
+import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
@@ -28,9 +28,9 @@ import RestaurantsInfo from "./pages/Admin/RestaurantsInfo";
 import RestaurantMenus from "./pages/Admin/RestaurantMenus";
 import RestaurantAdminDashboard from "./pages/RestaurantAdmin/RestaurantAdminDashboard";
 import DriverSignup from "./pages/DriverSignup";
-import DriverOtpVerification from "./pages/DriverOtpVerification"
-import DriverLogin from "./pages/DriverLogin"
-import MapScreen from "./pages/Customer/MapScreen"
+import DriverOtpVerification from "./pages/DriverOtpVerification";
+import DriverLogin from "./pages/DriverLogin";
+import UserProfile from "./pages/Customer/UserProfile";import MapScreen from "./pages/Customer/MapScreen"
 import DriverDashboard from "./pages/Driver/DriverDashboard";
 import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 import RestaurantLogin from "./pages/RestaurantLogin"
@@ -38,6 +38,9 @@ import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
 
 
+
+import ResturentPage from "./pages/Customer/ResturentPage";
+import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 
 
 // Auth wrapper for protected routes
@@ -53,7 +56,10 @@ const App = () => {
       {/* <Navbar /> */}
       <Routes>
         {/* Public Routes */}
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Home />} />
+        <Route path="/resturentlist" element={<ResturantListing />} />
+        <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/driverLogin" element={<DriverLogin />} />
@@ -70,6 +76,7 @@ const App = () => {
         
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu/:id" element={<AddMenuItem />} />
+        <Route path="/profile" element={<UserProfile />} />/
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />
         <Route path="/restaurant-details/:id" element={<RestaurantDetails />} /> 
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
@@ -87,8 +94,8 @@ const App = () => {
 
         <Route path="customer" element={<CustomerDetails />} />
         <Route path="driver" element={<DeliveryDriverDetails />} />
-        <Route path="customer/profile" element={<CustomerProfile/>} />
-        <Route path="driver/profile" element={<DriverProfilePage/>} />
+        <Route path="customer/profile" element={<CustomerProfile />} />
+        <Route path="driver/profile" element={<DriverProfilePage />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"
@@ -103,9 +110,7 @@ const App = () => {
           <Route path="customers" element={<ManageCustomers />} />
           <Route path="drivers" element={<ManageDrivers />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
-
         </Route>
-
         {/* Fallback - 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
