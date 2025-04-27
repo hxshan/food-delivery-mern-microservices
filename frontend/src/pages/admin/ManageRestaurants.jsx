@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreVertical, Plus, Edit, Trash2, Check, X, AlertCircle, RefreshCw, Clock, Star } from 'lucide-react';
+import { Search, RefreshCw, X, Star } from 'lucide-react';
 import axios from 'axios';
 
 // Define API_URL without using process.env
@@ -61,16 +61,8 @@ const Button = ({
 const Badge = ({ children, variant = 'default', className = '' }) => {
   const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium';
   
-  const variantClasses = {
-    default: 'bg-gray-100 text-gray-800',
-    active: 'bg-green-100 text-green-800',
-    inactive: 'bg-red-100 text-red-800',
-    pending: 'bg-blue-100 text-blue-800',
-    featured: 'bg-purple-100 text-purple-800'
-  };
-  
   return (
-    <span className={`${baseClasses} ${variantClasses[variant] || ''} ${className}`}>
+    <span className={`${baseClasses} ${className}`}>
       {children}
     </span>
   );
@@ -94,52 +86,19 @@ const Input = ({
   );
 };
 
-const Select = ({ value, onChange, options, placeholder = 'Select option' }) => {
+const Select = ({ value, onChange, options }) => {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none bg-white"
     >
-      {placeholder && <option value="">{placeholder}</option>}
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>
       ))}
     </select>
-  );
-};
-
-const Modal = ({ isOpen, onClose, title, children, icon }) => {
-  if (!isOpen) return null;
-  
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
-        
-        <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
-        
-        <div className="inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-          <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-            <div className="sm:flex sm:items-start">
-              {icon && (
-                <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
-                  {icon}
-                </div>
-              )}
-              <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">{title}</h3>
-                <div className="mt-2">
-                  {children}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   );
 };
 
@@ -150,21 +109,16 @@ const ManageRestaurants = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
-  const [actionType, setActionType] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
   useEffect(() => {
     fetchRestaurants();
-  }, [currentPage, statusFilter]);
+  }, [currentPage, statusFilter, searchTerm]);
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => {
-      setToast({ show: false, message: '', type: '' });
+      setToast({ ...toast, show: false });
     }, 3000);
   };
 
@@ -176,31 +130,28 @@ const ManageRestaurants = () => {
       if (statusFilter !== 'all') {
         queryParams += `&status=${statusFilter}`;
       }
-      if (searchTerm) {
-        queryParams += `&search=${searchTerm}`;
+      if (searchTerm.trim()) {
+        queryParams += `&search=${encodeURIComponent(searchTerm.trim())}`;
       }
-
-      // Include role=driver to only get drivers
-      queryParams += `&role=restaurant`;
-
-      const token = localStorage.getItem('token');
       
-      // Make API request
+      // Include role=restaurant to only get restaurants
+      queryParams += `&role=restaurant`;
+  
+      const token = localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/admin/users?${queryParams}`, {
         headers: { 
           Authorization: `Bearer ${token}`
         }
       });
-
-      setRestaurants(response.data.users || []);
-      setTotalPages(response.data.pagination?.pages || 1);
+  
+      setRestaurants(response.data.users);
+      setTotalPages(response.data.pagination.pages);
     } catch (error) {
       console.error('Error fetching restaurants:', error);
       showToast(
         error.response?.data?.message || "Failed to load restaurants", 
         'error'
       );
-      
     } finally {
       setLoading(false);
     }
@@ -221,46 +172,24 @@ const ManageRestaurants = () => {
     setCurrentPage(page);
   };
 
-  const openActionModal = (restaurant, action) => {
-    setSelectedRestaurant(restaurant);
-    setActionType(action);
-    setIsActionModalOpen(true);
-  };
-
-  const openDeleteModal = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleRestaurantAction = async () => {
-    if (!selectedRestaurant) return;
-    
-    setIsSubmitting(true);
+  const handleRestaurantStatusChange = async (restaurantId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      let endpoint, method, data, successMessage;
+      let endpoint, method, data;
       
-      switch (actionType) {
-        case 'activate':
-          endpoint = `${API_URL}/admin/restaurants/${selectedRestaurant.id}/activate`;
+      switch (newStatus) {
+        case 'active':
+          endpoint = `${API_URL}/admin/users/${restaurantId}/approve`;
           method = 'post';
-          data = {};
-          successMessage = "Restaurant activated successfully";
+          data = { role : 'restaurant'};
           break;
-        case 'deactivate':
-          endpoint = `${API_URL}/admin/restaurants/${selectedRestaurant.id}/deactivate`;
+        case 'suspended':
+          endpoint = `${API_URL}/admin/users/${restaurantId}/suspend`;
           method = 'post';
-          data = { reason: 'Admin action' };
-          successMessage = "Restaurant deactivated successfully";
-          break;
-        case 'feature':
-          endpoint = `${API_URL}/admin/restaurants/${selectedRestaurant.id}/feature`;
-          method = 'post';
-          data = {};
-          successMessage = "Restaurant featured successfully";
+          data = { role: 'restaurant', reason: 'Admin action' };
           break;
         default:
-          throw new Error('Invalid action type');
+          throw new Error('Invalid status');
       }
       
       await axios({
@@ -270,78 +199,33 @@ const ManageRestaurants = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      showToast(successMessage);
-      setIsActionModalOpen(false);
+      showToast(`Restaurant status updated to ${newStatus}`);
       fetchRestaurants();
     } catch (error) {
-      console.error(`Error ${actionType} restaurant:`, error);
+      console.error('Error updating restaurant status:', error);
       showToast(
-        error.response?.data?.message || `Failed to ${actionType} restaurant`, 
+        error.response?.data?.message || `Failed to update restaurant status`, 
         'error'
       );
-      
-      // For demo purposes, update the restaurant in the state
-      if (actionType === 'activate') {
-        setRestaurants(prevState => 
-          prevState.map(r => 
-            r.id === selectedRestaurant.id ? {...r, status: 'active'} : r
-          )
-        );
-      } else if (actionType === 'deactivate') {
-        setRestaurants(prevState => 
-          prevState.map(r => 
-            r.id === selectedRestaurant.id ? {...r, status: 'inactive'} : r
-          )
-        );
-      }
-      
-      setIsActionModalOpen(false);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDeleteRestaurant = async () => {
-    setIsSubmitting(true);
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(
-        `${API_URL}/admin/restaurants/${selectedRestaurant.id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      showToast("Restaurant has been permanently removed");
-      setIsDeleteModalOpen(false);
-      fetchRestaurants();
-    } catch (error) {
-      console.error('Error deleting restaurant:', error);
-      showToast(
-        error.response?.data?.message || "Failed to delete restaurant", 
-        'error'
-      );
-      
-      // For demo purposes, remove the restaurant from state
-      setRestaurants(prevState => 
-        prevState.filter(r => r.id !== selectedRestaurant.id)
-      );
-      setIsDeleteModalOpen(false);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'active':
-        return <Badge variant="active">Active</Badge>;
+        return <Badge className="bg-green-100 text-green-800">Active</Badge>;
       case 'inactive':
-        return <Badge variant="inactive">Inactive</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800">Inactive</Badge>;
+      case 'suspended':
+        return <Badge className="bg-amber-100 text-amber-800">Suspended</Badge>;
+      case 'banned':
+        return <Badge className="bg-red-100 text-red-800">Banned</Badge>;
       case 'pending':
-        return <Badge variant="pending">Pending</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800">Pending</Badge>;
       case 'featured':
-        return <Badge variant="featured">Featured</Badge>;
+        return <Badge className="bg-purple-100 text-purple-800">Featured</Badge>;
       default:
-        return <Badge variant="default">{status}</Badge>;
+        return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
   };
 
@@ -354,63 +238,31 @@ const ManageRestaurants = () => {
     }).format(date);
   };
 
-  const getActionTitle = () => {
-    switch (actionType) {
-      case 'activate': return 'Activate Restaurant';
-      case 'deactivate': return 'Deactivate Restaurant';
-      case 'feature': return 'Feature Restaurant';
-      default: return 'Confirm Action';
-    }
-  };
-
-  const getActionDescription = () => {
-    switch (actionType) {
-      case 'activate': 
-        return 'This will activate the restaurant, making it visible to customers and allowing it to receive orders.';
-      case 'deactivate': 
-        return 'This will temporarily deactivate the restaurant. It will not be visible to customers and cannot receive orders until reactivated.';
-      case 'feature': 
-        return 'This will feature the restaurant on the homepage and in search results. Featured restaurants receive more visibility.';
-      default: 
-        return 'Are you sure you want to proceed with this action?';
-    }
-  };
-
-  const getActionIcon = () => {
-    switch (actionType) {
-      case 'activate': return <Check className="h-6 w-6 text-green-500" />;
-      case 'deactivate': return <Clock className="h-6 w-6 text-amber-500" />;
-      case 'feature': return <Star className="h-6 w-6 text-yellow-500" />;
-      default: return <AlertCircle className="h-6 w-6 text-gray-500" />;
-    }
-  };
-
   const statusOptions = [
     { value: 'all', label: 'All Statuses' },
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
-    { value: 'pending', label: 'Pending Approval' },
-    { value: 'featured', label: 'Featured' }
+    { value: 'suspended', label: 'Suspended' },
+    { value: 'banned', label: 'Banned' }
+  ];
+
+  const restaurantStatusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'suspended', label: 'Suspend' },
   ];
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6">
           <h1 className="text-2xl font-bold">Manage Restaurants</h1>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button onClick={() => {}} variant="secondary">
-              <Plus size={18} className="mr-2" />
-              <span>Add Restaurant</span>
-            </Button>
-          </div>
         </div>
         <div className="p-6">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <form onSubmit={handleSearch} className="relative flex-grow">
               <Input
                 type="text"
-                placeholder="Search by name, cuisine, or address..."
+                placeholder="Search by name or cuisine..."
                 className="pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -430,7 +282,12 @@ const ManageRestaurants = () => {
               <Button 
                 variant="outline" 
                 size="icon"
-                onClick={() => fetchRestaurants()}
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                  setCurrentPage(1);
+                  fetchRestaurants();
+                }}
                 className="text-gray-500"
               >
                 <RefreshCw size={18} />
@@ -452,7 +309,7 @@ const ManageRestaurants = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cuisine</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
@@ -460,74 +317,31 @@ const ManageRestaurants = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {restaurants.length > 0 ? (
                       restaurants.map((restaurant) => (
-                        <tr key={restaurant.id} className="hover:bg-gray-50">
+                        <tr key={restaurant.userId || restaurant.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="font-medium text-gray-900">{restaurant.name}</div>
+                            <div className="font-medium text-gray-900">{restaurant.name || 'No Name'}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{restaurant.cuisine}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{restaurant.address}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{restaurant.cuisine || 'N/A'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{restaurant.address || 'N/A'}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center text-gray-500">
                               <Star size={16} className="text-yellow-400 fill-current mr-1" />
-                              <span>{restaurant.rating}</span>
+                              <span>{restaurant.rating || 'N/A'}</span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">{restaurant.orders}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                            {formatDate(restaurant.createdAt)}
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {getStatusBadge(restaurant.status)}
+                            {getStatusBadge(restaurant.roleStatus?.restaurant || restaurant.status)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right">
-                            <div className="flex justify-end items-center space-x-2">
-                              {restaurant.status === 'inactive' && (
-                                <Button 
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-green-600 hover:bg-green-100 rounded"
-                                  onClick={() => openActionModal(restaurant, 'activate')}
-                                >
-                                  <Check size={18} />
-                                </Button>
-                              )}
-                              
-                              {restaurant.status === 'active' && (
-                                <Button 
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-amber-600 hover:bg-amber-100 rounded"
-                                  onClick={() => openActionModal(restaurant, 'deactivate')}
-                                >
-                                  <Clock size={18} />
-                                </Button>
-                              )}
-                              
-                              {restaurant.status === 'active' && restaurant.status !== 'featured' && (
-                                <Button 
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-yellow-600 hover:bg-yellow-100 rounded"
-                                  onClick={() => openActionModal(restaurant, 'feature')}
-                                >
-                                  <Star size={18} />
-                                </Button>
-                              )}
-                              
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                className="text-blue-600 hover:bg-blue-100 rounded"
-                              >
-                                <Edit size={18} />
-                              </Button>
-                              
-                              <Button 
-                                variant="ghost"
-                                size="icon"
-                                className="text-red-600 hover:bg-red-100 rounded"
-                                onClick={() => openDeleteModal(restaurant)}
-                              >
-                                <Trash2 size={18} />
-                              </Button>
-                            </div>
+                            <Select
+                              value={restaurant.roleStatus?.restaurant || restaurant.status}
+                              onChange={(newStatus) => handleRestaurantStatusChange(restaurant.userId || restaurant.id, newStatus)}
+                              options={restaurantStatusOptions}
+                              className="w-32"
+                            />
                           </td>
                         </tr>
                       ))
@@ -571,93 +385,6 @@ const ManageRestaurants = () => {
           )}
         </div>
       </div>
-      
-      {/* Restaurant Action Confirmation Modal */}
-      <Modal 
-        isOpen={isActionModalOpen} 
-        onClose={() => setIsActionModalOpen(false)}
-        title={getActionTitle()}
-        icon={getActionIcon()}
-      >
-        <div className="mt-2">
-          {selectedRestaurant && (
-            <p className="mb-2">
-              <span className="font-medium">{selectedRestaurant.name}</span>
-            </p>
-          )}
-          <p className="text-sm text-gray-500">{getActionDescription()}</p>
-        </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <Button 
-            onClick={handleRestaurantAction} 
-            disabled={isSubmitting} 
-            className={`ml-3 ${
-              actionType === 'activate' ? 'bg-green-600 hover:bg-green-700' :
-              actionType === 'deactivate' ? 'bg-amber-600 hover:bg-amber-700' :
-              actionType === 'feature' ? 'bg-yellow-600 hover:bg-yellow-700' : ''
-            }`}
-          >
-            {isSubmitting ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Processing...
-              </div>
-            ) : (
-              `Confirm ${actionType === 'activate' ? 'Activation' : actionType === 'deactivate' ? 'Deactivation' : 'Featured Status'}`
-            )}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsActionModalOpen(false)}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
-      
-      {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Restaurant"
-        icon={<AlertCircle className="h-6 w-6 text-red-500" />}
-      >
-        <div className="mt-2">
-          {selectedRestaurant && (
-            <p className="mb-2">
-              Are you sure you want to delete <span className="font-medium">{selectedRestaurant.name}</span>?
-            </p>
-          )}
-          <p className="text-sm text-gray-500">
-            This action cannot be undone. The restaurant will be permanently removed from the platform.
-          </p>
-        </div>
-        <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-          <Button 
-            variant="destructive" 
-            onClick={handleDeleteRestaurant}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Deleting...
-              </div>
-            ) : (
-              'Delete Restaurant'
-            )}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsDeleteModalOpen(false)}
-            disabled={isSubmitting}
-            className="mr-3"
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
       
       {/* Toast Notification */}
       {toast.show && (

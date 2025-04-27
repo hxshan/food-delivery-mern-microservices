@@ -16,6 +16,7 @@ function UpdateMenuItem() {
     description: '',
     price: '',
     category: '',
+    size:'',
     oldImage: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +33,7 @@ function UpdateMenuItem() {
           description: item.description,
           price: item.price,
           category: item.category,
+          size: item.size,
           oldImage: item.image || ''
         });
 
@@ -91,6 +93,7 @@ function UpdateMenuItem() {
       formData.append("description", data.description);
       formData.append("price", Number(data.price));
       formData.append("category", data.category);
+      formData.append("size", data.size);
       formData.append("oldImage", data.oldImage);
       
       if (image) {
@@ -103,6 +106,7 @@ function UpdateMenuItem() {
         price: data.price,
         category: data.category,
         oldImage: data.oldImage,
+        size: data.size,
         hasNewImage: !!image
       });
 
@@ -202,6 +206,20 @@ function UpdateMenuItem() {
                 required
               />
             </div>
+            <div>
+            <label className="font-medium mb-1 block">Item Size (Optional)</label>
+            <select
+              onChange={onChangeHandler}
+              value={data.size}
+              name="size"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent"
+            >
+              <option value="">Select size</option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+            </select>
+          </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

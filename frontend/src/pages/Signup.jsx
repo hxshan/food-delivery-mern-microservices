@@ -49,44 +49,31 @@ const Signup = () => {
   
       const { message, userId } = res.data;
       
-      // Handle all possible successful responses
-      if (message?.toLowerCase().includes("user registered successfully") || 
-          message?.toLowerCase().includes("verification code has been resent")) {
+      if (userId) {
+        // Determine the appropriate notification message based on response
+        let notificationMsg;
         
-        // Show appropriate notification message
-        const notificationMsg = message?.toLowerCase().includes("resent") 
-          ? "Verification code has been resent to your email!" 
-          : "OTP has been sent to your email!";
+        if (message?.toLowerCase().includes("verification code has been resent")) {
+          notificationMsg = "Verification code has been resent to your email!";
+        } else if (message?.toLowerCase().includes("role added to your account")) {
+          notificationMsg = "Role added successfully! Please verify your email.";
+        } else {
+          notificationMsg = "Registration successful! OTP has been sent to your email.";
+        }
         
         showNotification("success", notificationMsg);
-  
-        // Navigate to OTP verification page
-        setTimeout(() => {
-          navigate(`/verify-otp/${userId}`, {
-            replace: true,
-          });
-        }, 2000);
-      } else if (message?.toLowerCase().includes("role added to your account")) {
-        // Handle case where user added a new role to existing account
-        showNotification("success", message);
         
-        // Redirect to login or dashboard depending on your flow
+        // Always redirect to OTP verification when userId is present
+        setTimeout(() => {
+          navigate(`/verify-otp/${userId}`, { replace: true });
+        }, 2000);
+      } else {
+        // For any success response without userId (shouldn't happen with our updated backend)
+        showNotification("success", message || "Operation successful!");
+        
         setTimeout(() => {
           navigate("/login", { replace: true });
         }, 2000);
-      } else {
-        // Handle any other success responses
-        showNotification("success", message || "Account action completed successfully!");
-        
-        if (userId) {
-          setTimeout(() => {
-            navigate(`/verify-otp/${userId}`, { replace: true });
-          }, 2000);
-        } else {
-          setTimeout(() => {
-            navigate("/login", { replace: true });
-          }, 2000);
-        }
       }
     } catch (err) {
       console.error(err);

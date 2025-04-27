@@ -20,6 +20,7 @@ export const useOTPDriver = () => {
       });
       
       const data = response?.data;
+      console.log(response)
 
       if (!data?.userId) {
         throw new Error('Invalid verification response');

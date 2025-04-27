@@ -47,27 +47,32 @@ const DriverSignup = () => {
       });
   
       const { message, userId } = res.data;
+
+      console.log(res)
       
-      // Handle successful response with a single notification based on message content
-      if (message?.toLowerCase().includes("verification code has been resent")) {
-        showNotification("success", "Verification code has been resent to your email!");
-      } else if (message?.toLowerCase().includes("role added to your account")) {
-        showNotification("success", message);
-      } else {
-        // Default success message for new registration
-        showNotification("success", "OTP has been sent to your email!");
-      }
-      
-      // Navigate based on response type
-      setTimeout(() => {
-        if (message?.toLowerCase().includes("role added to your account")) {
-          navigate("/driver", { replace: true });
-        } else if (userId) {
-          navigate(`/driver-otp/${userId}`, { replace: true });
+      if (userId) {
+        // All successful registrations or role additions that require verification should have a userId
+        if (message?.toLowerCase().includes("verification code has been resent")) {
+          showNotification("success", "Verification code has been resent to your email!");
+        } else if (message?.toLowerCase().includes("role added to your account")) {
+          showNotification("success", "Role added successfully! Please verify your email.");
         } else {
-          navigate("/driver", { replace: true });
+          // Default success message for new registration
+          showNotification("success", "Registration successful! OTP has been sent to your email.");
         }
-      }, 2000);
+        
+        // Always navigate to OTP verification when userId is present
+        setTimeout(() => {
+          navigate(`/driver-otp/${userId}`, { replace: true });
+        }, 2000);
+      } else {
+        // For responses without userId (unlikely but handling just in case)
+        showNotification("success", message || "Operation successful!");
+        
+        setTimeout(() => {
+          navigate("/driver", { replace: true });
+        }, 2000);
+      }
       
     } catch (err) {
       console.error(err);

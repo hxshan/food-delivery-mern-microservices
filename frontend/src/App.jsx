@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
 import Home from "./pages/home"
+import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
