@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-
+import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
@@ -33,7 +33,7 @@ import DriverLogin from "./pages/DriverLogin";
 import UserProfile from "./pages/Customer/UserProfile";import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
-import ResturantListing from "./pages/Customer/ResturentListPage";
+
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 
