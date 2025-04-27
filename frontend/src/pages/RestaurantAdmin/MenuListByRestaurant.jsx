@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { restaurantApi } from "../../services/restaurantApi";
 
 const MenuListByRestaurant = () => {
-  //const { id } = useParams(); 
-  const hardcodeId ="68060ba9d924f2d7597e5053";
+  const { id } = useParams(); 
+  //const hardcodeId ="68060ba9d924f2d7597e5053";
   const [restaurant, setRestaurant] = useState(null);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const MenuListByRestaurant = () => {
     };
 
     fetchMenu();
-  }, [hardcodeId]);
+  }, [id]);
 
   if (!restaurant) {
     return <div className="p-6 text-center text-gray-600">Loading...</div>;
@@ -31,13 +31,13 @@ const MenuListByRestaurant = () => {
         <ul className="space-y-3">
           {restaurant.menuItems.map((item) => (
             <li
-              key={item.hardcodeId}
+              key={item.id}
               className="p-4 border rounded bg-white flex justify-between items-center"
             >
               <div>
                 <h3 className="font-semibold">{item.name}</h3>
                 <p className="text-sm text-gray-600">{item.category}</p>
-                <p className="text-sm text-gray-700">Rs. {item.price}</p>
+                <p className="text-sm text-gray-700">${item.price}</p>
               </div>
               {item.image && (
                 <img
