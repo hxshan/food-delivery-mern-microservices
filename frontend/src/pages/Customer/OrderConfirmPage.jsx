@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import axios from "axios"; // Import axios
 import {
   CreditCard,
   Landmark,
@@ -16,6 +17,9 @@ import {
 } from "../../redux/slices/cartApi";
 
 import orderProcessImg from "../../assets/Images/order_process.png";
+
+// API base URL - adjust based on your environment
+const API_BASE_URL =  "http://localhost:8000/api/order";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
@@ -34,8 +38,10 @@ const OrderConfirmation = () => {
   const [clearCart] = useClearCartMutation();
 
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderData, setOrderData] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -97,6 +103,44 @@ const OrderConfirmation = () => {
     return errors;
   };
 
+  const submitOrderToAPI = async () => {
+    try {
+      // Prepare the order data for API
+      const orderPayload = {
+        paymentMethod,
+        deliveryAddress: {
+          street: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          instructions: formData.instructions,  // Optional field
+        },
+        customerPhone: formData.phone,
+        customerEmail: formData.email || "", // Send an empty string if no email
+        deliveryTime: new Date(Date.now() + 45 * 60000).toISOString(),
+      };
+      // Submit order to backend
+      const response = await axios.post(`${API_BASE_URL}/`, orderPayload);
+      
+      // Save the returned order data
+      setOrderData(response.data.data);
+      
+      return response.data;
+    } catch (error) {
+      console.error("Order submission error:", error);
+      
+      // Show error message
+      await Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || "Failed to place your order. Please try again.",
+        icon: "error",
+        confirmButtonColor: "#d33",
+      });
+      
+      throw error;
+    }
+  };
+
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
 
@@ -147,19 +191,27 @@ const OrderConfirmation = () => {
     );
 
     if (confirm.isConfirmed) {
-      console.log("Order submitted:", {
-        cart,
-        customer: formData,
-        paymentMethod,
-      });
-
-      setOrderPlaced(true);
+      try {
+        setIsSubmitting(true);
+        
+        // Submit order to API
+        await submitOrderToAPI();
+        
+        console.log("Order submitted successfully!");
+        setOrderPlaced(true);
+        
+        // Don't need to clear cart here since the API handles that
+      } catch (error) {
+        console.error("Order submission failed:", error);
+        // Error handling is done inside submitOrderToAPI
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   const handleNavigate = () => {
-    clearCart();
-    navigate("/map");
+    navigate(`/map?orderId=${orderData?._id || ''}`);
   }
 
   if (orderPlaced) {
@@ -660,9 +712,12 @@ const OrderConfirmation = () => {
               <button
                 type="submit"
                 onClick={handleSubmitOrder}
-                className="w-full bg-red-500 text-white py-3 rounded-md font-medium hover:bg-red-600 transition focus:outline-none focus:ring-2 focus:ring-red-300"
+                disabled={isSubmitting}
+                className={`w-full ${
+                  isSubmitting ? "bg-gray-400" : "bg-red-500 hover:bg-red-600"
+                } text-white py-3 rounded-md font-medium transition focus:outline-none focus:ring-2 focus:ring-red-300`}
               >
-                Place Order
+                {isSubmitting ? "Processing..." : "Place Order"}
               </button>
 
               {/* Terms & Privacy Policy */}

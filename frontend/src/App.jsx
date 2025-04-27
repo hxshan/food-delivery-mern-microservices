@@ -26,6 +26,9 @@ import DriverLogin from "./pages/DriverLogin";
 import UserProfile from "./pages/Customer/UserProfile";import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
+import ResturantListing from "./pages/Customer/ResturentListPage";
+import ResturentPage from "./pages/Customer/ResturentPage";
+import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 
 
 // Auth wrapper for protected routes
@@ -42,6 +45,9 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/resturentlist" element={<ResturantListing />} />
+        <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
         <Route path="/driverLogin" element={<DriverLogin />} />

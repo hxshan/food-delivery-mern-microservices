@@ -1,0 +1,444 @@
+{
+  "restaurants": [
+    {
+      "_id": "60d21b4667d0d8992e610c85",
+      "name": "Tasty Bites",
+      "address": "123 Main Street, Cityville",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
+      "rating": 4.5,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c90",
+          "name": "Classic Burger",
+          "description": "Juicy beef patty with lettuce, tomato, and special sauce",
+          "price": 12.99,
+          "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c91",
+          "name": "Caesar Salad",
+          "description": "Fresh romaine lettuce with parmesan, croutons and caesar dressing",
+          "price": 9.99,
+          "image": "https://images.unsplash.com/photo-1550304943-4f24f54ddde9",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c92",
+          "name": "Chocolate Brownie",
+          "description": "Warm chocolate brownie served with vanilla ice cream",
+          "price": 6.99,
+          "image": "https://images.unsplash.com/photo-1564355808539-22fda35a3d9d",
+          "category": "Dessert"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c86",
+      "name": "Spice Palace",
+      "address": "456 Oak Avenue, Townsville",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1552566626-52f8b828add9",
+      "rating": 4.8,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c93",
+          "name": "Butter Chicken",
+          "description": "Tender chicken cooked in a creamy tomato sauce",
+          "price": 15.99,
+          "image": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c94",
+          "name": "Vegetable Samosas",
+          "description": "Crispy pastry filled with spiced potatoes and peas",
+          "price": 7.99,
+          "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c95",
+          "name": "Mango Lassi",
+          "description": "Sweet yogurt drink with mango puree",
+          "price": 4.99,
+          "image": "https://images.unsplash.com/photo-1626206340756-18b2b2e9aa0f",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c87",
+      "name": "Ocean Delights",
+      "address": "789 Pier Road, Beachside",
+      "isOpen": false,
+      "image": "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae",
+      "rating": 4.2,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c96",
+          "name": "Grilled Salmon",
+          "description": "Fresh salmon fillet with lemon butter sauce",
+          "price": 18.99,
+          "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c97",
+          "name": "Shrimp Cocktail",
+          "description": "Chilled shrimp served with spicy cocktail sauce",
+          "price": 12.99,
+          "image": "https://images.unsplash.com/photo-1565400328485-d2055fbc4bd9",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c98",
+          "name": "Key Lime Pie",
+          "description": "Tangy lime filling in a graham cracker crust",
+          "price": 7.99,
+          "image": "https://images.unsplash.com/photo-1519915028121-7d3463d20b13",
+          "category": "Dessert"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c88",
+      "name": "Green Garden",
+      "address": "101 Vegan Street, Herbville",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092",
+      "rating": 4.6,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c99",
+          "name": "Buddha Bowl",
+          "description": "Quinoa, roasted vegetables, avocado and tahini dressing",
+          "price": 14.99,
+          "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9a",
+          "name": "Avocado Toast",
+          "description": "Sourdough bread topped with smashed avocado, chili flakes and lemon",
+          "price": 10.99,
+          "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9b",
+          "name": "Berry Smoothie",
+          "description": "Mixed berries, banana, almond milk and honey",
+          "price": 6.99,
+          "image": "https://images.unsplash.com/photo-1553530666-ba11a7da3888",
+          "category": "Beverages"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c89",
+      "name": "Pizza Paradise",
+      "address": "222 Cheese Circle, Doughton",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1579751626657-72bc17010498",
+      "rating": 4.3,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c9c",
+          "name": "Margherita Pizza",
+          "description": "Classic pizza with tomato sauce, mozzarella and fresh basil",
+          "price": 13.99,
+          "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9d",
+          "name": "Garlic Bread",
+          "description": "Toasted bread with garlic butter and herbs",
+          "price": 5.99,
+          "image": "https://images.unsplash.com/photo-1619533394727-57d522857f89",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9e",
+          "name": "Tiramisu",
+          "description": "Coffee-flavored Italian dessert with mascarpone",
+          "price": 7.99,
+          "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+          "category": "Dessert"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c89",
+      "name": "Pizza Paradise",
+      "address": "222 Cheese Circle, Doughton",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1579751626657-72bc17010498",
+      "rating": 4.3,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c9c",
+          "name": "Margherita Pizza",
+          "description": "Classic pizza with tomato sauce, mozzarella and fresh basil",
+          "price": 13.99,
+          "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9d",
+          "name": "Garlic Bread",
+          "description": "Toasted bread with garlic butter and herbs",
+          "price": 5.99,
+          "image": "https://images.unsplash.com/photo-1619533394727-57d522857f89",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9e",
+          "name": "Tiramisu",
+          "description": "Coffee-flavored Italian dessert with mascarpone",
+          "price": 7.99,
+          "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+          "category": "Dessert"
+        }
+      ]
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c89",
+      "name": "Pizza Paradise",
+      "address": "222 Cheese Circle, Doughton",
+      "isOpen": true,
+      "image": "https://images.unsplash.com/photo-1579751626657-72bc17010498",
+      "rating": 4.3,
+      "menuItems": [
+        {
+          "_id": "60d21b4667d0d8992e610c9c",
+          "name": "Margherita Pizza",
+          "description": "Classic pizza with tomato sauce, mozzarella and fresh basil",
+          "price": 13.99,
+          "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+          "category": "Main Course"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9d",
+          "name": "Garlic Bread",
+          "description": "Toasted bread with garlic butter and herbs",
+          "price": 5.99,
+          "image": "https://images.unsplash.com/photo-1619533394727-57d522857f89",
+          "category": "Starters"
+        },
+        {
+          "_id": "60d21b4667d0d8992e610c9e",
+          "name": "Tiramisu",
+          "description": "Coffee-flavored Italian dessert with mascarpone",
+          "price": 7.99,
+          "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+          "category": "Dessert"
+        }
+      ]
+    },
+    {
+      "name": "Delicious Eats",
+      "address": "123 Flavor St, Food City, FC 12345",
+      "isOpen": true,
+      "image": "https://example.com/images/restaurant.jpg",
+      "rating": 4.5,
+      "menuItems": [
+        {
+          "name": "Cheese Burger",
+          "description": "A juicy beef patty with melted cheese, lettuce, tomato, and special sauce.",
+          "price": 9.99,
+          "image": "https://example.com/images/cheeseburger.jpg",
+          "category": "Burgers",
+          "sizes": [
+            { "name": "Regular", "price": 0 },
+            { "name": "Large", "price": 150 }
+          ],
+          "addOns": [
+            { "name": "Extra Sauce", "price": 50 },
+            { "name": "Naan Bread", "price": 100 }
+          ]
+        },
+        {
+          "name": "Veggie Pizza",
+          "description": "A pizza loaded with fresh vegetables and mozzarella cheese.",
+          "price": 12.49,
+          "image": "https://example.com/images/veggiepizza.jpg",
+          "category": "Pizzas",
+          "sizes": [
+            { "name": "Regular", "price": 0 }
+          ]
+        },
+        {
+          "name": "Spaghetti Bolognese",
+          "description": "Traditional Italian pasta with a rich and savory meat sauce.",
+          "price": 14.99,
+          "image": "https://example.com/images/spaghetti.jpg",
+          "category": "Pasta"
+        },
+        {
+          "name": "Chicken Wings",
+          "description": "Crispy wings served with a variety of sauces.",
+          "price": 8.99,
+          "image": "https://example.com/images/chickenwings.jpg",
+          "category": "Appetizers",
+          "sizes": [
+            { "name": "Regular", "price": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Taco Haven",
+      "address": "456 Taco Rd, Spice Town, ST 67890",
+      "isOpen": false,
+      "image": "https://example.com/images/tacohaven.jpg",
+      "rating": 4.2,
+      "menuItems": [
+        {
+          "name": "Beef Taco",
+          "description": "Soft taco shell filled with seasoned ground beef, lettuce, cheese, and salsa.",
+          "price": 3.49,
+          "image": "https://example.com/images/beeftaco.jpg",
+          "category": "Tacos",
+          "sizes": [
+            { "name": "Regular", "price": 0 }
+          ],
+          "addOns": [
+            { "name": "Extra Sauce", "price": 50 }
+          ]
+        },
+        {
+          "name": "Chicken Quesadilla",
+          "description": "Flour tortilla filled with grilled chicken and melted cheese.",
+          "price": 7.99,
+          "image": "https://example.com/images/chickenquesadilla.jpg",
+          "category": "Quesadillas"
+        }
+      ]
+    }
+  ],
+  "menuItems": [
+    {
+      "_id": "60d21b4667d0d8992e610c90",
+      "name": "Classic Burger",
+      "description": "Juicy beef patty with lettuce, tomato, and special sauce",
+      "price": 12.99,
+      "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
+      "category": "Main Course"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c91",
+      "name": "Caesar Salad",
+      "description": "Fresh romaine lettuce with parmesan, croutons and caesar dressing",
+      "price": 9.99,
+      "image": "https://images.unsplash.com/photo-1550304943-4f24f54ddde9",
+      "category": "Starters"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c92",
+      "name": "Chocolate Brownie",
+      "description": "Warm chocolate brownie served with vanilla ice cream",
+      "price": 6.99,
+      "image": "https://images.unsplash.com/photo-1564355808539-22fda35a3d9d",
+      "category": "Dessert"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c93",
+      "name": "Butter Chicken",
+      "description": "Tender chicken cooked in a creamy tomato sauce",
+      "price": 15.99,
+      "image": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db",
+      "category": "Main Course"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c94",
+      "name": "Vegetable Samosas",
+      "description": "Crispy pastry filled with spiced potatoes and peas",
+      "price": 7.99,
+      "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950",
+      "category": "Starters"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c95",
+      "name": "Mango Lassi",
+      "description": "Sweet yogurt drink with mango puree",
+      "price": 4.99,
+      "image": "https://images.unsplash.com/photo-1626206340756-18b2b2e9aa0f",
+      "category": "Beverages"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c96",
+      "name": "Grilled Salmon",
+      "description": "Fresh salmon fillet with lemon butter sauce",
+      "price": 18.99,
+      "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
+      "category": "Main Course"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c97",
+      "name": "Shrimp Cocktail",
+      "description": "Chilled shrimp served with spicy cocktail sauce",
+      "price": 12.99,
+      "image": "https://images.unsplash.com/photo-1565400328485-d2055fbc4bd9",
+      "category": "Starters"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c98",
+      "name": "Key Lime Pie",
+      "description": "Tangy lime filling in a graham cracker crust",
+      "price": 7.99,
+      "image": "https://images.unsplash.com/photo-1519915028121-7d3463d20b13",
+      "category": "Dessert"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c99",
+      "name": "Buddha Bowl",
+      "description": "Quinoa, roasted vegetables, avocado and tahini dressing",
+      "price": 14.99,
+      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+      "category": "Main Course"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c9a",
+      "name": "Avocado Toast",
+      "description": "Sourdough bread topped with smashed avocado, chili flakes and lemon",
+      "price": 10.99,
+      "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d",
+      "category": "Starters"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c9b",
+      "name": "Berry Smoothie",
+      "description": "Mixed berries, banana, almond milk and honey",
+      "price": 6.99,
+      "image": "https://images.unsplash.com/photo-1553530666-ba11a7da3888",
+      "category": "Beverages"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c9c",
+      "name": "Margherita Pizza",
+      "description": "Classic pizza with tomato sauce, mozzarella and fresh basil",
+      "price": 13.99,
+      "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002",
+      "category": "Main Course"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c9d",
+      "name": "Garlic Bread",
+      "description": "Toasted bread with garlic butter and herbs",
+      "price": 5.99,
+      "image": "https://images.unsplash.com/photo-1619533394727-57d522857f89",
+      "category": "Starters"
+    },
+    {
+      "_id": "60d21b4667d0d8992e610c9e",
+      "name": "Tiramisu",
+      "description": "Coffee-flavored Italian dessert with mascarpone",
+      "price": 7.99,
+      "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+      "category": "Dessert"
+    }
+  ]
+}

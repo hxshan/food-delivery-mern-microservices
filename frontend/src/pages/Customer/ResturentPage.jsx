@@ -150,6 +150,7 @@ const menuItems = [
 const ResturentPage = () => {
   const dispatch = useDispatch();
   const cart =  useSelector(getCart)
+  
 
 //   useEffect(() => {
 //   const testApi = async () => {
