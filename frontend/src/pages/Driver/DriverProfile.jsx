@@ -40,7 +40,7 @@ const DriverProfilePage = () => {
     vehicleType: false
   });
   
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch driver data - this would typically come from your API
