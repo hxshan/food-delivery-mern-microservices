@@ -44,6 +44,7 @@ import LoginSelection from "./pages/LoginSelection";
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import DriverWaitingActivation from "./pages/Driver/DriverwaitforActivation";
 
 
 // Auth wrapper for protected routes
@@ -102,6 +103,7 @@ const App = () => {
         <Route path="/driver-details" element={<DeliveryDriverDetails />} />
         <Route path="/customer/profile" element={<CustomerProfile />} />
         <Route path="/driver/profile" element={<DriverProfilePage />} />
+        <Route path="/driver/inactive" element={<DriverWaitingActivation />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"

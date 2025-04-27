@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 // Create socket connection with auth token from localStorage or your auth state
-const createSocketConnection = (token) => {
+const createSocketConnection = (token,userDetails) => {
   // Connect with authentication token in handshake
   const socket = io('http://localhost:5005', {
     auth: {
@@ -16,6 +16,11 @@ const createSocketConnection = (token) => {
   // Connection event handlers
   socket.on('connect', () => {
     console.log('Connected to socket server');
+
+    socket.emit('user_connected', {
+      userId: userDetails.id,
+      userType: userDetails.type,
+    });
   });
 
   socket.on('connect_error', (error) => {
