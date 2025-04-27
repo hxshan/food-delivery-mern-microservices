@@ -103,11 +103,9 @@ const RestaurantOtpVerification = () => {
       if (result.success) {
         showNotification('success', result.message);
         
-        // For restaurant, we just show success and let the hook handle redirect
-        // No need to store token or user data in local storage at this stage
         
         setTimeout(() => {
-          navigate('/restaurantLogin', { 
+          navigate('/add-restaurant', { 
             state: { 
               notification: {
                 type: 'success',

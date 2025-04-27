@@ -20,7 +20,7 @@ export default function LoginSelectionWithNav() {
       title: "Driver", 
       description: "Manage your deliveries and earnings",
       icon: Truck,
-      path: "/driverLogin"
+      path: "/driver-login"
     },
     { 
       id: "restaurant", 
