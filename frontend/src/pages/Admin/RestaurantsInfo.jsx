@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 import { Link } from "react-router-dom";
 
 const RestaurantInfo = () => {
@@ -9,7 +9,7 @@ const RestaurantInfo = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const res = await api.get("/get");
+        const res = await restaurantApi.get("/get");
         setRestaurants(res.data);
       } catch (error) {
         console.error("Error fetching restaurants:", error);

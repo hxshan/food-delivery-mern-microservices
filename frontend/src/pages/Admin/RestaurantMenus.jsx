@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 
 const RestaurantMenus = () => {
   const { id } = useParams();
@@ -9,7 +9,7 @@ const RestaurantMenus = () => {
 
   useEffect(() => {
     const fetchMenus = async () => {
-      const res = await api.get(`/get/${id}`);
+      const res = await restaurantApi.get(`/get/${id}`);
       setRestaurant(res.data);
     };
     fetchMenus();

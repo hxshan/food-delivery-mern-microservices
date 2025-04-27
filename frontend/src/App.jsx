@@ -16,7 +16,7 @@ import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
 import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
 import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails"; 
 import UpdateMenuItem from "./pages/RestaurantAdmin/UpdateMenuItem";
-import Navbar from "./pages/RestaurantAdmin/Navbar";
+//import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
 
 import ResturantListing from "./pages/Customer/ResturentListPage";
@@ -35,6 +35,7 @@ import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
 
 
+
 // Auth wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = true; // Replace this with actual auth logic
@@ -48,7 +49,7 @@ const App = () => {
       {/* <Navbar /> */}
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
 
         <Route path="/login" element={<Login />} />
         <Route path="/driverLogin" element={<DriverLogin />} />
@@ -66,7 +67,7 @@ const App = () => {
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu/:id" element={<AddMenuItem />} />
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />
-        <Route path="/restaurant-details" element={<RestaurantDetails />} /> 
+        <Route path="/restaurant-details/:id" element={<RestaurantDetails />} /> 
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
         <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 

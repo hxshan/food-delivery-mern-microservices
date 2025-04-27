@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { api } from "../../services/api";
+import { restaurantApi } from "../../services/restaurantApi";
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 const RestaurantDetails = () => {
   const { id } = useParams();
@@ -15,26 +15,26 @@ const RestaurantDetails = () => {
       ...prev,
       isOpen: !isOpen
     }));
-    const updated = await api.put(`/${id}/availability`, { isOpen: !isOpen });
+    const updated = await restaurantApi.put(`/${id}/availability`, { isOpen: !isOpen });
     setRestaurant(restaurant.map(r => (r._id === id ? updated.data.restaurant : r)));
   };
 
-  const handleUpdateMenuItem = (menuItemId) => {
-    navigate(`/menu-item/${menuItemId}`);
-  };
+  // const handleUpdateMenuItem = (menuItemId) => {
+  //   navigate(`/menu-item/${menuItemId}`);
+  // };
 
   const handleDeleteMenuItem = async (menuItemId) => {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete this menu item?");
       if (!confirmDelete) return;
 
-      const response = await api.delete(`delete-menu/${menuItemId}`);
+      const response = await restaurantApi.delete(`delete-menu/${menuItemId}`);
       console.log(response);
 
       if (response.data.message) {
         toast.success(response.data.message);
 
-        const res = await api.get(`/get/${id}`);
+        const res = await restaurantApi.get(`/get/${id}`);
         setRestaurant(res.data.restaurant || res.data);
       }
     } catch (error) {
@@ -50,7 +50,11 @@ const RestaurantDetails = () => {
   useEffect(() => {
     const fetchRestaurant = async () => {
       try {
-        const res = await api.get(`/get/${id}`);
+        console.log("Fetching restaurant with ID:", id); 
+      if (!id) {
+        throw new Error("No restaurant ID provided")
+      }
+        const res = await restaurantApi.get(`/get/${id}`);
         setRestaurant(res.data.restaurant || res.data);
         console.log("Restaurant data:", res.data);
         console.log("Menu items:", res.data.restaurant?.menuItems || res.data.menuItems);
@@ -74,7 +78,7 @@ const RestaurantDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white p-6 rounded flex flex-col md:flex-row gap-5">
+      <div className="bg-white p-6 rounded flex flex-col md:flex-row gap-10">
         <div className="md:w-1/3">
           {restaurant.image && (
             <img
@@ -123,12 +127,19 @@ const RestaurantDetails = () => {
                   <p className="text-md text-gray-600">{item.category}</p>
                   <p className="text-md">$ {item.price}</p>
                   <div className="mt-2 flex gap-2 flex-wrap">
-                    <button
+                    {/* <button
                       onClick={() => handleUpdateMenuItem(item._id)}
                       className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-sm"
                     >
                       Update
-                    </button>
+                    </button> */}
+                      <Link
+              to={`/menu-item/${item._id}`}
+              state={{ restaurantId: restaurant._id }}
+              className="px-3 py-1 rounded bg-yellow-500 hover:bg-yellow-600 text-white text-sm"
+            >
+              Update
+            </Link>
                     <button
                       onClick={() => handleDeleteMenuItem(item._id)}
                       className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white text-sm"
