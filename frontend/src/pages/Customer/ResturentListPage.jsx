@@ -5,8 +5,11 @@ import Footer from "../../components/Footer";
 import { Search, ChevronDown, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Import the JSON data
-import restaurantData from "../Customer/restuarent.json";
+import axios from 'axios'
+
+// api/restuarent/get
+import Loader from "../../components/loader/loader";
+
 
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -79,12 +82,25 @@ const RestaurantListing = () => {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
 
+  const fetchResturents = async ()=> {
+    try {
+      
+      const response = await axios.get("http://localhost:8000/api/restaurant/get")
+
+      setRestaurants(response.data);
+
+      console.log("Resturents : " , response)
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   // Initialize restaurants data from JSON
   useEffect(() => {
-    if (restaurantData && restaurantData.restaurants) {
-      setRestaurants(restaurantData.restaurants);
-      setFilteredRestaurants(restaurantData.restaurants);
-    }
+    
+
+    fetchResturents()
   }, []);
 
   // Filter restaurants when search query changes
@@ -243,7 +259,7 @@ const RestaurantListing = () => {
         {/* Restaurant Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.length === 0 ? (
-            <div className="col-span-3 text-center py-10">Loading restaurants...</div>
+            <div className="col-span-3 text-center py-10 mx-auto"><Loader /></div>
           ) : currentRestaurants.length === 0 ? (
             <div className="col-span-3 text-center py-10">No restaurants found matching your search criteria.</div>
           ) : (
