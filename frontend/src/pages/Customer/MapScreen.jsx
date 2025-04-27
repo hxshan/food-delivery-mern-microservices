@@ -9,23 +9,23 @@ const containerStyle = {
   height: '100%',
 };
 
-const MapScreen = () => {
+const MapScreen = ({orderId}) => {
   const [driverLocation, setDriverLocation] = useState(null);
-  const [userLocation, setUserLocation] = useState({ lat: 40.741, lng: -73.935 });
+  const [userLocation, setUserLocation] = useState({ lat:6.9  , lng: 79.899});
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
-  useEffect(() => {
-    socket.emit('join-order-room', { orderId: '1234' }); // Subscribe to driver updates for this order
+  // useEffect(() => {
+  //   socket.emit('join-order-room', { orderId: '1234' });
 
-    socket.on('driver-location-update', (location) => {
-      setDriverLocation(location);
-    });
+  //   socket.on('driver-location-update', (location) => {
+  //     setDriverLocation(location);
+  //   });
 
-    return () => {
-      socket.off('driver-location-update');
-    };
-  }, []);
+  //   return () => {
+  //     socket.off('driver-location-update');
+  //   };
+  // }, []);
 
   if (!isLoaded) return <div>Loading map...</div>;
 
