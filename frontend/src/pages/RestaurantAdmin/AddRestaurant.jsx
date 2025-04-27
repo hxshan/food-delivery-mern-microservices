@@ -11,14 +11,25 @@ const AddRestaurant = () => {
     name: '', 
     address: '', 
     isOpen: false,
+    phoneNumbers: [''],  
+  longitude: '',
+  latitude: ''
   });
 
-  const onChangeHandler = (event) => {
+  const onChangeHandler = (event, index = null) => {
     const { name, value, type, checked } = event.target;
-    setData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (name === "phoneNumbers" && index !== null) {
+      setData(prev => {
+        const updatedPhones = [...prev.phoneNumbers];
+        updatedPhones[index] = value;
+        return { ...prev, phoneNumbers: updatedPhones };
+      });
+    } else {
+      setData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
   };
 
   const onSubmitHandler = async (event) => {
@@ -28,6 +39,12 @@ const AddRestaurant = () => {
     formData.append("name", data.name);
     formData.append("address", data.address);
     formData.append("isOpen", data.isOpen);
+    data.phoneNumbers.forEach(phone => {
+      formData.append("phoneNumbers", phone);
+    });
+    if (data.longitude) formData.append("longitude", data.longitude);
+if (data.latitude) formData.append("latitude", data.latitude);
+
     if (image) {
       formData.append("image", image);
     }
@@ -45,6 +62,9 @@ const AddRestaurant = () => {
           name: "",
           address: "",
           isOpen: false,
+          phoneNumbers: [''],
+      longitude: '',
+      latitude: ''
         });
         setImage(false);
         toast.success(response.data.message);
@@ -106,11 +126,58 @@ const AddRestaurant = () => {
               value={data.address}
               name="address"
               placeholder="Restaurant Address"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition hover:border-red-500"
               required
             />
           </div>
-        
+          <div>
+          <input
+  type="text"
+  name="location"
+  value={`${data.longitude}, ${data.latitude}`}
+  onChange={(e) => {
+    const [longitude, latitude] = e.target.value.split(",").map(val => val.trim());
+    if (longitude && latitude) {
+      setData(prev => ({
+        ...prev,
+        longitude: longitude || "",
+        latitude: latitude || ""
+      }));
+    }
+    else {
+      toast.error("Please enter valid coordinates.");
+  }}}
+  placeholder="Longitude, Latitude (optional)"
+  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+/>
+</div>
+
+
+          <div>
+  <p className="font-sm mb-2">Phone Numbers (up to 3)</p>
+  {data.phoneNumbers.map((phone, idx) => (
+    <input
+      key={idx}
+      type="text"
+      value={phone}
+      onChange={(e) => onChangeHandler(e, idx)}
+      name="phoneNumbers"
+      placeholder={`Phone Number ${idx + 1}`}
+      className="w-full p-2 mb-2 border hover:border-red-500 border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+      
+    />
+  ))}
+  {data.phoneNumbers.length < 3 && (
+    <button
+      type="button"
+      onClick={() => setData(prev => ({ ...prev, phoneNumbers: [...prev.phoneNumbers, ''] }))}
+      className="text-[#FA5F55] hover:border-red-500 hover:underline text-sm"
+    >
+      + Add Another Phone Number
+    </button>
+  )}
+</div>
+
           <div className="flex items-center">
             <label className="flex items-center space-x-3 cursor-pointer">
               <div className="relative">

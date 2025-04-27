@@ -12,7 +12,9 @@ const AddMenuItem = () => {
     name: '',
     description: '',
     price: '', 
-    category: ''
+    category: '',
+    size:''
+
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,6 +40,7 @@ const AddMenuItem = () => {
       formData.append("description", data.description);
       formData.append("price", Number(data.price));
       formData.append("category", data.category);
+      formData.append("size", data.size);
       if (image) {
         formData.append("image", image);
       }
@@ -125,7 +128,22 @@ const AddMenuItem = () => {
               required
             />
           </div>
-          
+
+       
+          <div>
+            <label className="font-medium mb-1 block">Item Size (Optional)</label>
+            <select
+              onChange={onChangeHandler}
+              value={data.size}
+              name="size"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent"
+            >
+              <option value="">Select size</option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+            </select>
+          </div>
          
           <div>
             <label className="font-medium mb-1 block">Item Category</label>

@@ -117,14 +117,18 @@ const RestaurantDetails = () => {
 
       <div className="mt-6">
         <h3 className="text-xl font-semibold mb-3">Menu Items</h3>
+       
         {restaurant.menuItems && restaurant.menuItems.length > 0 ? (
-          <ul className="space-y-4">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+         
+            
             {restaurant.menuItems.map((item, index) => (
               <li key={item._id || `menu-item-${index}`} className="p-4 rounded bg-white shadow flex flex-col sm:flex-row justify-between items-center gap-3">
                 <div className="flex-1">
                   <h4 className="font-bold">{item.name}</h4>
                   <p className="text-md text-gray-600">{item.description}</p>
                   <p className="text-md text-gray-600">{item.category}</p>
+                  <p className="text-md text-gray-600">{item.size}</p>
                   <p className="text-md">$ {item.price}</p>
                   <div className="mt-2 flex gap-2 flex-wrap">
                     {/* <button
@@ -148,6 +152,7 @@ const RestaurantDetails = () => {
                     </button>
                   </div>
                 </div>
+                
 
                 {item.image && (
                   <img
@@ -157,13 +162,17 @@ const RestaurantDetails = () => {
                   />
                 )}
               </li>
+              
             ))}
-          </ul>
+          
+         </div>
         ) : (
           <p className="text-gray-500">No menu items added yet.</p>
         )}
       </div>
     </div>
+    
+    
   );
 };
 
