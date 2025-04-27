@@ -1,5 +1,5 @@
 import { API_URL } from "../api";
-
+import socketService from "./socketService";
 const TOKEN_KEY = "user_";
 
 export class AuthService {
@@ -19,6 +19,7 @@ export class AuthService {
 
         if(response.token){
             localStorage.setItem(TOKEN_KEY,response.token)
+            socketService.initSocket(response.token);
             return(true)
         }else{
             return(response.message)

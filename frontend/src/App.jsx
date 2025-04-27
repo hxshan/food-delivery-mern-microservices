@@ -23,6 +23,9 @@ import DriverProfilePage from "./pages/Driver/DriverProfile";
 import DriverSignup from "./pages/DriverSignup";
 import DriverOtpVerification from "./pages/DriverOtpVerification"
 import DriverLogin from "./pages/DriverLogin"
+import MapScreen from "./pages/Customer/MapScreen"
+import DriverDashboard from "./pages/Driver/DriverDashboard";
+import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 
 
 // Auth wrapper for protected routes
@@ -50,6 +53,9 @@ const App = () => {
         {/* <Route path="/restaurants-info" element={<RestaurantsInfo />} /> */}
         {/* <Route path="/restaurant-details" element={<RestaurantDetails />} /> */}
         <Route path="/menus" element={<MenuListByRestaurant />} />
+        <Route path="/map" element={<MapScreen/>} />
+        <Route path="/driver/dashboard" element={<DriverDashboard/>} />
+        <Route path="/driver/map" element={<DriverMapScreen/>} />
         {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
 
 

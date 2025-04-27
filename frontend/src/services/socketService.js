@@ -1,17 +1,97 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5002');
+// Create socket connection with auth token from localStorage or your auth state
+const createSocketConnection = (token) => {
+  // Connect with authentication token in handshake
+  const socket = io('http://localhost:5005', {
+    auth: {
+      token 
+    },
+    autoConnect: true,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
+  });
 
-export const registerCustomer = (orderId) => {
-  socket.emit('register_customer', orderId);
+  // Connection event handlers
+  socket.on('connect', () => {
+    console.log('Connected to socket server');
+  });
+
+  socket.on('connect_error', (error) => {
+    console.error('Socket connection error:', error.message);
+  });
+
+  socket.on('disconnect', (reason) => {
+    console.log('Disconnected from socket server:', reason);
+  });
+
+  return socket;
 };
 
-export const onDriverAccepted = (cb) => {
-  socket.on('order_accepted', cb);
+// Initialize socket with user's auth token
+let socket = null;
+
+// Function to initialize socket with auth token
+export const initSocket = (token) => {
+  if (socket) {
+    socket.disconnect();
+  }
+  socket = createSocketConnection(token);
+  return socket;
 };
 
-export const onDriverLocationUpdate = (cb) => {
-  socket.on('driver_location_update', cb);
+// Customer specific functions
+export const joinOrderTracking = (orderId) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.emit('join_order', orderId);
 };
 
-export default socket;
+export const onDriverAccepted = (callback) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.on('order_accepted', callback);
+};
+
+export const onDriverLocationUpdate = (callback) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.on('driver_location_update', callback);
+};
+
+export const onDeliveryCompleted = (callback) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.on('delivery_done', callback);
+};
+
+// Driver specific functions
+export const updateDriverLocation = (orderId, location) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.emit('update_location', { orderId, location });
+};
+
+export const markDeliveryCompleted = (orderId) => {
+  if (!socket) return console.error('Socket not initialized');
+  socket.emit('delivery_completed', { orderId });
+};
+
+// Clean up function to remove listeners and disconnect
+export const disconnectSocket = () => {
+  if (!socket) return;
+  
+  // Remove all listeners
+  socket.removeAllListeners();
+  socket.disconnect();
+  socket = null;
+  console.log('Socket disconnected and cleaned up');
+};
+
+export default {
+  initSocket,
+  joinOrderTracking,
+  onDriverAccepted,
+  onDriverLocationUpdate,
+  onDeliveryCompleted,
+  updateDriverLocation,
+  markDeliveryCompleted,
+  disconnectSocket,
+  getSocket: () => socket
+};
