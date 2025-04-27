@@ -65,7 +65,7 @@ const App = () => {
         <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
-        <Route path="/driverLogin" element={<DriverLogin />} />
+        <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
 
         <Route path="/signup" element={<Signup />} />
@@ -98,10 +98,10 @@ const App = () => {
         <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
 
 
-        <Route path="customer" element={<CustomerDetails />} />
-        <Route path="driver" element={<DeliveryDriverDetails />} />
-        <Route path="customer/profile" element={<CustomerProfile />} />
-        <Route path="driver/profile" element={<DriverProfilePage />} />
+        <Route path="/customer-details" element={<CustomerDetails />} />
+        <Route path="/driver-details" element={<DeliveryDriverDetails />} />
+        <Route path="/customer/profile" element={<CustomerProfile />} />
+        <Route path="/driver/profile" element={<DriverProfilePage />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"

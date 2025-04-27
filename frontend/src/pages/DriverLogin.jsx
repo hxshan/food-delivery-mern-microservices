@@ -65,8 +65,7 @@ const DriverLogin = () => {
       const res = await axios.post("/auth/driver/login", credentials, {
         headers: {
           "Content-Type": "application/json",
-        },
-        withCredentials: true,
+        }
       });
 
       const userData = res.data;

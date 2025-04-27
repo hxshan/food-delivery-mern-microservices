@@ -40,8 +40,8 @@ const DriverDashboard = () => {
 
       <DeliveryRequestModal
         delivery={incomingDelivery}
-        onAccept={acceptDelivery}
-        onReject={rejectDelivery}
+        // onAccept={acceptDelivery}
+        // onReject={rejectDelivery}
       />
     </div>
   );

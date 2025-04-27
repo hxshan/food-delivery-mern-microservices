@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Phone, Upload, ArrowLeft, Car, FileText, CreditCard, ChevronLeft, ChevronRight, Check, AlertCircle } from "lucide-react";
+import axios from "../../api/axios";
 
 const DeliveryDriverDetails = () => {
   // Form fields state
@@ -10,6 +11,7 @@ const DeliveryDriverDetails = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [vehicleType, setVehicleType] = useState("");
+  const [plateNumber, setPlateNumber] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
   const [licenseDocument, setLicenseDocument] = useState(null);
   const [licenseDocPreview, setLicenseDocPreview] = useState(null);
@@ -17,24 +19,28 @@ const DeliveryDriverDetails = () => {
   const [nicDocument, setNicDocument] = useState(null);
   const [nicDocPreview, setNicDocPreview] = useState(null);
 
-  // Error states
   const [errors, setErrors] = useState({
     firstName: false,
     lastName: false,
     phoneNumber: false,
     vehicleType: false,
+    plateNumber: false,
     licenseNumber: false,
     licenseDocument: false,
     nicNumber: false,
-    nicDocument: false
+    nicDocument: false,
   });
-
-  // Multi-step form state
+const [notification, setNotification] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
   const [currentStep, setCurrentStep] = useState(1);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const navigate = useNavigate();
 
-  // File handling functions
+
+
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -126,14 +132,65 @@ const DeliveryDriverDetails = () => {
     setAttemptedSubmit(false);
     window.scrollTo(0, 0);
   };
-
-  const handleSubmit = (e) => {
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification({ show: false, type: "", message: "" });
+    }, 5000);
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setAttemptedSubmit(true);
     
     if (validateStep3()) {
-      // Here you would typically handle API call to save driver details
-      navigate("/driver-dashboard"); // Navigate to driver dashboard
+      try {const userData = JSON.parse(localStorage.getItem("user"));
+      
+        if (!userData || !userData.userId) {
+          // showNotification("error", "User information is missing. Please log in again.");
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        const formData = new FormData();
+        
+        formData.append('userId', userData.userId);
+        formData.append('phone', phoneNumber);
+        formData.append('firstName', firstName);
+        formData.append('lastName', lastName);
+        formData.append('licenseNumber', licenseNumber);
+        formData.append('nicNumber', nicNumber);
+        formData.append('vehicle[type]', vehicleType);
+        formData.append('vehicle[plateNumber]', plateNumber);
+        formData.append('licenseDocument', licenseDocument);
+        formData.append('nicDocument', nicDocument);
+        
+
+        const response = await axios.post(
+          '/user/driver/profile',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        );
+        if(response.status == 200 ){
+          navigate("/driver-dashboard");
+        }else{
+          showNotification("error", response.message || "Server error occurred");
+        }
+        
+      } catch (error) {
+        console.error("Error submitting driver profile:", error);
+        
+        if (error.response) {
+          showNotification("error", error.response.data.message || "Server error occurred");
+        } else if (error.request) {
+          showNotification("No response from server. Please check your connection.");
+        } else {
+          showNotification("An error occurred while submitting your profile.");
+        }
+      }
     }
   };
 
@@ -383,6 +440,37 @@ const DeliveryDriverDetails = () => {
             </div>
             {errors.vehicleType && attemptedSubmit && (
               <ErrorMessage message="Please select a vehicle type" />
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="plateNumber"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Vehicle Plate Number
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FileText size={18} className="text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="plateNumber"
+                value={plateNumber}
+                onChange={(e) => {
+                  setPlateNumber(e.target.value);
+                  if (e.target.value.trim()) {
+                    setErrors({...errors, plateNumber: false});
+                  }
+                }}
+                className={`pl-10 w-full p-3 border ${errors.plateNumber ? "border-red-500 ring-1 ring-red-500" : "border-gray-300"} rounded-md focus:outline-none focus:ring-2 focus:ring-red-500`}
+                placeholder="Enter your plate number"
+                required
+              />
+            </div>
+            {errors.plateNumber && attemptedSubmit && (
+              <ErrorMessage message="Plate number is required" />
             )}
           </div>
 
@@ -648,6 +736,27 @@ const DeliveryDriverDetails = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Notification popup */}
+            {notification.show && (
+              <div 
+                className={`fixed top-4 right-4 left-4 md:left-auto md:w-96 p-4 rounded-lg shadow-lg transition-all duration-300 z-50 flex items-center ${
+                  notification.type === "success" ? "bg-green-50 border-l-4 border-green-500" : "bg-red-50 border-l-4 border-red-500"
+                }`}
+              >
+                <div className={`p-2 rounded-full mr-3 ${notification.type === "success" ? "bg-green-100" : "bg-red-100"}`}>
+                  {notification.type === "success" ? (
+                    <Check size={20} className="text-green-500" />
+                  ) : (
+                    <AlertCircle size={20} className="text-red-500" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className={`font-medium ${notification.type === "success" ? "text-green-800" : "text-red-800"}`}>
+                    {notification.message}
+                  </p>
+                </div>
+              </div>
+            )}
       <div className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
           <div className="mb-6">
