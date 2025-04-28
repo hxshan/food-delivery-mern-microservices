@@ -86,14 +86,13 @@ const Input = ({
   );
 };
 
-const Select = ({ value, onChange, options, placeholder = 'Select option' }) => {
+const Select = ({ value, onChange, options }) => {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent appearance-none bg-white"
     >
-      {placeholder && <option value="">{placeholder}</option>}
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.label}
@@ -189,11 +188,6 @@ const ManageDrivers = () => {
           method = 'post';
           data = { role: 'driver', reason: 'Admin action' };
           break;
-        case 'banned':
-          endpoint = `${API_URL}/admin/users/${driverId}/ban`;
-          method = 'post';
-          data = { reason: 'Admin action' };
-          break;
         default:
           throw new Error('Invalid status');
       }
@@ -254,7 +248,6 @@ const ManageDrivers = () => {
   const driverStatusOptions = [
     { value: 'active', label: 'Active' },
     { value: 'suspended', label: 'Suspend' },
-    { value: 'banned', label: 'Ban' }
   ];
 
   return (

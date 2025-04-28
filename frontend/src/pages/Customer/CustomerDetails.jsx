@@ -18,11 +18,9 @@ const CustomerDetails = () => {
   
   const navigate = useNavigate();
   
-  // Get user data from localStorage
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (!userData || !userData.userId) {
-      // If no user data is found, redirect to login
       navigate("/login", { replace: true });
     }
   }, [navigate]);
@@ -57,7 +55,6 @@ const CustomerDetails = () => {
     setLoading(true);
     
     try {
-      // Get user data from localStorage
       const userData = JSON.parse(localStorage.getItem("user"));
       
       if (!userData || !userData.userId) {
@@ -66,7 +63,6 @@ const CustomerDetails = () => {
         return;
       }
       
-      // Create profile data object
       const profileData = {
         userId: userData.userId,
         firstName,
@@ -74,8 +70,7 @@ const CustomerDetails = () => {
         phone: phoneNumber,
       };
       
-      // Make API call to save customer profile
-      const response = await axios.post("/user/customer/profile", profileData, {
+       await axios.post("/user/customer/profile", profileData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userData.token}`
@@ -84,13 +79,11 @@ const CustomerDetails = () => {
       });
       
       
-      // Update user data in localStorage to mark profile as completed
       userData.profileCompleted = true;
       localStorage.setItem("user", JSON.stringify(userData));
       
       showNotification("success", "Profile saved successfully!");
       
-      // Redirect to customer dashboard after a brief delay
       setTimeout(() => {
         navigate("/customer/profile", { replace: true });
       }, 2000);
