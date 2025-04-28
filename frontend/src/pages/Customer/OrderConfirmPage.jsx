@@ -17,9 +17,10 @@ import {
 } from "../../redux/slices/cartApi";
 
 import orderProcessImg from "../../assets/Images/order_process.png";
+import LocationMapSelector from "../map";
 
 // API base URL - adjust based on your environment
-const API_BASE_URL =  "http://localhost:8000/api/order";
+const API_BASE_URL = "http://localhost:8000/api/order";
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
@@ -42,6 +43,25 @@ const OrderConfirmation = () => {
   const [formErrors, setFormErrors] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  // Handle the location selection from the map component
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+    setFormData({
+      ...formData,
+      latitude: location.lat.toFixed(6),
+      longitude: location.lng.toFixed(6),
+    });
+
+    // Clear location error if exists
+    if (formErrors.location) {
+      setFormErrors({
+        ...formErrors,
+        location: "",
+      });
+    }
+  };
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -113,30 +133,38 @@ const OrderConfirmation = () => {
           city: formData.city,
           state: formData.state,
           zipCode: formData.zipCode,
-          instructions: formData.instructions,  // Optional field
+          instructions: formData.instructions,
         },
         customerPhone: formData.phone,
-        customerEmail: formData.email || "", // Send an empty string if no email
+        customerEmail: formData.email || "",
         deliveryTime: new Date(Date.now() + 45 * 60000).toISOString(),
+        latitude: formData.latitude,
+        longitude: formData.longitude,
       };
       // Submit order to backend
       const response = await axios.post(`${API_BASE_URL}/`, orderPayload);
-      
+
       // Save the returned order data
       setOrderData(response.data.data);
-      
+
+      console.log("Order Pay: ",orderPayload)
+
+      console.log("Location", selectedLocation);
+
       return response.data;
     } catch (error) {
       console.error("Order submission error:", error);
-      
+
       // Show error message
       await Swal.fire({
         title: "Error",
-        text: error.response?.data?.message || "Failed to place your order. Please try again.",
+        text:
+          error.response?.data?.message ||
+          "Failed to place your order. Please try again.",
         icon: "error",
         confirmButtonColor: "#d33",
       });
-      
+
       throw error;
     }
   };
@@ -193,13 +221,13 @@ const OrderConfirmation = () => {
     if (confirm.isConfirmed) {
       try {
         setIsSubmitting(true);
-        
+
         // Submit order to API
         await submitOrderToAPI();
-        
+
         console.log("Order submitted successfully!");
         setOrderPlaced(true);
-        
+
         // Don't need to clear cart here since the API handles that
       } catch (error) {
         console.error("Order submission failed:", error);
@@ -211,8 +239,8 @@ const OrderConfirmation = () => {
   };
 
   const handleNavigate = () => {
-    navigate(`/map?orderId=${orderData?._id || ''}`);
-  }
+    navigate(`/map?orderId=${orderData?._id || ""}`);
+  };
 
   if (orderPlaced) {
     return (
@@ -258,6 +286,7 @@ const OrderConfirmation = () => {
 
         <div className="lg:grid lg:grid-cols-3 lg:gap-12">
           {/* Left Side - Customer Details Form */}
+
           <form
             className="lg:col-span-2 mb-8 lg:mb-0"
             onSubmit={handleSubmitOrder}
@@ -353,6 +382,12 @@ const OrderConfirmation = () => {
             {/* Delivery Details */}
             <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
               <h2 className="text-xl font-semibold mb-4">Delivery Address</h2>
+              <div>
+                <LocationMapSelector
+                  onLocationSelect={handleLocationSelect}
+                  initialLocation={{ lat: 6.9271, lng: 79.8612 }}
+                />
+              </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label
