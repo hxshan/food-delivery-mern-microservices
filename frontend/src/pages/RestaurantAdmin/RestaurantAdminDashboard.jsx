@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import NewOrders from "../../components/Restaurent/NewOrder";
+import ConfirmedOrders from "../../components/Restaurent/ConfirmedOrder";
 
 function RestaurentAdminDashboard() {
    const navigate = useNavigate();
@@ -18,80 +21,38 @@ function RestaurentAdminDashboard() {
       )
     );
   };
-  const handleAddRestaurantClick = () => {
-    setActiveItem("Add Restaurant");
-    navigate('/add-restaurant'); 
+ 
+  const handleRestaurantDetailsClick = () => {
+    const restaurantId = localStorage.getItem('restaurantId');
+    
+    if (restaurantId) {
+      setActiveItem("Restaurant Details");
+      navigate(`/restaurant-details/${restaurantId}`);
+    } else {
+      console.error('No restaurant ID found in local storage');
+
+    }
   };
+  
   const [activeItem, setActiveItem] = useState("Dashboard");
 
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-44 bg-white shadow-lg">
-        <div className="p-4 flex items-center gap-2 border-b">
-          <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-            <span className="text-white font-semibold">🍳</span>
-          </div>
-          <span className="font-bold text-red-500"></span>
-        </div>
-
-        <nav className="px-1 py-4">
-       
-          <SidebarItem
-            icon="✨"
-            text="Dashboard"
-            active={activeItem === "Dashboard"}
-            onClick={() => setActiveItem("Dashboard")}
-          />
-           <SidebarItem
-            icon="🏠"
-            text="Add Restaurant"
-            active={activeItem === "Add restaurant"}
-            onClick={handleAddRestaurantClick}
-          />
-          <SidebarItem
-            icon="🍔"
-            text="Menu List"
-            active={activeItem === "Menu List"}
-            onClick={() => setActiveItem("Menu List")}
-          />
-
-          <SidebarItem 
-          icon="📃" 
-          text="Restaurant Details"   
-          active={activeItem === "Restaurant Details"} 
-          onClick={() => setActiveItem("Restaurant Details")}/>
-          {/* <SidebarItem icon="💬" text="Chats" />
-          <SidebarItem icon="🔄" text="Bootstrap" />
-          <SidebarItem icon="📋" text="Order History" />
-          <SidebarItem icon="💵" text="Bills" />
-          <SidebarItem icon="⚙️" text="Setting" /> */}
-        </nav>
-
-        <div className="mt-60 p-4">
-          <div className="bg-yellow-100 rounded-xl p-4 flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-white border-4 border-red-500 flex items-center justify-center mb-2">
-              <span>👨‍🍳</span>
-            </div>
-            <p className="text-xs text-center text-gray-600">
-              Contact our support
-            </p>
-          </div>
-        </div>
-      </div>
+      <Sidebar />
+      
 
       {/* Main content */}
       <div className="flex-1">
         {/* Header */}
         <header className="bg-white p-4 flex justify-between items-center">
           <h1 className="text-lg font-semibold">Restaurant Owner Dashboard</h1>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search"
-                className="px-4 py-2 rounded-md bg-gray-100 w-64"
+                className="px-4 py-2 rounded-md bg-gray-100 w-64 hover:border-red-500"
               />
               <span className="absolute right-3 top-2.5">🔍</span>
             </div>
@@ -112,25 +73,23 @@ function RestaurentAdminDashboard() {
           {/* Left side content */}
           <div className="flex-1">
             {/* Hero banner */}
-            <div className="bg-red-400 rounded-lg p-6 mb-6 flex justify-between overflow-hidden relative">
+            <div className="bg-red-500 rounded-lg p-6 mb-6 flex justify-between overflow-hidden relative">
               <div className="w-1/2">
-                <p className="text-white text-sm">The best fast food in town</p>
+                <p className="text-white text-sm">Welcome</p>
                 <h2 className="text-white text-3xl font-bold mb-2">
-                  Delicious Pizza
+                 
                 </h2>
                 <p className="text-white text-sm mb-6">
-                  Lorem ipsum is placeholder text commonly used in the graphic.
+                  
                 </p>
               </div>
               <img
-                src="/api/placeholder/300/300"
-                alt="Pizza"
-                className="absolute right-0 top-0 h-full w-auto"
+             
               />
             </div>
 
             {/* Categories */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Explore Category</h3>
                 <button className="text-red-500 text-sm">See All</button>
@@ -151,94 +110,50 @@ function RestaurentAdminDashboard() {
                 <CategoryCard icon="📍" title="Nearest" color="bg-green-500" />
                 <CategoryCard icon="🚖" title="Pick up" color="bg-purple-500" />
               </div>
-            </div>
+            </div> */}
 
-            {/* Popular dishes */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold">Popular Dishes</h3>
-                <button className="text-red-500 text-sm">See All</button>
-              </div>
-              <div className="grid grid-cols-4 gap-4">
-                <DishCard
-                  title="Cheese Pizza"
-                  price={250.0}
-                  rating={4.8}
-                  time="20 - 30 min"
-                  discount={5}
-                />
-                <DishCard
-                  title="Hawaiian pizza"
-                  price={350.0}
-                  rating={4.5}
-                  time="25 - 35 min"
-                  discount={10}
-                />
-                <DishCard
-                  title="Delicious Burger"
-                  price={200.0}
-                  rating={4.8}
-                  time="25 - 30 min"
-                  discount={15}
-                />
-                <DishCard
-                  title="Delicious Burger"
-                  price={220.0}
-                  rating={4.5}
-                  time="25 - 35 min"
-                  discount={10}
-                />
-              </div>
-            </div>
+         
 
             {/* Recent orders */}
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Recent Order</h3>
                 <button className="text-red-500 text-sm">See All</button>
+
+                
               </div>
-              {/* Recent orders content would go here */}
+              <NewOrders />
             </div>
           </div>
 
           {/* Right sidebar (cart) */}
-          <div className="w-72 bg-white rounded-lg p-4">
-            <h3 className="font-semibold mb-4">My Balance</h3>
+          {/* <div className="w-72 bg-white rounded-lg p-4">
+            <h3 className="font-semibold mb-4"></h3>
 
             <div className="bg-red-500 rounded-lg p-4 mb-6 text-white">
-              <p className="text-sm mb-1">Balance</p>
-              <p className="text-2xl font-bold mb-4">$5789.78</p>
+              <p className="text-sm mb-1"></p>
+              <p className="text-2xl font-bold mb-4"></p>
               <div className="flex justify-between">
                 <button className="bg-white text-red-500 rounded-lg px-4 py-1 text-sm flex items-center gap-1">
-                  <span>↓</span> Top Up
+                  <span></span>
                 </button>
                 <button className="bg-white text-red-500 rounded-lg px-4 py-1 text-sm">
-                  Transfer
+             
                 </button>
               </div>
             </div>
 
             <h3 className="font-semibold mb-4">My Order</h3>
+            
 
-            <div className="space-y-4 mb-4">
-              {cartItems.map((item) => (
-                <CartItem
-                  key={item.id}
-                  name={item.name}
-                  price={item.price}
-                  quantity={item.quantity}
-                  onIncrease={() => updateQuantity(item.id, item.quantity + 1)}
-                  onDecrease={() => updateQuantity(item.id, item.quantity - 1)}
-                />
-              ))}
-            </div>
+            
 
             <div className="mt-8 text-center">
               <button className="bg-red-500 text-white rounded-lg py-3 px-6 font-medium w-full">
-                Checkout - $840.00
+              
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
