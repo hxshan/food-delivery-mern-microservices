@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useLogout } from '../hooks/useLogout';
 
-const Navbar = () => {
+const Navbar = ({ isLoggedIn = false}) => {
   const { user } = useAuthContext();
   const { logout } = useLogout();
 
