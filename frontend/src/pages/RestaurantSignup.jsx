@@ -49,26 +49,32 @@ const RestaurantSignup = () => {
   
       const { message, userId } = res.data;
       
-      // Handle successful response with a single notification based on message content
-      if (message?.toLowerCase().includes("verification code has been resent")) {
-        showNotification("success", "Verification code has been resent to your email!");
-      } else if (message?.toLowerCase().includes("role added to your account")) {
-        showNotification("success", message);
-      } else {
-        // Default success message for new registration
-        showNotification("success", "OTP has been sent to your email!");
-      }
-      
-      // Navigate based on response type
-      setTimeout(() => {
-        if (message?.toLowerCase().includes("role added to your account")) {
-          navigate("/restaurantLogin", { replace: true });
-        } else if (userId) {
-          navigate(`/restaurant-otp/${userId}`, { replace: true });
+      if (userId) {
+        // All flows requiring verification will have a userId
+        let notificationMsg;
+        
+        if (message?.toLowerCase().includes("verification code has been resent")) {
+          notificationMsg = "Verification code has been resent to your email!";
+        } else if (message?.toLowerCase().includes("role added to your account")) {
+          notificationMsg = "Role added successfully! Please verify your email.";
         } else {
-          navigate("/restaurantLogin", { replace: true });
+          notificationMsg = "Registration successful! OTP has been sent to your email.";
         }
-      }, 2000);
+        
+        showNotification("success", notificationMsg);
+        
+        // Always redirect to OTP verification when userId is present
+        setTimeout(() => {
+          navigate(`/restaurant-otp/${userId}`, { replace: true });
+        }, 2000);
+      } else {
+        // For any success response without userId (unlikely with our updated backend)
+        showNotification("success", message || "Operation successful!");
+        
+        setTimeout(() => {
+          navigate("/restaurantLogin", { replace: true });
+        }, 2000);
+      }
       
     } catch (err) {
       console.error(err);

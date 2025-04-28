@@ -32,7 +32,7 @@ export const useVerifyOtp = () => {
       dispatch({ type: 'LOGIN', payload: data });
 
       // Navigate to dashboard
-      navigate('/customer');
+      navigate('/customer-details');
 
       return { success: true, message: 'Email verification successful!' };
 
