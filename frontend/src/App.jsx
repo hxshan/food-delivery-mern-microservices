@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-import Home from "./pages/home"
+
 import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -45,6 +45,7 @@ import LoginSelection from "./pages/LoginSelection";
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import Wait from "./pages/RestaurantAdmin/Wait";
 
 
 // Auth wrapper for protected routes
@@ -63,6 +64,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/resturentlist" element={<ResturantListing />} />
         <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route path="/wait" element={<Wait/>} />
+        
         <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
