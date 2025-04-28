@@ -134,6 +134,8 @@ const OrderConfirmation = () => {
           state: formData.state,
           zipCode: formData.zipCode,
           instructions: formData.instructions,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
         },
         customerPhone: formData.phone,
         customerEmail: formData.email || "",
@@ -147,7 +149,7 @@ const OrderConfirmation = () => {
       // Save the returned order data
       setOrderData(response.data.data);
 
-      console.log("Order Pay: ",orderPayload)
+      console.log("Order Pay: ", orderPayload);
 
       console.log("Location", selectedLocation);
 

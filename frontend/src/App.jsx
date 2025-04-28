@@ -119,7 +119,7 @@ const App = () => {
           <Route path="restaurants" element={<ManageRestaurants />} />
         </Route>
         {/* Fallback - 404 */}
-        <Route path="/a" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
 
         
         <Route path="/ResturentList" element={<ResturantListing />} />
