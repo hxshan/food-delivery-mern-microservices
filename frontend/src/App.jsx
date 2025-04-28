@@ -45,6 +45,7 @@ import LoginSelection from "./pages/LoginSelection";
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 import NotFound from "./pages/notFound";
+import Wait from "./pages/RestaurantAdmin/Wait";
 
 
 // Auth wrapper for protected routes
@@ -63,6 +64,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/resturentlist" element={<ResturantListing />} />
         <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route path="/wait" element={<Wait/>} />
+        
         <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />

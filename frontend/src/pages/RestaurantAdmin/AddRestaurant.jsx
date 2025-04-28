@@ -34,7 +34,12 @@ const AddRestaurant = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      toast.error('User not authenticated. Please login again.');
+     
+      return;
+    }
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("address", data.address);
@@ -44,6 +49,7 @@ const AddRestaurant = () => {
     });
     if (data.longitude) formData.append("longitude", data.longitude);
 if (data.latitude) formData.append("latitude", data.latitude);
+if (userId) formData.append("userId", userId); 
 
     if (image) {
       formData.append("image", image);
@@ -56,8 +62,17 @@ if (data.latitude) formData.append("latitude", data.latitude);
           'Content-Type': 'multipart/form-data'
         }
       });
+    // try {
+    //   const response = await restaurantApi.post('/add', formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //       'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+    //     }
+    //   });
       
       if (response.data.success) {
+        localStorage.setItem('restaurantId', response.data.restaurant._id);
+
         setData({
           name: "",
           address: "",
@@ -68,7 +83,8 @@ if (data.latitude) formData.append("latitude", data.latitude);
         });
         setImage(false);
         toast.success(response.data.message);
-        navigate(`/restaurant-details/${response.data.restaurant._id}`); 
+        // navigate(`/restaurant-details/${response.data.restaurant._id}`); 
+        navigate('/wait')
       } else {
         toast.error(response.data.message);
       }
