@@ -84,7 +84,7 @@ const App = () => {
         <Route path="/loginSelection" element={<LoginSelection />} />
 
         
-        <Route path="/add-restaurant/:userId" element={<AddRestaurant />} />
+        <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu/:id" element={<AddMenuItem />} />
         <Route path="/profile" element={<UserProfile />} />/
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />
