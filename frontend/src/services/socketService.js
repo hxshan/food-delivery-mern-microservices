@@ -18,7 +18,7 @@ const createSocketConnection = (token,userDetails) => {
     console.log('Connected to socket server');
 
     socket.emit('user_connected', {
-      userId: userDetails.id,
+      userId: userDetails.userId,
       userType: userDetails.type,
     });
   });
