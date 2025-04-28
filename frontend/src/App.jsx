@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-
 import Home from "./pages/home"
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -45,6 +44,7 @@ import LoginSelection from "./pages/LoginSelection";
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import NotFound from "./pages/notFound";
 import Wait from "./pages/RestaurantAdmin/Wait";
 
 
@@ -122,7 +122,7 @@ const App = () => {
           <Route path="restaurants" element={<ManageRestaurants />} />
         </Route>
         {/* Fallback - 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
 
         
         <Route path="/ResturentList" element={<ResturantListing />} />
