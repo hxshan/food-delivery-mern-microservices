@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import NewOrders from "../../components/Restaurent/NewOrder";
+import ConfirmedOrders from "../../components/Restaurent/ConfirmedOrder";
 
 function RestaurentAdminDashboard() {
    const navigate = useNavigate();

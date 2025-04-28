@@ -31,11 +31,11 @@ export default function Sidebar() {
     const restaurantId = getRestaurantId();
     
     return {
-      'Dashboard': '/',
+      'Dashboard': '/restaurant-admin-dashboard',
       'Messages': '/messages',
       'Listings': '/listings',
       'Add listing': '/add-listing',
-      'Orders Page': '/orders',
+      'Orders Page': '/restaurant-admin-orders',
       'Edit Order': '/edit-order',
       'Invoice': '/invoice',
       'Reviews': '/reviews',
@@ -90,7 +90,7 @@ export default function Sidebar() {
               <span className="text-xs">✨</span>
             </div>
           </div>
-          {!collapsed && <span className="font-bold text-xl text-red-500">FooYes</span>}
+          {!collapsed && <span className="font-bold text-xl text-red-500">Food Order</span>}
         </div>
       </div>
       
