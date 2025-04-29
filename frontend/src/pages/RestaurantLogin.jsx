@@ -96,7 +96,7 @@ const RestaurantLogin = () => {
       
       // Redirect to restaurant dashboard
       setTimeout(() => {
-        navigate("/restaurant", { replace: true });
+        navigate("/restaurant-admin-dashboard", { replace: true });
       }, 1500);
       
     } catch (err) {
