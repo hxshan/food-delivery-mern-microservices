@@ -4,7 +4,7 @@ const Wait = () => {
   const navigate = useNavigate();
 
   const handleGoToLogin = () => {
-    navigate("/login");
+    navigate("/restaurantLogin");
   };
 
   return (
