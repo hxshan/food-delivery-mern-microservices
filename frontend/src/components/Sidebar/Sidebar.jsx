@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useLogout } from '../../hooks/useLogout';
 import { 
   Home, 
   MessageSquare, 
@@ -13,13 +14,19 @@ import {
   User, 
   Settings,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  
 } from 'lucide-react';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+   const { logout } = useLogout();
+
+   const handleLogout = () => {
+    logout();
+  };
   
   // Get restaurant ID from localStorage
   const getRestaurantId = () => {
@@ -183,6 +190,14 @@ export default function Sidebar() {
             onClick={() => handleNavigation('Components')}
             collapsed={collapsed} 
             hasSubmenu 
+          />
+            <NavItem 
+          
+            text="Logout" 
+            active={activeItem === 'Logout'}
+            onClick={() => handleLogout()}
+            collapsed={collapsed} 
+          
           />
         </nav>
       </div>
