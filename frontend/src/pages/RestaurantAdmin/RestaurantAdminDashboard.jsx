@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import NewOrders from "../../components/Restaurent/NewOrder";
+import ConfirmedOrders from "../../components/Restaurent/ConfirmedOrder";
 
 function RestaurentAdminDashboard() {
    const navigate = useNavigate();
@@ -36,54 +39,8 @@ function RestaurentAdminDashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-44 bg-white shadow-lg">
-        <div className="p-4 flex items-center gap-2 border-b">
-          <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
-            <span className="text-white font-semibold">🍳</span>
-          </div>
-          <span className="font-bold text-red-500"></span>
-        </div>
-
-        <nav className="px-1 py-4">
-       
-          <SidebarItem
-            icon="✨"
-            text="Dashboard"
-            active={activeItem === "Dashboard"}
-            onClick={() => setActiveItem("Dashboard")}
-          />
-         
-          <SidebarItem
-            icon="🍔"
-            text="Restaurant Details"
-            active={activeItem === "Restaurant Details"}
-            onClick={handleRestaurantDetailsClick}
-          />
-
-          {/* <SidebarItem 
-          icon="📃" 
-          text="Restaurant Details"   
-          active={activeItem === "Restaurant Details"} 
-          onClick={() => setActiveItem("Restaurant Details")}/> */}
-          {/* <SidebarItem icon="💬" text="Chats" />
-          <SidebarItem icon="🔄" text="Bootstrap" />
-          <SidebarItem icon="📋" text="Order History" />
-          <SidebarItem icon="💵" text="Bills" />
-          <SidebarItem icon="⚙️" text="Setting" /> */}
-        </nav>
-
-        <div className="mt-60 p-4">
-          <div className="bg-yellow-100 rounded-xl p-4 flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-white border-4 border-red-500 flex items-center justify-center mb-2">
-              <span>👨‍🍳</span>
-            </div>
-            <p className="text-xs text-center text-gray-600">
-              Contact our support
-            </p>
-          </div>
-        </div>
-      </div>
+      <Sidebar />
+      
 
       {/* Main content */}
       <div className="flex-1">
@@ -132,7 +89,7 @@ function RestaurentAdminDashboard() {
             </div>
 
             {/* Categories */}
-            <div className="mb-6">
+            {/* <div className="mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Explore Category</h3>
                 <button className="text-red-500 text-sm">See All</button>
@@ -153,7 +110,7 @@ function RestaurentAdminDashboard() {
                 <CategoryCard icon="📍" title="Nearest" color="bg-green-500" />
                 <CategoryCard icon="🚖" title="Pick up" color="bg-purple-500" />
               </div>
-            </div>
+            </div> */}
 
          
 
@@ -162,13 +119,15 @@ function RestaurentAdminDashboard() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold">Recent Order</h3>
                 <button className="text-red-500 text-sm">See All</button>
+
+                
               </div>
-              {/* Recent orders content would go here */}
+              <NewOrders />
             </div>
           </div>
 
           {/* Right sidebar (cart) */}
-          <div className="w-72 bg-white rounded-lg p-4">
+          {/* <div className="w-72 bg-white rounded-lg p-4">
             <h3 className="font-semibold mb-4"></h3>
 
             <div className="bg-red-500 rounded-lg p-4 mb-6 text-white">
@@ -185,6 +144,7 @@ function RestaurentAdminDashboard() {
             </div>
 
             <h3 className="font-semibold mb-4">My Order</h3>
+            
 
             
 
@@ -193,7 +153,7 @@ function RestaurentAdminDashboard() {
               
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

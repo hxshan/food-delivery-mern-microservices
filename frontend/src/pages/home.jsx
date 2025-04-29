@@ -102,7 +102,7 @@ const Home = () => {
           Popular Categories
         </h2>
 
-        <div className="relative">
+
           <Slider />
           {/* <div className="flex overflow-x-auto space-x-4 pb-4">
             {categories.map(category => (
@@ -110,14 +110,7 @@ const Home = () => {
             ))}
           </div> */}
 
-          <button className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow-md">
-            <ChevronLeft size={20} />
-          </button>
 
-          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-1 shadow-md">
-            <ChevronRight size={20} />
-          </button>
-        </div>
       </div>
 
       {/* Top Rated Restaurants */}
