@@ -14,6 +14,11 @@ import {
   DollarSign,
   History
 } from "lucide-react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {assets} from '../../assets/assets'
+import axios from "../../api/axios";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const DriverProfilePage = () => {
   // Form fields state
@@ -42,20 +47,28 @@ const DriverProfilePage = () => {
   
   // const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch driver data - this would typically come from your API
-    // Mocking data for demonstration
-    setFirstName("Alex");
-    setLastName("Johnson");
-    setPhoneNumber("555-987-6543");
-    setVehicleType("motorcycle");
+   const user = useAuthContext();
+  
+    const getuserData = async()=>{
+      console.log(`http://localhost:8000/api/user/driver/profile/${user.user.userId}`)
+      const res = await axios.get(`/user/driver/profile/${user.user.userId}`)
+      console.log(res)
+          
+    setFirstName(res.data.firstName);
+    setLastName(res.data.lastName);
+    setPhoneNumber(res.data.phone);
+    setVehicleType(res.data.vehicle.type);
     setPreviewUrl("/api/placeholder/100/100");
-    
-    // Mock statistics
     setDeliveriesCompleted(246);
-    setRating(4.8);
-    setEarnings(1250.75);
-  }, []);
+    setRating(res.data.rating);
+    setEarnings(res.data.earnings);
+    }
+    useEffect(() => {
+      if(user.user != null){
+        getuserData()
+      }
+    }, [user]);
+    
 
   // File handling functions
   const handleProfilePictureChange = (e) => {
@@ -82,13 +95,26 @@ const DriverProfilePage = () => {
     return !Object.values(formErrors).some(error => error);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Here you would typically handle API call to update driver details
-      setIsEditing(false);
-      // You could show a success message here
+      const formData = new FormData();
+      formData.append('phone', phoneNumber);
+      formData.append('firstName', firstName);
+      formData.append('lastName', lastName);
+      formData.append('vehicle', vehicleType);
+      formData.append('profilePicture', profilePicture);
+      const response = await axios.put(`/user/driver/profile/${user.user.userId}`,
+        formData,
+        { headers: { 'Content-Type': 'application/json' } }
+              );
+      if(response.status == 200 ){
+        toast.success('Profile updated!', {
+          onClose: () => getuserData()
+        });
+        setIsEditing(false);
+      }
     }
   };
 
@@ -107,7 +133,7 @@ const DriverProfilePage = () => {
       <div className="bg-white shadow-sm p-4">
         <div className="max-w-4xl mx-auto flex items-center">
           <Link
-            to="/driver-dashboard"
+            to="/driver/dashboard"
             className="flex items-center text-gray-600 hover:text-red-500"
           >
             <ArrowLeft size={20} className="mr-2" />
@@ -127,7 +153,7 @@ const DriverProfilePage = () => {
                   {previewUrl ? (
                     <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white">
                       <img
-                        src={previewUrl}
+                        src={assets.placeholder}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />

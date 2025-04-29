@@ -7,10 +7,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminOverview from "./pages/admin/AdminOverview";
-import ManageCustomers from "./pages/admin/ManageCustomers";
-import ManageDrivers from "./pages/admin/ManageDrivers";
-import ManageRestaurants from "./pages/admin/ManageRestaurants";
+import AdminOverview from "./pages/Admin/AdminOverview";
+import ManageCustomers from "./pages/Admin/ManageCustomers";
+import ManageDrivers from "./pages/Admin/ManageDrivers";
+import ManageRestaurants from "./pages/Admin/ManageRestaurants";
 import AddRestaurant from "./pages/RestaurantAdmin/AddRestaurant";
 import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
 import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
@@ -36,6 +36,7 @@ import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
+import AdminLogin from "./pages/admin/AdminLogin"
 
 import RegistrationSelection from "./pages/RegistrationSelection";
 import LoginSelection from "./pages/LoginSelection";
@@ -48,12 +49,21 @@ import NotFound from "./pages/notFound";
 import Wait from "./pages/RestaurantAdmin/Wait";
 import OrdersPage from "./pages/RestaurantAdmin/OrdersPage";
 import AllOrdersPage from "./pages/RestaurantAdmin/AllOrders";
+import DriverWaitingActivation from "./pages/Driver/DriverwaitforActivation";
 
 
 // Auth wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = true; // Replace this with actual auth logic
   return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// Admin route protection
+const AdminProtectedRoute = ({ children }) => {
+  // Get admin from localStorage
+  const admin = JSON.parse(localStorage.getItem('admin'));
+  const isAdminAuthenticated = admin && admin.token && admin.isAdmin;
+  return isAdminAuthenticated ? children : <Navigate to="/admin/login" />;
 };
 
 const App = () => {
@@ -73,6 +83,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/driverSignup" element={<DriverSignup />} />
@@ -110,6 +121,7 @@ const App = () => {
         <Route path="/driver-details" element={<DeliveryDriverDetails />} />
         <Route path="/customer/profile" element={<CustomerProfile />} />
         <Route path="/driver/profile" element={<DriverProfilePage />} />
+        <Route path="/driver/inactive" element={<DriverWaitingActivation />} />
         {/* Admin Routes with nested structure */}
         <Route
           path="/admin"

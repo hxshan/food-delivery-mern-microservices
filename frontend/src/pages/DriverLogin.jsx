@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, ArrowLeft, Check, AlertTriangle } from "lucide-react";
 import axios from "../api/axios";
 import { useAuthContext } from "../hooks/useAuthContext";
+// import {connectSocketAfterLogin} from '../services/auth.service'
 
 const DriverLogin = () => {
   const navigate = useNavigate();
@@ -74,6 +75,7 @@ const DriverLogin = () => {
       if (userData.roleStatus && userData.roleStatus.driver === "pending") {
         showNotification("warning", "Your driver account is pending approval. We'll notify you once approved.");
         setLoading(false);
+        navigate('/driver/inactive');
         return;
       }
       
@@ -89,13 +91,17 @@ const DriverLogin = () => {
       
       // Update auth context
       dispatch({ type: "LOGIN", payload: userData });
-      
+
+      // connectSocketAfterLogin(userData.token,{
+      //   id:userData.userId,
+      //   type:'driver'
+      // })
       // Show success notification
       showNotification("success", "Login successful! Redirecting to dashboard...");
       
       // Redirect to driver dashboard
       setTimeout(() => {
-        navigate("/driver", { replace: true });
+        navigate("/driver/dashboard", { replace: true });
       }, 1500);
       
     } catch (err) {

@@ -175,7 +175,8 @@ const [notification, setNotification] = useState({
           }
         );
         if(response.status == 200 ){
-          navigate("/driver-dashboard");
+
+          navigate("/driver/inactive");
         }else{
           showNotification("error", response.message || "Server error occurred");
         }
