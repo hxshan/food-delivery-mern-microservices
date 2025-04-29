@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Phone, Upload, MapPin, ArrowLeft, Mail, CreditCard, Clock, Home, History } from "lucide-react";
+import axios from "../../api/axios";
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { assets } from "../../assets/assets";
 
 const CustomerProfile = () => {
   const [firstName, setFirstName] = useState("");
@@ -13,16 +16,26 @@ const CustomerProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
 //   const navigate = useNavigate();
 
-  useEffect(() => {
-    // This would typically fetch user data from your backend
-    // For demo purposes, we're pre-filling with mock data
-    setFirstName("John");
-    setLastName("Doe");
-    setPhoneNumber("555-123-4567");
-    setEmail("john.doe@example.com");
-    setAddress("123 Main Street, Apt 4B, New York, NY 10001");
-    setPreviewUrl("/api/placeholder/150/150"); // Placeholder for demo
-  }, []);
+const user = useAuthContext();
+  
+    const getuserData = async()=>{
+      console.log(`http://localhost:8000/api/user/driver/profile/${user.user.userId}`)
+      const res = await axios.get(`/user/customer/profile/${user.user.userId}`)
+      console.log(res)
+          
+    setFirstName(res.data.firstName);
+    setLastName(res.data.lastName);
+    setPhoneNumber(res.data.phone); 
+    setPreviewUrl(assets.placeholder);
+    res.data.addresses.length>0?setAddress(res.data.addresses[0]):setAddress( 'Address not given')
+    setEmail(res.data.user.email)
+    
+    }
+    useEffect(() => {
+      if(user.user != null){
+        getuserData()
+      }
+    }, [user]);
 
   const handleProfilePictureChange = (e) => {
     const file = e.target.files[0];
@@ -49,7 +62,7 @@ const CustomerProfile = () => {
       <div className="bg-white shadow-sm p-4">
         <div className="max-w-4xl mx-auto flex items-center">
           <Link
-            to="/dashboard"
+            to="/"
             className="flex items-center text-gray-600 hover:text-red-500"
           >
             <ArrowLeft size={20} className="mr-2" />
@@ -173,7 +186,8 @@ const CustomerProfile = () => {
                           id="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="pl-10 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                          disabled={true}
+                          className="pl-10 w-full p-3 border border-gray-300 rounded-md focus:outline-none hover:cursor-not-allowed focus:ring-2 bg-gray-100 focus:ring-red-500"
                           placeholder="Enter your email"
                           required
                         />

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
-import ManageCustomers from '../pages/admin/ManageCustomers';
-import ManageDrivers from '../pages/admin/ManageDrivers';
-import ManageRestaurants from '../pages/admin/ManageRestaurants';
-import AdminOverview from '../pages/admin/AdminOverview';
+import ManageCustomers from '../pages/Admin/ManageCustomers';
+import ManageDrivers from '../pages/Admin/ManageDrivers';
+import ManageRestaurants from '../pages/Admin/ManageRestaurants';
+import AdminOverview from '../pages/Admin/AdminOverview';
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);

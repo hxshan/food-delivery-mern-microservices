@@ -9,28 +9,15 @@ const containerStyle = {
   height: '100%',
 };
 
-const MapScreen = ({orderId}) => {
+const MapScreen = ({order}) => {
   const [driverLocation, setDriverLocation] = useState(null);
   const [userLocation, setUserLocation] = useState({ lat:6.9  , lng: 79.899});
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
-  // useEffect(() => {
-  //   socket.emit('join-order-room', { orderId: '1234' });
-
-  //   socket.on('driver-location-update', (location) => {
-  //     setDriverLocation(location);
-  //   });
-
-  //   return () => {
-  //     socket.off('driver-location-update');
-  //   };
-  // }, []);
+  const [deliveryStatus,setDeliveryStatus] = useState("Being Prepared")
 
   if (!isLoaded) return <div>Loading map...</div>;
-
-  
-    
     return (
       <div className="flex flex-col h-screen bg-gray-50">
         <Navbar />
@@ -76,7 +63,7 @@ const MapScreen = ({orderId}) => {
             <h3 className="font-medium mb-2">Order Status</h3>
             <div className="flex items-center text-green-500 mb-4">
               <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-              <span>Your order is on the way!</span>
+              <span>Your order {deliveryStatus}</span>
             </div>
             
             <div className="flex justify-between items-center">

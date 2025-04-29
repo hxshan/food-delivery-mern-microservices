@@ -21,10 +21,10 @@ spec:
             - name: PORT 
               value: "8000"
             - name: USER_SERVICE
-              value: http://localhost:5001
+              value: http://user-service:5001
             - name: AUTH_SERVICE
-              value: http://localhost:5002
+              value: http://auth-service:5002
             - name: RESTAURANT_SERVICE
-              value: http://localhost:5003
+              value: http://order-service:5003
             - name: ORDER_SERVICE
-              value: http://localhost:5004
+              value: http://restaurant-service:5004
