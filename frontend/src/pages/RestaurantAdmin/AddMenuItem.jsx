@@ -12,7 +12,9 @@ const AddMenuItem = () => {
     name: '',
     description: '',
     price: '', 
-    category: ''
+    category: '',
+    size:''
+
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,6 +40,7 @@ const AddMenuItem = () => {
       formData.append("description", data.description);
       formData.append("price", Number(data.price));
       formData.append("category", data.category);
+      formData.append("size", data.size);
       if (image) {
         formData.append("image", image);
       }
@@ -74,14 +77,14 @@ const AddMenuItem = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-[#FA5F55]">
+        <h2 className="text-2xl font-bold mb-6 text-center text-red-500">
           Add New Menu Item
         </h2>
         
         <form className="space-y-4" onSubmit={onSubmitHandler}>
      
           <div className="flex flex-col items-center mb-4">
-            <label className="cursor-pointer border-2 border-dashed border-gray-300 hover:border-[#FA5F55] rounded-lg p-4 bg-white transition-colors">
+            <label className="cursor-pointer border-2 border-dashed border-gray-300 hover:border-red-500 rounded-lg p-4 bg-white transition-colors">
               <img
                 src={image ? URL.createObjectURL(image) : assets.upload_area}
                 alt="Upload preview"
@@ -108,7 +111,7 @@ const AddMenuItem = () => {
               value={data.name}
               name="name"
               placeholder="Enter menu item name"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-transparent"
               required
             />
           </div>
@@ -121,11 +124,26 @@ const AddMenuItem = () => {
               value={data.description}
               name="description"
               placeholder="Enter description"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent min-h-[80px]"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-transparent min-h-[80px]"
               required
             />
           </div>
-          
+
+       
+          <div>
+            <label className="font-medium mb-1 block">Item Size (Optional)</label>
+            <select
+              onChange={onChangeHandler}
+              value={data.size}
+              name="size"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-transparent"
+            >
+              <option value="">Select size</option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
+            </select>
+          </div>
          
           <div>
             <label className="font-medium mb-1 block">Item Category</label>
@@ -133,7 +151,7 @@ const AddMenuItem = () => {
               onChange={onChangeHandler}
               value={data.category}
               name="category"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-transparent"
               required
             >
               <option value="">Select category</option>
@@ -159,7 +177,7 @@ const AddMenuItem = () => {
                 name="price"
                 type="number"
                 placeholder="0.00"
-                className="w-full pl-8 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#FA5F55] focus:border-transparent"
+                className="w-full pl-8 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-transparent"
                 min="0"
                 step="0.01"
                 required
@@ -170,7 +188,7 @@ const AddMenuItem = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full bg-[#FA5F55] hover:bg-[#e04b42] text-white font-bold py-2 px-4 rounded-lg transition duration-200 mt-4 ${
+            className={`w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 mt-4 ${
               isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

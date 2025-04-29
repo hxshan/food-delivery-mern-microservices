@@ -45,6 +45,10 @@ import LoginSelection from "./pages/LoginSelection";
 
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
+import NotFound from "./pages/notFound";
+import Wait from "./pages/RestaurantAdmin/Wait";
+import OrdersPage from "./pages/RestaurantAdmin/OrdersPage";
+import AllOrdersPage from "./pages/RestaurantAdmin/AllOrders";
 
 
 // Auth wrapper for protected routes
@@ -71,6 +75,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/resturentlist" element={<ResturantListing />} />
         <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route path="/wait" element={<Wait/>} />
+        
         <Route path="/checkout" element={<OrderConfirmation />} />
 
         <Route path="/login" element={<Login />} />
@@ -106,6 +112,8 @@ const App = () => {
 
         <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 
         <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
+        <Route path="/restaurant-admin-orders" element={<OrdersPage />} /> 
+        <Route path="/restaurantadminordersall" element={<AllOrdersPage />} /> 
 
 
         <Route path="/customer-details" element={<CustomerDetails />} />
@@ -128,7 +136,7 @@ const App = () => {
           <Route path="restaurants" element={<ManageRestaurants />} />
         </Route>
         {/* Fallback - 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
 
         
         <Route path="/ResturentList" element={<ResturantListing />} />

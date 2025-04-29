@@ -1,54 +1,90 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { assets } from "../../assets/assets";
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { restaurantApi } from "../../services/restaurantApi";
-
+import { AuthContext } from "../../context/AuthContext";
 const AddRestaurant = () => {
+  const { user } = useContext(AuthContext);
+  console.log('AuthContext user:', user); 
   const navigate = useNavigate();
   const [image, setImage] = useState(false);
-  const [data, setData] = useState({ 
-    name: '', 
-    address: '', 
+  const [data, setData] = useState({
+    name: "",
+    address: "",
     isOpen: false,
+    phoneNumbers: [""],
+    longitude: "",
+    latitude: "",
   });
 
-  const onChangeHandler = (event) => {
+  const onChangeHandler = (event, index = null) => {
     const { name, value, type, checked } = event.target;
-    setData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    if (name === "phoneNumbers" && index !== null) {
+      setData((prev) => {
+        const updatedPhones = [...prev.phoneNumbers];
+        updatedPhones[index] = value;
+        return { ...prev, phoneNumbers: updatedPhones };
+      });
+    } else {
+      setData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     
+
+    if (!user || !user.userId) {
+      toast.error("User not authenticated.");
+      return;
+    }
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("address", data.address);
     formData.append("isOpen", data.isOpen);
+    formData.append("userId",user.userId);
+    formData.append("phoneNumbers", JSON.stringify(data.phoneNumbers)); 
+    if (data.longitude) formData.append("longitude", data.longitude);
+    if (data.latitude) formData.append("latitude", data.latitude);
+
     if (image) {
       formData.append("image", image);
     }
     console.log("Sending to:", `${restaurantApi.defaults.baseURL}/add`);
-
+    console.log("Sending with userId:", user.userId);
     try {
-      const response = await restaurantApi.post('/add', formData, {
+      const response = await restaurantApi.post("/add", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
-      
+      // try {
+      //   const response = await restaurantApi.post('/add', formData, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //       'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      //     }
+      //   });
+
       if (response.data.success) {
+        localStorage.setItem("restaurantId", response.data.restaurant._id);
+
         setData({
           name: "",
           address: "",
           isOpen: false,
+          phoneNumbers: [""],
+          longitude: "",
+          latitude: "",
         });
         setImage(false);
         toast.success(response.data.message);
-        navigate(`/restaurant-details/${response.data.restaurant._id}`); 
+        // navigate(`/restaurant-details/${response.data.restaurant._id}`);
+        navigate("/wait");
       } else {
         toast.error(response.data.message);
       }
@@ -58,7 +94,7 @@ const AddRestaurant = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8"> 
+    <div className="min-h-screen flex items-center justify-center p-8">
       <div className="w-full max-w-md p-6 md:p-8 bg-white rounded-lg md:ml-36">
         <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center text-[#FA5F55]">
           Add Restaurant Details
@@ -80,12 +116,12 @@ const AddRestaurant = () => {
                 Click to select an image
               </p>
             </label>
-            <input 
+            <input
               onChange={(e) => setImage(e.target.files[0])}
               type="file"
               id="image"
               hidden
-              required 
+              required
             />
           </div>
 
@@ -106,11 +142,63 @@ const AddRestaurant = () => {
               value={data.address}
               name="address"
               placeholder="Restaurant Address"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition hover:border-red-500"
               required
             />
           </div>
-        
+          <div>
+            <input
+              type="text"
+              name="location"
+              value={`${data.longitude}, ${data.latitude}`}
+              onChange={(e) => {
+                const [longitude, latitude] = e.target.value
+                  .split(",")
+                  .map((val) => val.trim());
+                if (longitude && latitude) {
+                  setData((prev) => ({
+                    ...prev,
+                    longitude: longitude || "",
+                    latitude: latitude || "",
+                  }));
+                } else {
+                  toast.error("Please enter valid coordinates.");
+                }
+              }}
+              placeholder="Longitude, Latitude (optional)"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+            />
+          </div>
+
+          <div>
+            <p className="font-sm mb-2">Phone Numbers (up to 3)</p>
+            {data.phoneNumbers.map((phone, idx) => (
+              <input
+                key={idx}
+                type="text"
+                value={phone}
+                onChange={(e) => onChangeHandler(e, idx)}
+                name="phoneNumbers"
+                placeholder={`Phone Number ${idx + 1}`}
+                className="w-full p-2 mb-2 border hover:border-red-500 border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+              />
+            ))}
+            {data.phoneNumbers.length < 3 && (
+              <button
+                type="button"
+                onClick={() =>
+                  setData((prev) => ({
+                    ...prev,
+                    phoneNumbers: [...prev.phoneNumbers, ""],
+                  }))
+                }
+                className="text-[#FA5F55] hover:border-red-500 hover:underline text-sm"
+              >
+                + Add Another Phone Number
+              </button>
+            )}
+          </div>
+
           <div className="flex items-center">
             <label className="flex items-center space-x-3 cursor-pointer">
               <div className="relative">
@@ -121,12 +209,16 @@ const AddRestaurant = () => {
                   name="isOpen"
                   className="sr-only"
                 />
-                <div className={`w-10 h-6 rounded-full shadow-inner transition ${
-                  data.isOpen ? 'bg-[#FA5F55]' : 'bg-gray-300'
-                }`}></div>
-                <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${
-                  data.isOpen ? 'transform translate-x-4' : ''
-                }`}></div>
+                <div
+                  className={`w-10 h-6 rounded-full shadow-inner transition ${
+                    data.isOpen ? "bg-[#FA5F55]" : "bg-gray-300"
+                  }`}
+                ></div>
+                <div
+                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${
+                    data.isOpen ? "transform translate-x-4" : ""
+                  }`}
+                ></div>
               </div>
               <span className="text-gray-700 font-medium">Currently Open</span>
             </label>

@@ -1,13 +1,19 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 
+import tempImage from '../assets/Images/temp_kotttu.jpg'
+
 const RestaurantCard = ({ restaurant }) => {
+
   return (
     <div className="relative rounded overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
     <img 
-      src={restaurant.image} 
+      src={restaurant.image || tempImage} 
       alt={restaurant.name} 
       className="w-full h-48 object-cover"
+      onError={(e) => {
+        e.target.src = {tempImage}
+      }}
     />
     <div className="absolute top-2 right-2 flex space-x-2">
       <button className="bg-white text-xs font-medium py-1 px-2 rounded shadow flex items-center">
