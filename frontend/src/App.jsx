@@ -36,6 +36,7 @@ import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
+import AdminLogin from "./pages/admin/AdminLogin"
 
 import RegistrationSelection from "./pages/RegistrationSelection";
 import LoginSelection from "./pages/LoginSelection";
@@ -50,6 +51,14 @@ import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = true; // Replace this with actual auth logic
   return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// Admin route protection
+const AdminProtectedRoute = ({ children }) => {
+  // Get admin from localStorage
+  const admin = JSON.parse(localStorage.getItem('admin'));
+  const isAdminAuthenticated = admin && admin.token && admin.isAdmin;
+  return isAdminAuthenticated ? children : <Navigate to="/admin/login" />;
 };
 
 const App = () => {
@@ -67,6 +76,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/driverSignup" element={<DriverSignup />} />
