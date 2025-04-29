@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, RefreshCw , X } from 'lucide-react';
+import { Search, RefreshCw, X } from 'lucide-react';
 import axios from 'axios';
+import { useAuthContext } from '../../hooks/useAuthContext'; // Import the auth context hook
 
 // Define API_URL without using process.env
 const API_URL = 'http://localhost:5005/api';
@@ -103,6 +104,7 @@ const Select = ({ value, onChange, options }) => {
 };
 
 const ManageCustomers = () => {
+  const { admin } = useAuthContext(); // Get admin from auth context
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -112,8 +114,27 @@ const ManageCustomers = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
   useEffect(() => {
-    fetchCustomers();
-  }, [currentPage, statusFilter, searchTerm]);
+    if (admin?.token) { // Only fetch if we have an admin token
+      fetchCustomers();
+    }
+  }, [currentPage, statusFilter, searchTerm, admin]);
+
+  // Function to get the admin token from localStorage
+  const getAdminToken = () => {
+    // First try to get token from auth context
+    if (admin?.token) {
+      return admin.token;
+    }
+    
+    // Fallback: try to get from localStorage directly
+    try {
+      const adminData = JSON.parse(localStorage.getItem('admin'));
+      return adminData?.token;
+    } catch (error) {
+      console.error('Error getting admin token:', error);
+      return null;
+    }
+  };
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -137,7 +158,13 @@ const ManageCustomers = () => {
       // Include role=customer to only get customers
       queryParams += `&role=customer`;
   
-      const token = localStorage.getItem('token');
+      // Get the admin token
+      const token = getAdminToken();
+      
+      if (!token) {
+        throw new Error('Admin authentication required');
+      }
+  
       const response = await axios.get(`${API_URL}/admin/users?${queryParams}`, {
         headers: { 
           Authorization: `Bearer ${token}`
@@ -152,6 +179,11 @@ const ManageCustomers = () => {
         error.response?.data?.message || "Failed to load customers", 
         'error'
       );
+      
+      // If unauthorized, show specific message
+      if (error.response?.status === 401) {
+        showToast('Admin authentication required. Please login again.', 'error');
+      }
     } finally {
       setLoading(false);
     }
@@ -174,7 +206,19 @@ const ManageCustomers = () => {
 
   const handleCustomerStatusChange = async (customerId, newStatus) => {
     try {
-      const token = localStorage.getItem('token');
+
+      // Skip if "selectAction" is chosen (placeholder)
+      if (newStatus === 'selectAction') {
+        return;
+      }
+
+      // Get the admin token
+      const token = getAdminToken();
+      
+      if (!token) {
+        throw new Error('Admin authentication required');
+      }
+      
       let endpoint, method, data;
       
       switch (newStatus) {
@@ -207,6 +251,11 @@ const ManageCustomers = () => {
         error.response?.data?.message || `Failed to update customer status`, 
         'error'
       );
+      
+      // If unauthorized, show specific message
+      if (error.response?.status === 401) {
+        showToast('Admin authentication required. Please login again.', 'error');
+      }
     }
   };
 
@@ -225,6 +274,23 @@ const ManageCustomers = () => {
       default:
         return <Badge className="bg-gray-100 text-gray-800">{status}</Badge>;
     }
+  };
+
+  // Base restaurant status options
+  const baseStatusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'suspended', label: 'Suspend' }
+  ];
+
+  const getCustomerStatusOptions = (status) => {
+    // For pending restaurants, include a "select action" option
+    if (status === 'pending') {
+      return [
+        { value: 'selectAction', label: 'Approve' },
+        ...baseStatusOptions
+      ];
+    }
+    return baseStatusOptions;
   };
 
   const formatDate = (dateString) => {
@@ -248,6 +314,28 @@ const ManageCustomers = () => {
     { value: 'active', label: 'Active' },
     { value: 'suspended', label: 'Suspend' },
   ];
+
+  // If not authenticated, show login prompt
+  if (!getAdminToken()) {
+    return (
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6">
+            <h1 className="text-2xl font-bold">Manage Customers</h1>
+          </div>
+          <div className="p-6 text-center">
+            <p className="text-red-600 mb-4">Admin authentication required</p>
+            <Button 
+              onClick={() => window.location.href = '/admin/login'}
+              variant="primary"
+            >
+              Go to Admin Login
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -326,9 +414,9 @@ const ManageCustomers = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right">
                             <Select
-                              value={customer.roleStatus?.customer || customer.status}
-                              onChange={(newStatus) => handleCustomerStatusChange(customer.userId, newStatus)}
-                              options={customerStatusOptions}
+                              value={(customer.roleStatus?.customer || customer.status) === 'pending' ? 'selectAction' : (customer.roleStatus?.customer || customer.status)}
+                              onChange={(newStatus) => handleCustomerStatusChange(customer.userId, newStatus)}                          
+                              options={getCustomerStatusOptions(customer.roleStatus?.customer || customer.status)}
                               className="w-32"
                             />
                           </td>
