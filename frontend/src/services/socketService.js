@@ -19,7 +19,7 @@ const createSocketConnection = (token,userDetails) => {
 
     socket.emit('user_connected', {
       userId: userDetails.userId,
-      userType: userDetails.type,
+      userType: userDetails.currentRole,
     });
   });
 
@@ -38,12 +38,13 @@ const createSocketConnection = (token,userDetails) => {
 let socket = null;
 
 // Function to initialize socket with auth token
-export const initSocket = (token) => {
+export const initSocket = (token,userDetails) => {
   if (socket) {
     socket.disconnect();
   }
-  socket = createSocketConnection(token);
-  return socket;
+  if(!token) return;
+    socket = createSocketConnection(token, userDetails);
+    return socket;
 };
 
 // Customer specific functions
