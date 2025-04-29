@@ -1,6 +1,13 @@
 import React from 'react';
+import { useLogout } from '../../hooks/useLogout';
 
 const DriverWaitingActivation = () => {
+  const { logout } = useLogout();
+  
+    const handleLogout = () => {
+      logout();
+    };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
@@ -78,7 +85,7 @@ const DriverWaitingActivation = () => {
         
         <button 
           className="w-full mt-6 py-3 bg-[#EB4C40] hover:bg-[#cb3c30] text-white rounded-lg font-medium transition duration-300"
-          onClick={() => window.location.href = '/logout'}
+          onClick={handleLogout}
         >
           Logout
         </button>

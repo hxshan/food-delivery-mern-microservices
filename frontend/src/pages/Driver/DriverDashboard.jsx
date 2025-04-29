@@ -7,7 +7,14 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 import axios from '../../api/axios';
 
 const DriverDashboard = () => {
-  const [incomingDelivery, setIncomingDelivery] = useState(null);
+  const [incomingDelivery, setIncomingDelivery] = useState({
+    delivery:{
+      restaurantName:"Hilton Colombo",
+      pickupAddress:"Hilton Colombo",
+      orderSummary:"2 fried rice,1 coke"
+    },
+
+  });
   const [driverStats, setDriverStats] = useState({
     firstname:'',
     vehicle:'',
@@ -30,10 +37,15 @@ const DriverDashboard = () => {
       earnings: res.data.earnings,
       rating:res.data.rating,
       reviewsCount:res.data.reviewsCount,
-      deliveriesCompleted: 68
+      deliveriesCompleted: 0
     });
   }
-
+  const acceptDelivery=()=>{
+    navigate('/driver/map?restaurantName=Hilton Colombo')
+  }
+  const rejectDelivery=()=>{
+    setIncomingDelivery(null)
+  }
   useEffect(() => {
     if(user.user != null){
       getuserData()
@@ -101,11 +113,11 @@ const DriverDashboard = () => {
           </div>
         </div>
       </div>
-
+      
       <DeliveryRequestModal
         delivery={incomingDelivery}
-        // onAccept={acceptDelivery}
-        // onReject={rejectDelivery}
+        onAccept={acceptDelivery}
+        onReject={rejectDelivery}
       />
     </div>
   );

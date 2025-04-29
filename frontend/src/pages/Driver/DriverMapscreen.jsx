@@ -12,11 +12,11 @@ const DriverMapScreen = () => {
   const navigate = useNavigate();
   const delivery = location.state?.delivery || {
     id: 'test123',
-    restaurantLat: 6.9,
+    restaurantLat: 6.933273,
     restaurantLng: 79.99,
     customerLat: 6.948092,
     customerLng: 79.883489,
-    restaurantName: 'Test Restaurant',
+    restaurantName: 'Hilton Colombo',
     restaurantAddress: '456 Food St, Colombo',
     restaurantPhone: '+94 77 123 4567',
     customerName: 'John Doe',
@@ -51,7 +51,6 @@ const DriverMapScreen = () => {
   const markerRef = useRef(null);
   const directionsServiceRef = useRef(null);
 
-  // Initialize driver location tracking
   useEffect(() => {
     if (!delivery) return;
   
@@ -223,7 +222,6 @@ const DriverMapScreen = () => {
     setPhase('toCustomer');
     setShowPickupModal(false);
     
-    // Emit pickup confirmation to socket
     socket.emit('order-picked-up', {
       deliveryId: delivery.id,
       timestamp: new Date().toISOString()
@@ -231,13 +229,11 @@ const DriverMapScreen = () => {
   };
 
   const handleConfirmDelivery = () => {
-    // Emit delivery confirmation to socket
     socket.emit('order-delivered', {
       deliveryId: delivery.id,
       timestamp: new Date().toISOString()
     });
     
-    // Navigate back to driver dashboard
     navigate('/driver/dashboard');
   };
 
