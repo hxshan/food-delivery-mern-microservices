@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import NavbarDriver from '../../components/Driver/NavbarDriver';
 import DeliveryRequestModal from '../../components/Driver/DeliveryRequestModal';
-import socket from '../../services/socketService';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import axios from '../../api/axios';
@@ -49,7 +48,7 @@ const DriverDashboard = () => {
   useEffect(() => {
     if(user.user != null){
       getuserData()
-      socket.initSocket(user.user.token,user.user);
+     
     }
   }, [user]);
 

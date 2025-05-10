@@ -3,15 +3,6 @@ import { Map, Truck, Phone, Navigation } from 'lucide-react';
 import { GoogleMap, Marker, useLoadScript, DirectionsRenderer } from '@react-google-maps/api';
 import { useSearchParams } from 'react-router-dom';
 
-import { 
-  initSocket, 
-  joinOrderTracking, 
-  onOrderStatusUpdate, 
-  onDriverAssigned, 
-  onDriverLocationUpdate,
-  requestDriver,
-  disconnectSocket
-} from '../../services/socketService';
 import Navbar from '../../components/Navbar';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import axios from '../../api/axios'
@@ -105,87 +96,7 @@ const MapScreen = () => {
     fetchOrderDetails();
   }, [orderId]);
 
-  // Initialize socket and set up listeners
-  useEffect(() => {
-    if (!token || !user || !orderId) return;
-
-    let statusUpdateUnsubscribe;
-    let driverAssignedUnsubscribe;
-    let locationUpdateUnsubscribe;
-
-    const initializeSocket = async () => {
-      try {
-        // Initialize socket connection
-        await initSocket(token, {
-          userId: user._id,
-          currentRole: user.role
-        });
-
-        // Join order tracking room
-        await joinOrderTracking(orderId);
-
-        // Set up listeners
-        statusUpdateUnsubscribe = await onOrderStatusUpdate((data) => {
-          setDeliveryStatus(data.status);
-          if (data.status === "Ready for delivery") {
-            requestDriver({
-              orderId,
-              restaurantLocation,
-              deliveryLocation: {
-                lat: orderDetails?.deliveryLocation?.latitude || 0,
-                lng: orderDetails?.deliveryLocation?.longitude || 0
-              }
-            });
-          }
-        });
-
-        driverAssignedUnsubscribe = await onDriverAssigned((data) => {
-          setDriverDetails(data.driver);
-          setDriverLocation({
-            lat: data.driver.currentLocation.latitude,
-            lng: data.driver.currentLocation.longitude
-          });
-          setDeliveryStatus("On the way");
-          calculateRoute(
-            restaurantLocation,
-            deliveryLocation,
-            {
-              lat: data.driver.currentLocation.latitude,
-              lng: data.driver.currentLocation.longitude
-            }
-          );
-        });
-
-        locationUpdateUnsubscribe = await onDriverLocationUpdate((location) => {
-          setDriverLocation({
-            lat: location.latitude,
-            lng: location.longitude
-          });
-        });
-
-      } catch (error) {
-        console.error('Socket initialization error:', error);
-        setSocketError('Failed to connect to real-time updates');
-      }
-    };
-
-    initializeSocket();
-
-    return () => {
-      // Clean up listeners
-      if (statusUpdateUnsubscribe) statusUpdateUnsubscribe();
-      if (driverAssignedUnsubscribe) driverAssignedUnsubscribe();
-      if (locationUpdateUnsubscribe) locationUpdateUnsubscribe();
-    };
-  }, [token, user, orderId, restaurantLocation, deliveryLocation, orderDetails, calculateRoute]);
-
-  // Clean up socket when component unmounts
-  useEffect(() => {
-    return () => {
-      disconnectSocket();
-    };
-  }, []);
-
+  
   if (!orderId) {
     return (
       <div className="flex items-center justify-center h-screen">

@@ -1,97 +1,108 @@
+// services/socketService.js
 import { io } from 'socket.io-client';
+import { getAccessToken } from './authService';
+import { API_URL } from '../api';
 
-let socket = null;
-let socketPromise = null;
+class SocketService {
+  constructor() {
+    this.socket = null;
+    this.eventListeners = new Map();
+  }
 
-const createSocketConnection = (token, userDetails) => {
-  return new Promise((resolve, reject) => {
-    const newSocket = io('http://localhost:5005', {
+  connect() {
+    if (this.socket?.connected) return;
+
+    const token = getAccessToken();
+    if (!token) {
+      console.error('No access token available for socket connection');
+      return;
+    }
+
+    this.socket = io(API_URL+'/delivery/', {
       auth: { token },
-      autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5,
-      reconnectionDelay: 1000
+      reconnectionDelay: 1000,
+      autoConnect: true,
+      transports: ['websocket'],
     });
 
-    newSocket.on('connect', () => {
-      console.log('Connected to socket server');
-      newSocket.emit('user_connected', {
-        userId: userDetails.userId,
-        userType: userDetails.currentRole,
-      });
-      resolve(newSocket);
-    });
-
-    newSocket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error.message);
-      reject(error);
-    });
-  });
-};
-
-export const initSocket = async (token, userDetails) => {
-  if (socket) return socket;
-  
-  try {
-    socketPromise = createSocketConnection(token, userDetails);
-    socket = await socketPromise;
-    return socket;
-  } catch (error) {
-    console.error('Socket initialization failed:', error);
-    throw error;
+    this.setupConnectionEvents();
   }
-};
 
-const ensureSocket = async () => {
-  if (socket) return socket;
-  if (socketPromise) return await socketPromise;
-  throw new Error('Socket not initialized. Call initSocket() first.');
-};
+  disconnect() {
+    if (this.socket) {
+      // Remove all listeners
+      this.eventListeners.forEach((callback, event) => {
+        this.socket.off(event, callback);
+      });
+      this.eventListeners.clear();
+      
+      this.socket.disconnect();
+      this.socket = null;
+    }
+  }
 
-export const joinOrderTracking = async (orderId) => {
-  const currentSocket = await ensureSocket();
-  currentSocket.emit('join_order', orderId);
-};
+  setupConnectionEvents() {
+    if (!this.socket) return;
 
-export const onOrderStatusUpdate = async (callback) => {
-  const currentSocket = await ensureSocket();
-  currentSocket.on('order_status_update', callback);
-  return () => currentSocket.off('order_status_update', callback);
-};
+    this.socket.on('connect', () => {
+      console.log('Socket connected:', this.socket.id);
+    });
 
-export const onDriverAssigned = async (callback) => {
-  const currentSocket = await ensureSocket();
-  currentSocket.on('driver_assigned', callback);
-  return () => currentSocket.off('driver_assigned', callback);
-};
+    this.socket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+      if (reason === 'io server disconnect') {
+        this.socket.connect();
+      }
+    });
 
-export const onDriverLocationUpdate = async (callback) => {
-  const currentSocket = await ensureSocket();
-  currentSocket.on('driver_location_update', callback);
-  return () => currentSocket.off('driver_location_update', callback);
-};
+    this.socket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err.message);
+      if (err.message === 'Invalid token') {
+        // Handle token refresh or redirect to login
+      }
+    });
+  }
 
-export const requestDriver = async (orderData) => {
-  const currentSocket = await ensureSocket();
-  currentSocket.emit('request_driver', orderData);
-};
+  // Add event listener
+  on(event, callback) {
+    if (!this.socket) {
+      console.error('Socket not initialized');
+      return;
+    }
 
-export const disconnectSocket = () => {
-  if (!socket) return;
-  socket.removeAllListeners();
-  socket.disconnect();
-  socket = null;
-  socketPromise = null;
-};
+    // Store the callback reference so we can remove it later
+    this.eventListeners.set(event, callback);
+    this.socket.on(event, callback);
+  }
 
-// Default export with all functions
-export default {
-  initSocket,
-  joinOrderTracking,
-  onOrderStatusUpdate,
-  onDriverAssigned,
-  onDriverLocationUpdate,
-  requestDriver,
-  disconnectSocket,
-  getSocket: () => socket
-};
+  // Remove event listener
+  off(event) {
+    if (!this.socket) return;
+
+    const callback = this.eventListeners.get(event);
+    if (callback) {
+      this.socket.off(event, callback);
+      this.eventListeners.delete(event);
+    }
+  }
+
+  // Emit an event
+  emit(event, data, callback) {
+    if (!this.socket) {
+      console.error('Socket not initialized');
+      return;
+    }
+
+    this.socket.emit(event, data, callback);
+  }
+
+  // Check connection status
+  isConnected() {
+    return this.socket?.connected || false;
+  }
+}
+
+const socketService = new SocketService();
+export default socketService;

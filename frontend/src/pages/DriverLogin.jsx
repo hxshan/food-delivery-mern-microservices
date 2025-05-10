@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, ArrowLeft, Check, AlertTriangle } from "lucide-react";
 import axios from "../api/axios";
 import { useAuthContext } from "../hooks/useAuthContext";
-// import {connectSocketAfterLogin} from '../services/auth.service'
 
 const DriverLogin = () => {
   const navigate = useNavigate();
@@ -92,10 +91,6 @@ const DriverLogin = () => {
       // Update auth context
       dispatch({ type: "LOGIN", payload: userData });
 
-      // connectSocketAfterLogin(userData.token,{
-      //   id:userData.userId,
-      //   type:'driver'
-      // })
       // Show success notification
       showNotification("success", "Login successful! Redirecting to dashboard...");
       

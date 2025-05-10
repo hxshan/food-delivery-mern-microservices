@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowLeft, AlertCircle, Check } from 'lucide-react';
 import axios from '../api/axios';
 import { useAuthContext } from '../hooks/useAuthContext';
-import socketService from '../services/socketService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -94,8 +93,6 @@ const Login = () => {
       
       // Show success notification
       showNotification('success', 'Login successful!');
-      socketService.initSocket(user.token,user)
-      // Redirect to customer dashboard/home
       setTimeout(() => {
         navigate('/', { replace: true });
       }, 1500);

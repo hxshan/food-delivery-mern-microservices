@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { GoogleMap, DirectionsRenderer, useLoadScript, Marker } from '@react-google-maps/api';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarDriver from '../../components/Driver/NavbarDriver';
-import socket from '../../services/socketService';
 
 // Define the libraries outside of the component to prevent reloading on every render
 const libraries = ['places']; // Static declaration of libraries
@@ -93,11 +92,7 @@ const DriverMapScreen = () => {
             setDriverPosition(newPos);
             lastPosition = newPos;
             
-            // Emit driver location to socket
-            socket.emit('driver-location-update', {
-              deliveryId: delivery.id,
-              location: newPos
-            });
+          
             
             return;
           }
@@ -113,11 +108,7 @@ const DriverMapScreen = () => {
             setDriverPosition(newPos);
             lastPosition = newPos;
             
-            // Emit driver location to socket
-            socket.emit('driver-location-update', {
-              deliveryId: delivery.id,
-              location: newPos
-            });
+        
           }
         },
         (error) => {
@@ -222,18 +213,11 @@ const DriverMapScreen = () => {
     setPhase('toCustomer');
     setShowPickupModal(false);
     
-    socket.emit('order-picked-up', {
-      deliveryId: delivery.id,
-      timestamp: new Date().toISOString()
-    });
+  
   };
 
   const handleConfirmDelivery = () => {
-    socket.emit('order-delivered', {
-      deliveryId: delivery.id,
-      timestamp: new Date().toISOString()
-    });
-    
+ 
     navigate('/driver/dashboard');
   };
 
