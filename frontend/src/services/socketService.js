@@ -18,7 +18,7 @@ class SocketService {
       return;
     }
 
-    this.socket = io(API_URL+'/delivery/', {
+    this.socket = io(`${API_URL}/api/delivery`, {
       auth: { token },
       reconnection: true,
       reconnectionAttempts: 5,
