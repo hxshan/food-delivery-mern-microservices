@@ -1,8 +1,5 @@
 import React from "react";
 
-import TempKottu from "../assets/Images/temp_kotttu.jpg";
-
-
 const MenuItemCard = ( {menuItem} ) => {
   return (
     <div className="w-full h-[150px] flex justify-between items-center border border-gray-200 px-5 py-4 cursor-pointer rounded-lg transition-all duration-300 hover:shadow-lg hover:border-gray-300 hover:bg-gray-50 group">

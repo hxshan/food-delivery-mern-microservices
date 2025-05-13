@@ -8,7 +8,7 @@ const RestaurantCard = ({ restaurant }) => {
   return (
     <div className="relative rounded overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
     <img 
-      src={restaurant.image || tempImage} 
+      src={`/uploads/${restaurant.image}`} 
       alt={restaurant.name} 
       className="w-full h-48 object-cover"
       onError={(e) => {

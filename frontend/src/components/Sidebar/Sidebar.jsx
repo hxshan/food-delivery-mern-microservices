@@ -94,10 +94,10 @@ export default function Sidebar() {
         <div className="flex items-center gap-2">
           <div className="rounded-full p-1">
             <div className="h-6 w-6 rounded-full bg-yellow-400 flex items-center justify-center">
-              <span className="text-xs">✨</span>
+              <span className="text-xs"></span>
             </div>
           </div>
-          {!collapsed && <span className="font-bold text-xl text-red-500">Food Order</span>}
+          {!collapsed && <span className="font-bold text-xl text-red-500">Hilton Colombo</span>}
         </div>
       </div>
       

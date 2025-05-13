@@ -1,184 +1,225 @@
 import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart, getCart } from "../../redux/slices/cartSlice"
+import { addToCart, getCart } from "../../redux/slices/cartSlice";
 
 import Navbar from "../../components/Navbar";
 import MenuItemCard from "../../components/MenuItemCard";
 import Cart from "../../components/Cart";
 
-import { X, Minus, Plus } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 
-import TempImage from "../../assets/Images/temp_restaurant_image.jpg";
+import TempImage from "../../assets/Images/1745935491185res1.jpg";
 import { useCartOperations } from "../../utils/cartUtils";
+import { useParams } from "react-router-dom";
+import axios from "../../api/axios";
 
-const menuItems = [
-  {
-    name: "Margherita Pizza",
-    price: 1299,
-    description: "Classic pizza with fresh tomatoes, mozzarella, and basil.",
-    image:
-      "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Medium", price: 100 },
-      { name: "Large", price: 200 },
-    ],
-    addOns: [
-      { name: "Extra Cheese", price: 100 },
-      { name: "Olives", price: 50 },
-      { name: "Mushrooms", price: 75 },
-    ],
-  },
-  {
-    name: "Grilled Salmon",
-    price: 1850,
-    description: "Perfectly grilled salmon served with roasted veggies.",
-    image:
-      "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Large", price: 150 },
-    ],
-    addOns: [
-      { name: "Lemon Butter Sauce", price: 100 },
-      { name: "Garlic Mashed Potatoes", price: 150 },
-      { name: "Steamed Asparagus", price: 120 },
-    ],
-  },
-  {
-    name: "Caesar Salad",
-    price: 925,
-    description:
-      "Crisp romaine lettuce with creamy Caesar dressing and croutons.",
-    image:
-      "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Large", price: 100 },
-    ],
-    addOns: [
-      { name: "Grilled Chicken", price: 150 },
-      { name: "Avocado", price: 100 },
-      { name: "Bacon Bits", price: 80 },
-    ],
-  },
-  {
-    name: "Beef Burger",
-    price: 1400,
-    description: "Juicy beef patty with cheddar, lettuce, tomato, and pickles.",
-    image:
-      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Single", price: 0 },
-      { name: "Double", price: 200 },
-    ],
-    addOns: [
-      { name: "Extra Cheese", price: 50 },
-      { name: "Bacon", price: 80 },
-      { name: "Fried Egg", price: 70 },
-    ],
-  },
-  {
-    name: "Spaghetti Carbonara",
-    price: 1375,
-    description:
-      "Traditional Italian pasta with eggs, cheese, pancetta, and pepper.",
-    image:
-      "https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Large", price: 150 },
-    ],
-    addOns: [
-      { name: "Extra Parmesan", price: 50 },
-      { name: "Mushrooms", price: 70 },
-      { name: "Grilled Chicken", price: 150 },
-    ],
-  },
-  {
-    name: "Chicken Tikka Masala",
-    price: 1150,
-    description: "Tender chicken pieces in a creamy spiced tomato sauce.",
-    image:
-      "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Large", price: 150 },
-    ],
-    addOns: [
-      { name: "Extra Sauce", price: 50 },
-      { name: "Naan Bread", price: 100 },
-      { name: "Raita", price: 80 },
-    ],
-  },
-  {
-    name: "Veggie Delight Sandwich",
-    price: 850,
-    description:
-      "Fresh vegetables layered with hummus and pesto in whole grain bread.",
-    image:
-      "https://images.unsplash.com/photo-1554433607-66b5efe9d304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Regular", price: 0 },
-      { name: "Large", price: 100 },
-    ],
-    addOns: [
-      { name: "Cheese Slice", price: 50 },
-      { name: "Avocado", price: 70 },
-      { name: "Extra Pesto", price: 40 },
-    ],
-  },
-  {
-    name: "Chocolate Lava Cake",
-    price: 650,
-    description: "Warm chocolate cake with a gooey molten center.",
-    image:
-      "https://images.unsplash.com/photo-1617455559706-fa196228c05d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    sizes: [
-      { name: "Single", price: 0 },
-      { name: "Double", price: 100 },
-    ],
-    addOns: [
-      { name: "Vanilla Ice Cream", price: 80 },
-      { name: "Strawberries", price: 60 },
-      { name: "Whipped Cream", price: 50 },
-    ],
-  },
-];
+// const menuItems = [
+//   {
+//     name: "Margherita Pizza",
+//     price: 1299,
+//     description: "Classic pizza with fresh tomatoes, mozzarella, and basil.",
+//     image:
+//       "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Medium", price: 100 },
+//       { name: "Large", price: 200 },
+//     ],
+//     addOns: [
+//       { name: "Extra Cheese", price: 100 },
+//       { name: "Olives", price: 50 },
+//       { name: "Mushrooms", price: 75 },
+//     ],
+//   },
+//   {
+//     name: "Grilled Salmon",
+//     price: 1850,
+//     description: "Perfectly grilled salmon served with roasted veggies.",
+//     image:
+//       "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Large", price: 150 },
+//     ],
+//     addOns: [
+//       { name: "Lemon Butter Sauce", price: 100 },
+//       { name: "Garlic Mashed Potatoes", price: 150 },
+//       { name: "Steamed Asparagus", price: 120 },
+//     ],
+//   },
+//   {
+//     name: "Caesar Salad",
+//     price: 925,
+//     description:
+//       "Crisp romaine lettuce with creamy Caesar dressing and croutons.",
+//     image:
+//       "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Large", price: 100 },
+//     ],
+//     addOns: [
+//       { name: "Grilled Chicken", price: 150 },
+//       { name: "Avocado", price: 100 },
+//       { name: "Bacon Bits", price: 80 },
+//     ],
+//   },
+//   {
+//     name: "Beef Burger",
+//     price: 1400,
+//     description: "Juicy beef patty with cheddar, lettuce, tomato, and pickles.",
+//     image:
+//       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Single", price: 0 },
+//       { name: "Double", price: 200 },
+//     ],
+//     addOns: [
+//       { name: "Extra Cheese", price: 50 },
+//       { name: "Bacon", price: 80 },
+//       { name: "Fried Egg", price: 70 },
+//     ],
+//   },
+//   {
+//     name: "Spaghetti Carbonara",
+//     price: 1375,
+//     description:
+//       "Traditional Italian pasta with eggs, cheese, pancetta, and pepper.",
+//     image:
+//       "https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Large", price: 150 },
+//     ],
+//     addOns: [
+//       { name: "Extra Parmesan", price: 50 },
+//       { name: "Mushrooms", price: 70 },
+//       { name: "Grilled Chicken", price: 150 },
+//     ],
+//   },
+//   {
+//     name: "Chicken Tikka Masala",
+//     price: 1150,
+//     description: "Tender chicken pieces in a creamy spiced tomato sauce.",
+//     image:
+//       "https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Large", price: 150 },
+//     ],
+//     addOns: [
+//       { name: "Extra Sauce", price: 50 },
+//       { name: "Naan Bread", price: 100 },
+//       { name: "Raita", price: 80 },
+//     ],
+//   },
+//   {
+//     name: "Veggie Delight Sandwich",
+//     price: 850,
+//     description:
+//       "Fresh vegetables layered with hummus and pesto in whole grain bread.",
+//     image:
+//       "https://images.unsplash.com/photo-1554433607-66b5efe9d304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Regular", price: 0 },
+//       { name: "Large", price: 100 },
+//     ],
+//     addOns: [
+//       { name: "Cheese Slice", price: 50 },
+//       { name: "Avocado", price: 70 },
+//       { name: "Extra Pesto", price: 40 },
+//     ],
+//   },
+//   {
+//     name: "Chocolate Lava Cake",
+//     price: 650,
+//     description: "Warm chocolate cake with a gooey molten center.",
+//     image:
+//       "https://images.unsplash.com/photo-1617455559706-fa196228c05d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+//     sizes: [
+//       { name: "Single", price: 0 },
+//       { name: "Double", price: 100 },
+//     ],
+//     addOns: [
+//       { name: "Vanilla Ice Cream", price: 80 },
+//       { name: "Strawberries", price: 60 },
+//       { name: "Whipped Cream", price: 50 },
+//     ],
+//   },
+// ];
 
 const ResturentPage = () => {
   const dispatch = useDispatch();
-  const cart =  useSelector(getCart)
-  
+  const cart = useSelector(getCart);
 
-//   useEffect(() => {
-//   const testApi = async () => {
-//     try {
-//       const response = await fetch('http://localhost:8000/api/order/cart/', {
-//         method: 'GET',
-//         credentials: 'include',
-//         headers: {
-//           'Accept': 'application/json'
-//         }
-//       });
-      
-//       if (!response.ok) {
-//         console.error('Server responded with error:', response.status);
-//         const errorText = await response.text();
-//         console.error('Error details:', errorText);
-//         return;
-//       }
-      
-//       const data = await response.json();
-//       console.log('Success!', data);
-//     } catch (error) {
-//       console.error('Fetch error:', error);
-//     }
-//   };
-  
-//   testApi();
-// }, []);
+  const [resturentData, setReturentData] = useState({
+    address: "",
+    image: "",
+    name: "",
+    phoneNumbers: [],
+    rating: 0,
+  });
+  const [menuItems, setMenusItems] = useState([]);
+
+  const { restaurantId } = useParams();
+  const [isLoggin, setIsLoggin] = useState(false);
+  //Get resturent
+  const getResturentById = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/restaurant/get/${restaurantId}`
+      );
+      console.log(response);
+      const data = response?.data;
+      setReturentData({
+        address: data.address || "Null",
+        image: data.image || "",
+        name: data.name || "Null",
+        phoneNumbers: data.phoneNumbers || [],
+        rating: data.rating ? Number(data.rating).toFixed(1) : "0.0",
+      });
+
+      setMenusItems(data.menuItems);
+    } catch (error) {
+      console.error("Error fetching resturent : ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (restaurantId) {
+      getResturentById();
+      getUserToken();
+    }
+  }, []);
+
+  //   useEffect(() => {
+  //   const testApi = async () => {
+  //     try {
+  //       const response = await fetch('http://localhost:8000/api/order/cart/', {
+  //         method: 'GET',
+  //         credentials: 'include',
+  //         headers: {
+  //           'Accept': 'application/json'
+  //         }
+  //       });
+
+  //       if (!response.ok) {
+  //         console.error('Server responded with error:', response.status);
+  //         const errorText = await response.text();
+  //         console.error('Error details:', errorText);
+  //         return;
+  //       }
+
+  //       const data = await response.json();
+  //       console.log('Success!', data);
+  //     } catch (error) {
+  //       console.error('Fetch error:', error);
+  //     }
+  //   };
+
+  //   testApi();
+  // }, []);
 
   //Dish Custtomization
   const [isOpen, setIsOpen] = useState(false);
@@ -189,7 +230,20 @@ const ResturentPage = () => {
 
   const { addItemToCart, isAddingToCart } = useCartOperations();
 
+  //get user token
+  const getUserToken = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user?.token;
+
+    console.log(token);
+
+    if (token) {
+      setIsLoggin(true);
+    }
+  };
+
   const handleSelectedItem = (item) => {
+    console.log(item);
     setSelectedItem(item);
     setIsOpen(true);
   };
@@ -231,10 +285,13 @@ const ResturentPage = () => {
       addOns,
     });
 
-    const sizeObj = selectedItem.sizes.find((s) => s.name === selectedSize);
-    const addOnsArray = selectedItem.addOns.filter((a) =>
-      addOns.includes(a.name)
-    );
+    const sizeObj = Array.isArray(selectedItem?.sizes)
+      ? selectedItem.sizes.find((s) => s.name === selectedSize)
+      : null;
+
+    const addOnsArray = Array.isArray(selectedItem?.addOns)
+      ? selectedItem.addOns.filter((a) => addOns.includes(a.name))
+      : [];
 
     const cartItem = {
       id: Date.now(),
@@ -248,15 +305,17 @@ const ResturentPage = () => {
       addOnsPrices: addOnsArray.map((a) => a.price),
     };
 
-    const result = await addItemToCart(cartItem, "hilton-colombo", "Hilton Colombo");
-
+    const result = await addItemToCart(
+      cartItem,
+      restaurantId,
+      resturentData.name
+    );
 
     if (result.success) {
-      console.log("result: ", result)
-      console.log("Cart" , cart)
-
+      console.log("result: ", result);
+      console.log("Cart", cart);
     } else {
-      console.log("result: error", )
+      console.log("result: error");
     }
 
     setAddOns([]);
@@ -269,7 +328,7 @@ const ResturentPage = () => {
       <div className="relative h-screen p-10 overflow-hidden">
         <div className="absolute inset-0 w-full">
           <img
-            src={TempImage}
+            src={`/uploads/${resturentData.image}`}
             alt="Image"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -287,29 +346,47 @@ const ResturentPage = () => {
               >
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
-              <span className="font-bold">8.9</span>
+              <span className="font-bold">{resturentData.rating}</span>
             </div>
             <div className="text-white text-sm">350 Reviews</div>
           </div>
 
-          <h1 className=" text-[50px] font-bold ">Hilton Colombo</h1>
+          <h1 className=" text-[50px] font-bold ">{resturentData.name}</h1>
           <div className="flex gap-5">
             <p className=" text-[20px] font-semibold ">Chinese</p>
-            <p className=" text-[20px] font-semibold ">Colombo</p>
+            <p className=" text-[20px] font-semibold ">
+              {resturentData.address}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="p-10 w-full lg:flex gap-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto">
-          {menuItems.map((item, index) => (
-            <div onClick={() => handleSelectedItem(item)}>
-              <MenuItemCard key={index} menuItem={item} />
+          {!menuItems || menuItems.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center p-8  bg-white">
+              <ShoppingBag size={48} className="text-red-500 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No Menu Items Available
+              </h3>
+              <p className="text-gray-500 text-center">
+                No menu items have been added yet. Please check back later.
+              </p>
             </div>
-          ))}
+          ) : (
+            menuItems.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelectedItem(item)}
+                className=" h-fit"
+              >
+                <MenuItemCard menuItem={item} />
+              </div>
+            ))
+          )}
         </div>
 
-        <Cart />
+        {isLoggin && <Cart />}
       </div>
 
       {/* customization popup */}
@@ -370,25 +447,26 @@ const ResturentPage = () => {
               <div className="mb-6">
                 <h3 className="text-sm font-medium mb-2">Size</h3>
                 <div className="space-y-2">
-                  {selectedItem.sizes.map((size, index) => (
-                    <label
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center">
-                        <input
-                          id={`size-${index}`}
-                          type="radio"
-                          name="size"
-                          checked={selectedSize === size.name}
-                          onChange={() => handleSizeSelection(size.name)}
-                          className="w-4 h-4 accent-red-500"
-                        />
-                        <span className="ml-2 text-sm">{size.name}</span>
-                      </div>
-                      <span className="text-sm">+{size.price}</span>
-                    </label>
-                  ))}
+                  {selectedItem.sizes &&
+                    selectedItem.sizes.map((size, index) => (
+                      <label
+                        key={index}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center">
+                          <input
+                            id={`size-${index}`}
+                            type="radio"
+                            name="size"
+                            checked={selectedSize === size.name}
+                            onChange={() => handleSizeSelection(size.name)}
+                            className="w-4 h-4 accent-red-500"
+                          />
+                          <span className="ml-2 text-sm">{size.name}</span>
+                        </div>
+                        <span className="text-sm">+{size.price}</span>
+                      </label>
+                    ))}
                 </div>
               </div>
 
@@ -396,24 +474,25 @@ const ResturentPage = () => {
               <div className="mb-6">
                 <h3 className="text-sm font-medium mb-2">Add Ons</h3>
                 <div className="space-y-2">
-                  {selectedItem.addOns.map((addOn, index) => (
-                    <label
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center">
-                        <input
-                          id={`addOn-${index}`}
-                          type="checkbox"
-                          checked={addOns.includes(addOn.name)}
-                          onChange={() => handleAddOnsSelections(addOn.name)}
-                          className="w-4 h-4 accent-red-500"
-                        />
-                        <span className="ml-2 text-sm">{addOn.name}</span>
-                      </div>
-                      <span className="text-sm">+ Rs.{addOn.price}</span>
-                    </label>
-                  ))}
+                  {selectedItem.addOns &&
+                    selectedItem.addOns.map((addOn, index) => (
+                      <label
+                        key={index}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center">
+                          <input
+                            id={`addOn-${index}`}
+                            type="checkbox"
+                            checked={addOns.includes(addOn.name)}
+                            onChange={() => handleAddOnsSelections(addOn.name)}
+                            className="w-4 h-4 accent-red-500"
+                          />
+                          <span className="ml-2 text-sm">{addOn.name}</span>
+                        </div>
+                        <span className="text-sm">+ Rs.{addOn.price}</span>
+                      </label>
+                    ))}
                 </div>
               </div>
             </div>

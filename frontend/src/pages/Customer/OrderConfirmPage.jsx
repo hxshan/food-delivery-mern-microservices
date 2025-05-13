@@ -143,8 +143,15 @@ const OrderConfirmation = () => {
         latitude: formData.latitude,
         longitude: formData.longitude,
       };
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = user?.token;
       // Submit order to backend
-      const response = await axios.post(`${API_BASE_URL}/`, orderPayload);
+      const response = await axios.post(`${API_BASE_URL}/`, orderPayload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // Save the returned order data
       setOrderData(response.data.data);
