@@ -87,6 +87,8 @@ const RestaurantListing = () => {
       
       const response = await axios.get("http://localhost:8000/api/restaurant/get")
 
+      console.log(response)
+
       setRestaurants(response.data);
 
       console.log("Resturents : " , response)
@@ -205,7 +207,7 @@ const RestaurantListing = () => {
           </div>
 
           {/* Categories */}
-          <div className="flex flex-wrap gap-3">
+          {/* <div className="flex flex-wrap gap-3">
             <button
               className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm border ${
                 activeCategory === "Art & Culture"
@@ -253,7 +255,7 @@ const RestaurantListing = () => {
               <span className="text-lg">🏛️</span>
               <span>Sightseeing</span>
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Restaurant Grid */}

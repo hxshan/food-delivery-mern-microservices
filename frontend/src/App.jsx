@@ -1,8 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 // Pages
-import Home from "./pages/home"
+import Home from "./pages/home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import OtpVerification from "./pages/OtpVerification";
@@ -14,7 +16,7 @@ import ManageRestaurants from "./pages/Admin/ManageRestaurants";
 import AddRestaurant from "./pages/RestaurantAdmin/AddRestaurant";
 import AddMenuItem from "./pages/RestaurantAdmin/AddMenuItem";
 import MenuListByRestaurant from "./pages/RestaurantAdmin/MenuListByRestaurant";
-import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails"; 
+import RestaurantDetails from "./pages/RestaurantAdmin/RestaurantDetails";
 import UpdateMenuItem from "./pages/RestaurantAdmin/UpdateMenuItem";
 //import Navbar from "./pages/RestaurantAdmin/Navbar";
 import { ToastContainer } from "react-toastify";
@@ -30,7 +32,8 @@ import RestaurantAdminDashboard from "./pages/RestaurantAdmin/RestaurantAdminDas
 import DriverSignup from "./pages/DriverSignup";
 import DriverOtpVerification from "./pages/DriverOtpVerification";
 import DriverLogin from "./pages/DriverLogin";
-import UserProfile from "./pages/Customer/UserProfile";import MapScreen from "./pages/Customer/MapScreen"
+import UserProfile from "./pages/Customer/UserProfile";
+import MapScreen from "./pages/Customer/MapScreen";
 import DriverDashboard from "./pages/Driver/DriverDashboard";
 import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 import RestaurantLogin from "./pages/RestaurantLogin"
@@ -41,8 +44,6 @@ import AdminLogin from "./pages/admin/AdminLogin"
 import RegistrationSelection from "./pages/RegistrationSelection";
 import LoginSelection from "./pages/LoginSelection";
 
-
-
 import ResturentPage from "./pages/Customer/ResturentPage";
 import OrderConfirmation from "./pages/Customer/OrderConfirmPage";
 import NotFound from "./pages/notFound";
@@ -50,20 +51,12 @@ import Wait from "./pages/RestaurantAdmin/Wait";
 import OrdersPage from "./pages/RestaurantAdmin/OrdersPage";
 import AllOrdersPage from "./pages/RestaurantAdmin/AllOrders";
 import DriverWaitingActivation from "./pages/Driver/DriverwaitforActivation";
-
+import CustomerProtectedRoute from "./pages/protectedRoutes";
 
 // Auth wrapper for protected routes
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = true; // Replace this with actual auth logic
+  const isAuthenticated = true;
   return isAuthenticated ? children : <Navigate to="/login" />;
-};
-
-// Admin route protection
-const AdminProtectedRoute = ({ children }) => {
-  // Get admin from localStorage
-  const admin = JSON.parse(localStorage.getItem('admin'));
-  const isAdminAuthenticated = admin && admin.token && admin.isAdmin;
-  return isAdminAuthenticated ? children : <Navigate to="/admin/login" />;
 };
 
 const App = () => {
@@ -75,11 +68,7 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/resturentlist" element={<ResturantListing />} />
-        <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
-        <Route path="/wait" element={<Wait/>} />
-        
-        <Route path="/checkout" element={<OrderConfirmation />} />
-
+        <Route path="/wait" element={<Wait />} />
         <Route path="/login" element={<Login />} />
         <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
@@ -88,35 +77,48 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/driverSignup" element={<DriverSignup />} />
         <Route path="/restaurantSignup" element={<RestaurantSignup />} />
-
         <Route path="/verify-otp/:userId" element={<OtpVerification />} />
         <Route path="/driver-otp/:userId" element={<DriverOtpVerification />} />
-        <Route path="/restaurant-otp/:userId" element={<RestaurantOtpVerification />} />
-
-        <Route path="/registrationSelection" element={<RegistrationSelection />} />
+        {/* Order */}
+        <Route path="/ResturentList" element={<ResturantListing />} />
+        <Route path="/restaurant/:restaurantId" element={<ResturentPage />} />
+        <Route
+          path="/checkout"
+          element={
+            <Elements stripe={stripePromise}>
+              <CustomerProtectedRoute>
+                <OrderConfirmation />
+              </CustomerProtectedRoute>
+            </Elements>
+          }
+        />
+        <Route
+          path="/restaurant-otp/:userId"
+          element={<RestaurantOtpVerification />}
+        />
+        <Route
+          path="/registrationSelection"
+          element={<RegistrationSelection />}
+        />
         <Route path="/loginSelection" element={<LoginSelection />} />
-
-        
         <Route path="/add-restaurant" element={<AddRestaurant />} />
         <Route path="/add-menu/:id" element={<AddMenuItem />} />
         <Route path="/profile" element={<UserProfile />} />/
         <Route path="/restaurants-info" element={<RestaurantsInfo />} />
-        <Route path="/restaurant-details/:id" element={<RestaurantDetails />} /> 
+        <Route path="/restaurant-details/:id" element={<RestaurantDetails />} />
         <Route path="/restaurant/:id/menus" element={<RestaurantMenus />} />
         <Route path="/menus" element={<MenuListByRestaurant />} />
-
-        <Route path="/map" element={<MapScreen/>} />
-        <Route path="/driver/dashboard" element={<DriverDashboard/>} />
-        <Route path="/driver/map" element={<DriverMapScreen/>} />
+        <Route path="/map" element={<MapScreen />} />
+        <Route path="/driver/dashboard" element={<DriverDashboard />} />
+        <Route path="/driver/map" element={<DriverMapScreen />} />
         {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
-
-
-        <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} /> 
-        <Route path="/restaurant-admin-dashboard" element={<RestaurantAdminDashboard />} /> 
-        <Route path="/restaurant-admin-orders" element={<OrdersPage />} /> 
-        <Route path="/restaurantadminordersall" element={<AllOrdersPage />} /> 
-
-
+        <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} />
+        <Route
+          path="/restaurant-admin-dashboard"
+          element={<RestaurantAdminDashboard />}
+        />
+        <Route path="/restaurant-admin-orders" element={<OrdersPage />} />
+        <Route path="/restaurantadminordersall" element={<AllOrdersPage />} />
         <Route path="/customer-details" element={<CustomerDetails />} />
         <Route path="/driver-details" element={<DeliveryDriverDetails />} />
         <Route path="/customer/profile" element={<CustomerProfile />} />
@@ -139,9 +141,6 @@ const App = () => {
         </Route>
         {/* Fallback - 404 */}
         <Route path="*" element={<NotFound />} />
-
-        
-        <Route path="/ResturentList" element={<ResturantListing />} />
       </Routes>
     </>
   );

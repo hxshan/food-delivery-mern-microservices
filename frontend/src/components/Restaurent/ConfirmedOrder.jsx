@@ -46,7 +46,7 @@ function ConfirmedOrders({ onAccept, onReject }) {
     fetchOrders();
 
     // Optional: Set up polling for new orders
-    const intervalId = setInterval(fetchOrders, 100000); 
+    const intervalId = setInterval(fetchOrders, 60000); 
 
     return () => clearInterval(intervalId);
   }, []);
@@ -298,7 +298,7 @@ function ConfirmedOrders({ onAccept, onReject }) {
                     onClick={() => handleAccept(order._id)}
                     className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600"
                   >
-                    Accept Order
+                    Confirm Order
                   </button>
                 </div>
               </div>

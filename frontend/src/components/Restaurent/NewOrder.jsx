@@ -46,7 +46,7 @@ function NewOrders({ onAccept, onReject }) {
     fetchOrders();
 
     // Optional: Set up polling for new orders
-    const intervalId = setInterval(fetchOrders, 60000); // Check every minute
+    const intervalId = setInterval(fetchOrders, 30000); // Check every minute
 
     return () => clearInterval(intervalId);
   }, []);
