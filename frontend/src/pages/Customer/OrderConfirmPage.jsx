@@ -18,6 +18,7 @@ import {
 
 import orderProcessImg from "../../assets/Images/order_process.png";
 import LocationMapSelector from "../map";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
 // API base URL - adjust based on your environment
 const API_BASE_URL = "http://localhost:8000/api/order";
@@ -43,6 +44,8 @@ const OrderConfirmation = () => {
   const [formErrors, setFormErrors] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const stripe = useStripe();
+  const elements = useElements();
 
   const [selectedLocation, setSelectedLocation] = useState(null);
   // Handle the location selection from the map component
@@ -181,11 +184,9 @@ const OrderConfirmation = () => {
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
 
-    // Validate form
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
-      // Scroll to the first error
       const firstErrorField = document.querySelector(
         `[name="${Object.keys(errors)[0]}"]`
       );
@@ -201,49 +202,66 @@ const OrderConfirmation = () => {
       imageUrl: orderProcessImg,
       imageWidth: 300,
       imageHeight: 200,
-      imageAlt: "Food delivery animation",
       showCancelButton: true,
       confirmButtonText: "Confirm Order",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#ffffff",
       cancelButtonColor: "#d33",
-      confirmButtonTextColor: "#000000",
       customClass: {
         confirmButton: "swal2-confirm-white",
       },
     });
 
-    // Add custom CSS for white confirm button with black text
-    document.head.insertAdjacentHTML(
-      "beforeend",
-      `
-        <style>
-          .swal2-confirm-white {
-            color: black !important;
-            background-color: white !important;
-            border: 1px solid #d4d4d4 !important;
+    if (!confirm.isConfirmed) return;
+
+    try {
+      setIsSubmitting(true);
+
+      if (paymentMethod === "card") {
+        // 3. Create PaymentIntent from backend
+        const totalAmountInCents = Math.round(cart.total * 100);
+        const { data: paymentIntentRes } = await axios.post(
+          `${API_BASE_URL}/create-payment-intent`,
+          {
+            amount: totalAmountInCents, // pass total amount (e.g., 2000 = $20.00)
+            currency: "usd",
           }
-        </style>
-      `
-    );
+        );
 
-    if (confirm.isConfirmed) {
-      try {
-        setIsSubmitting(true);
+        const clientSecret = paymentIntentRes.clientSecret;
 
-        // Submit order to API
-        await submitOrderToAPI();
+        // 4. Confirm card payment
+        const cardElement = elements.getElement(CardElement);
 
-        console.log("Order submitted successfully!");
-        setOrderPlaced(true);
+        const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: formData.cardHolder,
+              email: formData.email,
+            },
+          },
+        });
 
-        // Don't need to clear cart here since the API handles that
-      } catch (error) {
-        console.error("Order submission failed:", error);
-        // Error handling is done inside submitOrderToAPI
-      } finally {
-        setIsSubmitting(false);
+        if (paymentResult.error) {
+          throw new Error(paymentResult.error.message);
+        }
+
+        if (paymentResult.paymentIntent.status !== "succeeded") {
+          throw new Error("Payment did not succeed.");
+        }
       }
+
+      // 5. Proceed with order creation
+      await submitOrderToAPI();
+
+      Swal.fire("Success", "Order placed successfully!", "success");
+      setOrderPlaced(true);
+    } catch (error) {
+      console.error("Order failed:", error.message);
+      Swal.fire("Error", error.message || "Failed to place order", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -531,37 +549,7 @@ const OrderConfirmation = () => {
                 {paymentMethod === "card" && (
                   <div className="pl-9 mt-4 space-y-4">
                     <div>
-                      <label
-                        className="block text-gray-700 text-sm font-medium mb-2"
-                        htmlFor="cardNumber"
-                      >
-                        Card Number*
-                      </label>
-                      <input
-                        type="text"
-                        id="cardNumber"
-                        name="cardNumber"
-                        value={formData.cardNumber}
-                        onChange={handleInputChange}
-                        className={`w-full p-3 border ${
-                          formErrors.cardNumber
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-red-200`}
-                        placeholder="XXXX XXXX XXXX XXXX"
-                      />
-                      {formErrors.cardNumber && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {formErrors.cardNumber}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label
-                        className="block text-gray-700 text-sm font-medium mb-2"
-                        htmlFor="cardHolder"
-                      >
+                      <label className="block text-gray-700 text-sm font-medium mb-2">
                         Cardholder Name*
                       </label>
                       <input
@@ -584,59 +572,27 @@ const OrderConfirmation = () => {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          className="block text-gray-700 text-sm font-medium mb-2"
-                          htmlFor="expiryDate"
-                        >
-                          Expiry Date*
-                        </label>
-                        <input
-                          type="text"
-                          id="expiryDate"
-                          name="expiryDate"
-                          value={formData.expiryDate}
-                          onChange={handleInputChange}
-                          className={`w-full p-3 border ${
-                            formErrors.expiryDate
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md focus:outline-none focus:ring-2 focus:ring-red-200`}
-                          placeholder="MM/YY"
+                    <div>
+                      <label className="block text-gray-700 text-sm font-medium mb-2">
+                        Card Details*
+                      </label>
+                      <div className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-200">
+                        <CardElement
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: "16px",
+                                color: "#32325d",
+                                "::placeholder": {
+                                  color: "#a0aec0",
+                                },
+                              },
+                              invalid: {
+                                color: "#e53e3e",
+                              },
+                            },
+                          }}
                         />
-                        {formErrors.expiryDate && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {formErrors.expiryDate}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label
-                          className="block text-gray-700 text-sm font-medium mb-2"
-                          htmlFor="cvv"
-                        >
-                          CVV*
-                        </label>
-                        <input
-                          type="text"
-                          id="cvv"
-                          name="cvv"
-                          value={formData.cvv}
-                          onChange={handleInputChange}
-                          className={`w-full p-3 border ${
-                            formErrors.cvv
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md focus:outline-none focus:ring-2 focus:ring-red-200`}
-                          placeholder="123"
-                        />
-                        {formErrors.cvv && (
-                          <p className="text-red-500 text-sm mt-1">
-                            {formErrors.cvv}
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>

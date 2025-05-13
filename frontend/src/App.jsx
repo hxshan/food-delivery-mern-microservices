@@ -58,7 +58,7 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-const stripePromise = loadStripe("pk_test_YOUR_PUBLIC_KEY");
+const stripePromise = loadStripe("pk_test_51ROE9QEFzhPNUJSc7AFSxEpsoLobfqEG8Mcn8W8Z9EPHGWaeJGfMSfnj3xrbyjPCuKTiSv1OXbQs1kl7kkgZc9Di00Z5jGrTfG");
 
 const App = () => {
   return (
