@@ -13,3 +13,9 @@
 [submodule "services/api-gateway"]
 	path = services/api-gateway
 	url = https://github.com/hxshan/api-gateway-food-delivery.git
+[submodule "services/admin-service"]
+	path = services/admin-service
+	url = https://github.com/hxshan/admin-service.git
+[submodule "services/delivery-service"]
+	path = services/delivery-service
+	url = https://github.com/hxshan/delivery-service.git
