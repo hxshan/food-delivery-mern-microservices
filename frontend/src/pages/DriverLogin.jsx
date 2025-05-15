@@ -75,7 +75,6 @@ const DriverLogin = () => {
       if (userData.roleStatus && userData.roleStatus.driver === "pending") {
         showNotification("warning", "Your driver account is pending approval. We'll notify you once approved.");
         setLoading(false);
-        navigate('/driver/inactive');
         return;
       }
       
