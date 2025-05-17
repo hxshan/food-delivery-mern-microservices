@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {assets} from '../../assets/assets'
 import axios from "../../api/axios";
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { API_URL } from "../../api";
 
 const DriverProfilePage = () => {
   // Form fields state
@@ -50,7 +51,7 @@ const DriverProfilePage = () => {
    const user = useAuthContext();
   
     const getuserData = async()=>{
-      console.log(`http://localhost:8000/api/user/driver/profile/${user.user.userId}`)
+      console.log(`${API_URL}/user/driver/profile/${user.user.userId}`)
       const res = await axios.get(`/user/driver/profile/${user.user.userId}`)
       console.log(res)
           

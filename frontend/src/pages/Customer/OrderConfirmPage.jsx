@@ -16,12 +16,14 @@ import {
   useClearCartMutation,
 } from "../../redux/slices/cartApi";
 
+import { API_URL } from "../../api";
+
 import orderProcessImg from "../../assets/Images/order_process.png";
 import LocationMapSelector from "../map";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
 // API base URL - adjust based on your environment
-const API_BASE_URL = "http://localhost:8000/api/order";
+const API_BASE_URL = `${API_URL}/order`;
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
