@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import Sidebar from "../../components/Sidebar/Sidebar";
 
+
 const RestaurantDetails = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState([]);
