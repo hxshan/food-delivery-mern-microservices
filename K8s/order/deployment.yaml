@@ -15,6 +15,7 @@ spec:
       containers:
         - name: auth
           image: hxshxn/order-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5004
           env: 

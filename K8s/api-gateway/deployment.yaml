@@ -15,6 +15,7 @@ spec:
       containers:
         - name: auth
           image: hxshxn/api-gateway:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5001
           env: 

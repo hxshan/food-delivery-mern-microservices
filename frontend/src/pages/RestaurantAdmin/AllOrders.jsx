@@ -15,13 +15,15 @@ function AllOrdersPage() {
   const restaurantId = "hilton-colombo";
   const ordersPerPage = 5;
 
+
   useEffect(() => {
+
     const fetchOrders = async () => {
       try {
         setLoading(true);
         // In a real app, you would include pagination params
         const response = await axios.get(
-          `http://localhost:8000/api/order/restaurant/${restaurantId}`
+          `${import.meta.env.VITE_API_URL}/api/order/restaurant/${restaurantId}`
         );
 
         let filteredOrders = response.data.data.orders;

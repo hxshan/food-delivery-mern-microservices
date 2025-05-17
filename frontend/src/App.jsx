@@ -59,6 +59,16 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
+const stripePromise = loadStripe("pk_test_51ROE9QEFzhPNUJSc7AFSxEpsoLobfqEG8Mcn8W8Z9EPHGWaeJGfMSfnj3xrbyjPCuKTiSv1OXbQs1kl7kkgZc9Di00Z5jGrTfG");
+
+// Admin route protection
+const AdminProtectedRoute = ({ children }) => {
+  // Get admin from localStorage
+  const admin = JSON.parse(localStorage.getItem('admin'));
+  const isAdminAuthenticated = admin && admin.token && admin.isAdmin;
+  return isAdminAuthenticated ? children : <Navigate to="/admin/login" />;
+};
+
 const App = () => {
   return (
     <>
@@ -110,7 +120,7 @@ const App = () => {
         <Route path="/menus" element={<MenuListByRestaurant />} />
         <Route path="/map" element={<MapScreen />} />
         <Route path="/driver/dashboard" element={<DriverDashboard />} />
-        <Route path="/driver/map" element={<DriverMapScreen />} />
+        <Route path="/driver/map/:orderId" element={<DriverMapScreen />} />
         {/* <Route path="/update-menu-item" element={<UpdateMenuItem />} /> */}
         <Route path="/menu-item/:menuItemId" element={<UpdateMenuItem />} />
         <Route

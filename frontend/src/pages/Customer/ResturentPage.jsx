@@ -9,7 +9,6 @@ import Cart from "../../components/Cart";
 
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 
-import TempImage from "../../assets/Images/1745935491185res1.jpg";
 import { useCartOperations } from "../../utils/cartUtils";
 import { useParams } from "react-router-dom";
 import axios from "../../api/axios";

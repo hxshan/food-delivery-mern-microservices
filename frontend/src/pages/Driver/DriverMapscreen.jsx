@@ -9,27 +9,9 @@ const libraries = ['places']; // Static declaration of libraries
 const DriverMapScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const delivery = location.state?.delivery || {
-    id: 'test123',
-    restaurantLat: 6.933273,
-    restaurantLng: 79.99,
-    customerLat: 6.948092,
-    customerLng: 79.883489,
-    restaurantName: 'Hilton Colombo',
-    restaurantAddress: '456 Food St, Colombo',
-    restaurantPhone: '+94 77 123 4567',
-    customerName: 'John Doe',
-    customerAddress: '123 Main St, Colombo',
-    customerPhone: '+94 71 987 6543',
-    instructions: 'Please leave at the door. Building code: 4321',
-    items: [
-      { name: 'Chicken Burger', quantity: 2, price: 450 },
-      { name: 'Fries', quantity: 1, price: 250 },
-      { name: 'Coke', quantity: 1, price: 100 }
-    ],
-    totalAmount: 1250,
-    paymentMethod: 'Cash on Delivery'
-  };
+
+  
+  
 
   const [directions, setDirections] = useState(null);
   const [phase, setPhase] = useState('toRestaurant');
@@ -51,7 +33,7 @@ const DriverMapScreen = () => {
   const directionsServiceRef = useRef(null);
 
   useEffect(() => {
-    if (!delivery) return;
+   
   
     if (!navigator.geolocation) {
       console.error('Geolocation is not supported');
@@ -132,37 +114,37 @@ const DriverMapScreen = () => {
     directionsServiceRef.current = new window.google.maps.DirectionsService();
   }, [isLoaded]);
 
-  // Calculate route
-  useEffect(() => {
-    if (!delivery || !driverPosition || !directionsServiceRef.current || !window.google) return;
+  // // Calculate route
+  // useEffect(() => {
+  //   if (!delivery || !driverPosition || !directionsServiceRef.current || !window.google) return;
 
-    const directionsService = directionsServiceRef.current;
+  //   const directionsService = directionsServiceRef.current;
 
-    const destination = (phase === 'toRestaurant')
-      ? { lat: delivery.restaurantLat, lng: delivery.restaurantLng }
-      : { lat: delivery.customerLat, lng: delivery.customerLng };
+  //   const destination = (phase === 'toRestaurant')
+  //     ? { lat: delivery.restaurantLat, lng: delivery.restaurantLng }
+  //     : { lat: delivery.customerLat, lng: delivery.customerLng };
 
-    directionsService.route(
-      {
-        origin: driverPosition,
-        destination: destination,
-        travelMode: window.google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          setDirections(result);
+  //   directionsService.route(
+  //     {
+  //       origin: driverPosition,
+  //       destination: destination,
+  //       travelMode: window.google.maps.TravelMode.DRIVING,
+  //     },
+  //     (result, status) => {
+  //       if (status === window.google.maps.DirectionsStatus.OK) {
+  //         setDirections(result);
           
-          // Extract and set estimated time and distance information
-          if (result.routes[0]?.legs[0]) {
-            setEstimatedTime(result.routes[0].legs[0].duration.text);
-            setDistance(result.routes[0].legs[0].distance.text);
-          }
-        } else {
-          console.error('Error fetching directions:', status);
-        }
-      }
-    );
-  }, [delivery, driverPosition, phase]);
+  //         // Extract and set estimated time and distance information
+  //         if (result.routes[0]?.legs[0]) {
+  //           setEstimatedTime(result.routes[0].legs[0].duration.text);
+  //           setDistance(result.routes[0].legs[0].distance.text);
+  //         }
+  //       } else {
+  //         console.error('Error fetching directions:', status);
+  //       }
+  //     }
+  //   );
+  // }, [delivery, driverPosition, phase]);
 
   // Create and update Advanced Marker
   useEffect(() => {

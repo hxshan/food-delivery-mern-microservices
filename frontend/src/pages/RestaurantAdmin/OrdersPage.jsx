@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import NewOrders from "../../components/Restaurent/NewOrder";
 import ConfirmedOrders from "../../components/Restaurent/ConfirmedOrder";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { ArrowRight } from "lucide-react";
+import socketService from "../../services/socketService";
 
 function OrdersPage() {
+  useEffect(()=>{
+     if (!socketService.isConnected()) {
+      socketService.connect();
+    }
+    socketService.on("restaurant:new-order", (order) => {
+      //setIncomingDelivery(delivery);
+    });
+
+    return () => {
+      socketService.off("restaurant:new-order");
+    };
+
+  },[])
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />

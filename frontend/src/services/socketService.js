@@ -1,6 +1,5 @@
 // services/socketService.js
 import { io } from 'socket.io-client';
-import { getAccessToken } from './authService';
 import { API_URL } from '../api';
 
 class SocketService {
@@ -12,7 +11,8 @@ class SocketService {
   connect() {
     if (this.socket?.connected) return;
 
-    const token = getAccessToken();
+    const user = localStorage.getItem('user');
+    const token = user?.token
     if (!token) {
       console.error('No access token available for socket connection');
       return;
@@ -42,7 +42,9 @@ class SocketService {
       this.socket = null;
     }
   }
-
+  getSocket() {
+    return this.socket;
+  }
   setupConnectionEvents() {
     if (!this.socket) return;
 
@@ -71,8 +73,8 @@ class SocketService {
       console.error('Socket not initialized');
       return;
     }
-
-    // Store the callback reference so we can remove it later
+    if (this.eventListeners.has(event)) return;
+    
     this.eventListeners.set(event, callback);
     this.socket.on(event, callback);
   }
