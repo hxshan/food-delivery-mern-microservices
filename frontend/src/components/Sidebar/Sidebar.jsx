@@ -120,9 +120,9 @@ export default function Sidebar() {
           />
           <NavItem 
             icon={<List size={20} />} 
-            text="Listings" 
-            active={activeItem === 'Listings'}
-            onClick={() => handleNavigation('Listings')}
+            text="Restaurant Details" 
+            active={activeItem === 'Restaurant Details'}
+            onClick={handleRestaurantDetailsClick}
             collapsed={collapsed} 
             hasSubmenu 
           />
@@ -175,14 +175,7 @@ export default function Sidebar() {
             onClick={() => handleNavigation('My Profile')}
             collapsed={collapsed} 
           />
-          <NavItem 
-            icon={<span className="text-yellow-600">🍔</span>} 
-            text="Restaurant Details" 
-            active={activeItem === 'Restaurant Details'}
-            onClick={handleRestaurantDetailsClick}
-            collapsed={collapsed} 
-            multiline={true} 
-          />
+      
           <NavItem 
             icon={<Settings size={20} />} 
             text="Components" 
