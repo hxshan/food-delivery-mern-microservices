@@ -4,6 +4,7 @@ import { User, Phone, Upload, MapPin, ArrowLeft, Mail, CreditCard, Clock, Home, 
 import axios from "../../api/axios";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { assets } from "../../assets/assets";
+import { API_URL } from '../../api/index';
 
 const CustomerProfile = () => {
   const [firstName, setFirstName] = useState("");
@@ -19,7 +20,7 @@ const CustomerProfile = () => {
 const user = useAuthContext();
   
     const getuserData = async()=>{
-      console.log(`http://localhost:8000/api/user/driver/profile/${user.user.userId}`)
+      console.log(`${API_URL}/user/driver/profile/${user.user.userId}`)
       const res = await axios.get(`/user/customer/profile/${user.user.userId}`)
       console.log(res)
           
