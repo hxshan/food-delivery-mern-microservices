@@ -1,103 +1,97 @@
 import { io } from 'socket.io-client';
 
-// Create socket connection with auth token from localStorage or your auth state
-const createSocketConnection = (token,userDetails) => {
-  // Connect with authentication token in handshake
-  const socket = io('http://localhost:5005', {
-    auth: {
-      token 
-    },
-    autoConnect: true,
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
-  });
+let socket = null;
+let socketPromise = null;
 
-  // Connection event handlers
-  socket.on('connect', () => {
-    console.log('Connected to socket server');
+const createSocketConnection = (token, userDetails) => {
+  return new Promise((resolve, reject) => {
+    const newSocket = io('http://localhost:5005', {
+      auth: { token },
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    });
 
-    socket.emit('user_connected', {
-      userId: userDetails.userId,
-      userType: userDetails.currentRole,
+    newSocket.on('connect', () => {
+      console.log('Connected to socket server');
+      newSocket.emit('user_connected', {
+        userId: userDetails.userId,
+        userType: userDetails.currentRole,
+      });
+      resolve(newSocket);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error.message);
+      reject(error);
     });
   });
-
-  socket.on('connect_error', (error) => {
-    console.error('Socket connection error:', error.message);
-  });
-
-  socket.on('disconnect', (reason) => {
-    console.log('Disconnected from socket server:', reason);
-  });
-
-  return socket;
 };
 
-// Initialize socket with user's auth token
-let socket = null;
-
-// Function to initialize socket with auth token
-export const initSocket = (token,userDetails) => {
-  if (socket) {
-    socket.disconnect();
-  }
-  if(!token) return;
-    socket = createSocketConnection(token, userDetails);
+export const initSocket = async (token, userDetails) => {
+  if (socket) return socket;
+  
+  try {
+    socketPromise = createSocketConnection(token, userDetails);
+    socket = await socketPromise;
     return socket;
+  } catch (error) {
+    console.error('Socket initialization failed:', error);
+    throw error;
+  }
 };
 
-// Customer specific functions
-export const joinOrderTracking = (orderId) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.emit('join_order', orderId);
+const ensureSocket = async () => {
+  if (socket) return socket;
+  if (socketPromise) return await socketPromise;
+  throw new Error('Socket not initialized. Call initSocket() first.');
 };
 
-export const onDriverAccepted = (callback) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.on('order_accepted', callback);
+export const joinOrderTracking = async (orderId) => {
+  const currentSocket = await ensureSocket();
+  currentSocket.emit('join_order', orderId);
 };
 
-export const onDriverLocationUpdate = (callback) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.on('driver_location_update', callback);
+export const onOrderStatusUpdate = async (callback) => {
+  const currentSocket = await ensureSocket();
+  currentSocket.on('order_status_update', callback);
+  return () => currentSocket.off('order_status_update', callback);
 };
 
-export const onDeliveryCompleted = (callback) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.on('delivery_done', callback);
+export const onDriverAssigned = async (callback) => {
+  const currentSocket = await ensureSocket();
+  currentSocket.on('driver_assigned', callback);
+  return () => currentSocket.off('driver_assigned', callback);
 };
 
-// Driver specific functions
-export const updateDriverLocation = (orderId, location) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.emit('update_location', { orderId, location });
+export const onDriverLocationUpdate = async (callback) => {
+  const currentSocket = await ensureSocket();
+  currentSocket.on('driver_location_update', callback);
+  return () => currentSocket.off('driver_location_update', callback);
 };
 
-export const markDeliveryCompleted = (orderId) => {
-  if (!socket) return console.error('Socket not initialized');
-  socket.emit('delivery_completed', { orderId });
+export const requestDriver = async (orderData) => {
+  const currentSocket = await ensureSocket();
+  currentSocket.emit('request_driver', orderData);
 };
 
-// Clean up function to remove listeners and disconnect
 export const disconnectSocket = () => {
   if (!socket) return;
-  
-  // Remove all listeners
   socket.removeAllListeners();
   socket.disconnect();
   socket = null;
-  console.log('Socket disconnected and cleaned up');
+  socketPromise = null;
 };
 
+// Default export with all functions
 export default {
   initSocket,
   joinOrderTracking,
-  onDriverAccepted,
+  onOrderStatusUpdate,
+  onDriverAssigned,
   onDriverLocationUpdate,
-  onDeliveryCompleted,
-  updateDriverLocation,
-  markDeliveryCompleted,
+  requestDriver,
   disconnectSocket,
   getSocket: () => socket
 };

@@ -385,7 +385,7 @@ const ManageDrivers = () => {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th> */}
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
@@ -397,9 +397,9 @@ const ManageDrivers = () => {
                     {drivers.length > 0 ? (
                       drivers.map((driver) => (
                         <tr key={driver.userId} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                             <div className="font-medium text-gray-900">{driver.name || 'No Name'}</div>
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap text-gray-500">{driver.email}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-gray-500">{driver.phone || 'N/A'}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-gray-500">
