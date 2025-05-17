@@ -41,7 +41,7 @@ import DriverMapScreen from "./pages/Driver/DriverMapscreen";
 import RestaurantLogin from "./pages/RestaurantLogin"
 import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
 import RestaurantSignup from "./pages/RestaurantSignup"
-import AdminLogin from "./pages/admin/AdminLogin"
+import AdminLogin from "./pages/Admin/AdminLogin"
 
 import RegistrationSelection from "./pages/RegistrationSelection";
 import LoginSelection from "./pages/LoginSelection";
