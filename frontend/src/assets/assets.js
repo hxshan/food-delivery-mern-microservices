@@ -4,6 +4,7 @@ import profile_image from './profile_image.png'
 import upload_area from './upload_area.png'
 import parcel_icon from './parcel_icon.png'
 import placeholder from './placeholder.jpg'
+import restaurant from './restaurant.png'
 
 export const assets ={
   
@@ -12,7 +13,8 @@ export const assets ={
     profile_image,
     upload_area,
     parcel_icon,
-    placeholder
+    placeholder,
+    restaurant
 }
 
 export const url = 'http://localhost:3001'

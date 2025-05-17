@@ -36,9 +36,10 @@ import UserProfile from "./pages/Customer/UserProfile";
 import MapScreen from "./pages/Customer/MapScreen";
 import DriverDashboard from "./pages/Driver/DriverDashboard";
 import DriverMapScreen from "./pages/Driver/DriverMapscreen";
-import RestaurantLogin from "./pages/RestaurantLogin";
-import RestaurantOtpVerification from "./pages/RestaurantOtpVerification";
-import RestaurantSignup from "./pages/RestaurantSignup";
+import RestaurantLogin from "./pages/RestaurantLogin"
+import RestaurantOtpVerification from "./pages/RestaurantOtpVerification"
+import RestaurantSignup from "./pages/RestaurantSignup"
+import AdminLogin from "./pages/admin/AdminLogin"
 
 import RegistrationSelection from "./pages/RegistrationSelection";
 import LoginSelection from "./pages/LoginSelection";
@@ -58,6 +59,14 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
+// Admin route protection
+const AdminProtectedRoute = ({ children }) => {
+  // Get admin from localStorage
+  const admin = JSON.parse(localStorage.getItem('admin'));
+  const isAdminAuthenticated = admin && admin.token && admin.isAdmin;
+  return isAdminAuthenticated ? children : <Navigate to="/admin/login" />;
+};
+
 const stripePromise = loadStripe("pk_test_51ROE9QEFzhPNUJSc7AFSxEpsoLobfqEG8Mcn8W8Z9EPHGWaeJGfMSfnj3xrbyjPCuKTiSv1OXbQs1kl7kkgZc9Di00Z5jGrTfG");
 
 const App = () => {
@@ -73,6 +82,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/restaurantLogin" element={<RestaurantLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+
         <Route path="/signup" element={<Signup />} />
         <Route path="/driverSignup" element={<DriverSignup />} />
         <Route path="/restaurantSignup" element={<RestaurantSignup />} />
