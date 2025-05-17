@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import Sidebar from "../../components/Sidebar/Sidebar";
 
+
 const RestaurantDetails = () => {
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState([]);
@@ -82,7 +83,7 @@ const RestaurantDetails = () => {
           <div className="md:w-1/3">
             {restaurant.image && (
               <img
-                src={`http://localhost:5003/uploads/${restaurant.image}`}
+                // src={`http://localhost:5003/uploads/${restaurant.image}`}
                 alt="Restaurant"
                 className="w-full h-64 object-cover rounded-lg shadow-md"
               />
@@ -154,7 +155,7 @@ const RestaurantDetails = () => {
                 >
                   {item.image && (
                     <img
-                      src={`http://localhost:5003/uploads/${item.image}`}
+                      // src={`http://localhost:5003/uploads/${item.image}`}
                       alt={item.name}
                       className="w-full h-48 object-cover"
                     />

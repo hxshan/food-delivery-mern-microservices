@@ -38,7 +38,7 @@ function UpdateMenuItem() {
         });
 
         if (item.image) {
-          setImagePreview(`http://localhost:5003/uploads/${item.image}`);
+          // setImagePreview(`http://localhost:5003/uploads/${item.image}`);
         }
         
          const idFromState = location.state?.restaurantId;
