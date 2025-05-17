@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowLeft, AlertCircle, Check, Shield } from 'lucide-react';
 import axios from '../../api/axios';
+import {ADMIN_URL} from '../../api/index';
 import { useAuthContext } from '../../hooks/useAuthContext';
 
 const AdminLogin = () => {
@@ -62,7 +63,7 @@ const AdminLogin = () => {
     setError('');
     
     try {
-      const res = await axios.post('http://127.0.0.1:5005/api/adminAuth/login', adminData, {
+      const res = await axios.post(`${ADMIN_URL}/adminAuth/login`, adminData, {
         headers: {
           'Content-Type': 'application/json',
         },
