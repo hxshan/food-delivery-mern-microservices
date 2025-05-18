@@ -142,7 +142,7 @@ function UpdateMenuItem() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="inline-block w-8 h-8 border-4 border-t-[#FA5F55] border-gray-200 rounded-full animate-spin"></div>
+          <div className="inline-block w-8 h-8 border-4 border-red-500 rounded-full animate-spin"></div>
           <p className="mt-2">Loading menu item details...</p>
         </div>
       </div>
@@ -153,14 +153,14 @@ function UpdateMenuItem() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6 text-center text-[#FA5F55]">
+          <h2 className="text-2xl font-bold mb-6 text-center text-red-500">
             Update Menu Item
           </h2>
           
           <form onSubmit={onSubmitHandler} className="space-y-4">
             <div className="flex flex-col items-center mb-4">
               <label className="cursor-pointer">
-                <div className="border-2 border-dashed border-gray-300 hover:border-[#FA5F55] rounded-lg p-4 transition-colors">
+                <div className="border-2 border-dashed border-gray-300 hover:border-red-500 rounded-lg p-4 transition-colors">
                   <img
                     src={imagePreview || assets.upload_area}
                     alt="Menu item preview"
@@ -188,7 +188,7 @@ function UpdateMenuItem() {
                 name="name"
                 value={data.name}
                 onChange={onChangeHandler}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#FA5F55] focus:border-[#FA5F55]"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
                 required
               />
             </div>
@@ -202,7 +202,7 @@ function UpdateMenuItem() {
                 value={data.description}
                 onChange={onChangeHandler}
                 rows={3}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#FA5F55] focus:border-[#FA5F55]"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
                 required
               />
             </div>
@@ -229,7 +229,7 @@ function UpdateMenuItem() {
                 name="category"
                 value={data.category}
                 onChange={onChangeHandler}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#FA5F55] focus:border-[#FA5F55]"
+                className="w-full p-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
                 required
               >
                 <option value="">Select a category</option>
@@ -257,7 +257,7 @@ function UpdateMenuItem() {
                   name="price"
                   value={data.price}
                   onChange={onChangeHandler}
-                  className="block w-full pl-7 pr-12 py-2 border border-gray-300 rounded-md focus:ring-[#FA5F55] focus:border-[#FA5F55]"
+                  className="block w-full pl-7 pr-12 py-2 border border-gray-300 rounded-md focus:ring-red-500 focus:border-red-500"
                   placeholder="0.00"
                   required
                 />
@@ -268,7 +268,7 @@ function UpdateMenuItem() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`flex-1 bg-[#FA5F55] hover:bg-[#e04b42] text-white font-medium py-2 px-4 rounded-md transition duration-200 ${
+                className={`flex-1 bg-red-500 hover:bg-red-500 text-white font-medium py-2 px-4 rounded-md transition duration-200 ${
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >

@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Search, ChevronDown, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../../api";
 
 import axios from 'axios'
 
@@ -85,7 +86,7 @@ const RestaurantListing = () => {
   const fetchResturents = async ()=> {
     try {
       
-      const response = await axios.get("http://localhost:8000/api/restaurant/get")
+      const response = await axios.get(`${API_URL}/restaurant/get`)
 
       console.log(response)
 

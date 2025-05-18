@@ -108,9 +108,6 @@ const RestaurantDetails = () => {
                 <span className="font-semibold">Rating:</span> ⭐ {restaurant.rating || 'Not rated yet'}
               </p>
 
-              <p className="text-gray-700">
-                <span className="font-semibold">Location:</span>
-              </p>
               
               {restaurant.phoneNumbers && restaurant.phoneNumbers.length > 0 && (
                 <p className="text-gray-700">

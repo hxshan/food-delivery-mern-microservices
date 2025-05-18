@@ -4,9 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { restaurantApi } from "../../services/restaurantApi";
 import { AuthContext } from "../../context/AuthContext";
+
+// 🗺️ Map-related imports
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+
+// 📍 Fix marker icon issue in Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
 const AddRestaurant = () => {
   const { user } = useContext(AuthContext);
-  console.log('AuthContext user:', user); 
   const navigate = useNavigate();
   const [image, setImage] = useState(false);
   const [data, setData] = useState({
@@ -17,6 +32,21 @@ const AddRestaurant = () => {
     longitude: "",
     latitude: "",
   });
+
+  // 🗺️ Component to handle map click
+  const LocationSelector = () => {
+    useMapEvents({
+      click(e) {
+        const { lat, lng } = e.latlng;
+        setData((prev) => ({
+          ...prev,
+          latitude: lat.toFixed(6),
+          longitude: lng.toFixed(6),
+        }));
+      },
+    });
+    return null;
+  };
 
   const onChangeHandler = (event, index = null) => {
     const { name, value, type, checked } = event.target;
@@ -36,8 +66,6 @@ const AddRestaurant = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    
-
     if (!user || !user.userId) {
       toast.error("User not authenticated.");
       return;
@@ -46,33 +74,19 @@ const AddRestaurant = () => {
     formData.append("name", data.name);
     formData.append("address", data.address);
     formData.append("isOpen", data.isOpen);
-    formData.append("userId",user.userId);
-    formData.append("phoneNumbers", JSON.stringify(data.phoneNumbers)); 
+    formData.append("userId", user.userId);
+    formData.append("phoneNumbers", JSON.stringify(data.phoneNumbers));
     if (data.longitude) formData.append("longitude", data.longitude);
     if (data.latitude) formData.append("latitude", data.latitude);
+    if (image) formData.append("image", image);
 
-    if (image) {
-      formData.append("image", image);
-    }
-    console.log("Sending to:", `${restaurantApi.defaults.baseURL}/add`);
-    console.log("Sending with userId:", user.userId);
     try {
       const response = await restaurantApi.post("/add", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      // try {
-      //   const response = await restaurantApi.post('/add', formData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //       'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-      //     }
-      //   });
 
       if (response.data.success) {
         localStorage.setItem("restaurantId", response.data.restaurant._id);
-
         setData({
           name: "",
           address: "",
@@ -83,7 +97,6 @@ const AddRestaurant = () => {
         });
         setImage(false);
         toast.success(response.data.message);
-        // navigate(`/restaurant-details/${response.data.restaurant._id}`);
         navigate("/wait");
       } else {
         toast.error(response.data.message);
@@ -131,7 +144,7 @@ const AddRestaurant = () => {
               value={data.name}
               name="name"
               placeholder="Restaurant Name"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
               required
             />
           </div>
@@ -142,31 +155,39 @@ const AddRestaurant = () => {
               value={data.address}
               name="address"
               placeholder="Restaurant Address"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 md:focus:ring-2 focus:ring-[#FA5F55] focus:border-transparent transition hover:border-red-500"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
               required
             />
           </div>
+
           <div>
+            <p className="font-md mb-2  text-red-500">Select Location (click on map)</p>
+            <div className="h-64 rounded-lg overflow-hidden mb-2">
+              <MapContainer
+                center={[7.8731, 80.7718]} // Default center: Sri Lanka
+                zoom={7}
+                style={{ height: "100%", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution="&copy; OpenStreetMap contributors"
+                />
+                {data.latitude && data.longitude && (
+                  <Marker position={[data.latitude, data.longitude]} />
+                )}
+                <LocationSelector />
+              </MapContainer>
+            </div>
             <input
               type="text"
-              name="location"
-              value={`${data.longitude}, ${data.latitude}`}
-              onChange={(e) => {
-                const [longitude, latitude] = e.target.value
-                  .split(",")
-                  .map((val) => val.trim());
-                if (longitude && latitude) {
-                  setData((prev) => ({
-                    ...prev,
-                    longitude: longitude || "",
-                    latitude: latitude || "",
-                  }));
-                } else {
-                  toast.error("Please enter valid coordinates.");
-                }
-              }}
-              placeholder="Longitude, Latitude (optional)"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+              readOnly
+              value={
+                data.latitude && data.longitude
+                  ? `${data.longitude}, ${data.latitude}`
+                  : ""
+              }
+              placeholder="Longitude, Latitude (auto-filled)"
+              className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
             />
           </div>
 
@@ -180,7 +201,7 @@ const AddRestaurant = () => {
                 onChange={(e) => onChangeHandler(e, idx)}
                 name="phoneNumbers"
                 placeholder={`Phone Number ${idx + 1}`}
-                className="w-full p-2 mb-2 border hover:border-red-500 border-gray-300 rounded-lg focus:ring-[#FA5F55]"
+                className="w-full p-2 mb-2 border border-gray-300 rounded-lg focus:ring-[#FA5F55]"
               />
             ))}
             {data.phoneNumbers.length < 3 && (
@@ -192,7 +213,7 @@ const AddRestaurant = () => {
                     phoneNumbers: [...prev.phoneNumbers, ""],
                   }))
                 }
-                className="text-[#FA5F55] hover:border-red-500 hover:underline text-sm"
+                className="text-[#FA5F55] hover:underline text-sm"
               >
                 + Add Another Phone Number
               </button>

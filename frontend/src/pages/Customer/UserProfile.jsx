@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
+import { API_URL } from "../../api"; 
 
 const UserProfile = () => {
   // Mock user data - replace with actual data from your backend
@@ -50,7 +51,7 @@ const UserProfile = () => {
   // Fetch user orders from the backend
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/order/", {
+      const response = await axios.get(`${API_URL}/order/`, {
         // Replace with your actual API endpoint
         params: { page: 1, limit: 10 }, // You can implement pagination if needed
       });

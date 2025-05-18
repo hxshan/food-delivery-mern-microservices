@@ -3,6 +3,7 @@ import { ArrowLeft, Search, Filter, ChevronLeft, ChevronRight } from "lucide-rea
 import { Link } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import axios from "../../api/axios";
+import { API_URL } from "../../api";
 
 function AllOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -21,7 +22,7 @@ function AllOrdersPage() {
         setLoading(true);
         // In a real app, you would include pagination params
         const response = await axios.get(
-          `http://localhost:8000/api/order/restaurant/${restaurantId}`
+          `${API_URL}/order/restaurant/${restaurantId}`
         );
 
         let filteredOrders = response.data.data.orders;

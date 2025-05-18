@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Search, RefreshCw, X, Star } from 'lucide-react';
 import axios from 'axios';
-import { useAuthContext } from '../../hooks/useAuthContext'; // Import the auth context hook
+import { useAuthContext } from '../../hooks/useAuthContext'; 
+import {ADMIN_URL} from '../../api/index';
 
 // Define API_URL without using process.env
-const API_URL = 'http://localhost:5005/api';
+const API_URL = ADMIN_URL;
 
 const Toast = ({ message, type, onClose }) => {
   return (
