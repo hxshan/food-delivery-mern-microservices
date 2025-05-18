@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
+  labels:
+    app: api-gateway
 spec:
   replicas: 1
   selector:
@@ -13,19 +15,18 @@ spec:
         app: api-gateway
     spec:
       containers:
-        - name: auth
+        - name: api-gateway
           image: hxshxn/api-gateway:latest
-          imagePullPolicy: Always
           ports:
-            - containerPort: 5001
-          env: 
-            - name: PORT 
-              value: "8000"
+            - containerPort: 8000
+          env:
             - name: USER_SERVICE
-              value: http://user-service:5001
+              value: "http://user-service:5001"
             - name: AUTH_SERVICE
-              value: http://auth-service:5002
+              value: "http://auth-service:5002"
             - name: RESTAURANT_SERVICE
-              value: http://order-service:5003
+              value: "http://restaurant-service:5003"
             - name: ORDER_SERVICE
-              value: http://restaurant-service:5004
+              value: "http://order-service:5004"
+            - name: PORT
+              value: "8000"

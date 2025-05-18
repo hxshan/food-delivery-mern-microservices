@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: hxshxn/auth-service:latest
+          ports:
+            - containerPort: 5002
+          env:
+            - name: DBurl
+              value: "mongodb+srv://wajeenpc:Aa1234aA@cluster0.j6vablp.mongodb.net/"
+            - name: JWTPRIVATEKEY
+              value: "qiwuegquwe123123bahsbd213123asdhuaisdguashd"
+            - name: AUTH_EMAIL
+              value: "shayeedwajee@gmail.com"
+            - name: AUTH_PASS
+              value: "mnsjrbqxpkjznfli"
+            - name: PORT
+              value: "5002"

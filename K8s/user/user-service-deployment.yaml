@@ -13,11 +13,10 @@ spec:
         app: user-service
     spec:
       containers:
-        - name: user
+        - name: user-service
           image: hxshxn/user-service:latest
-          imagePullPolicy: Always
           ports:
             - containerPort: 5001
-          env: 
-            - name: MONGO_URI
-              value: "mongodb+srv://HeshanTest:ggsl1974@mern.4zq74gy.mongodb.net/foodorders"
+          envFrom:
+            - secretRef:
+                name: user-service-secret
